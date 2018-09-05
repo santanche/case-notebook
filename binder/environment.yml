@@ -1,0 +1,13 @@
+name: visJS2jupyter
+channels:
+  - conda-forge
+dependencies:
+  - nodejs
+  - jupyterlab==0.33.11
+  - ipywidgets
+  - traitlets
+  - pip:
+    - jupyterlab_launcher
+    - ipywidgets
+    - visJS2jupyter
+- jupyter_contrib_nbextensions
