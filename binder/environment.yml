@@ -1,18 +1,12 @@
-name: beakerx
+name: quilt
 channels:
   - conda-forge
 dependencies:
   - nodejs
   - jupyterlab==0.33.11
-  - beakerx
   - ipywidgets
   - traitlets
   - pip:
     - jupyterlab_launcher
     - ipywidgets
     - jupyter_contrib_nbextensions
-    - quilt
-    - matplotlib
-    - networkx
-    - py2cytoscape
-    - visJS2jupyter
