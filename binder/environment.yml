@@ -11,6 +11,7 @@ dependencies:
     - jupyterlab_launcher
     - ipywidgets
     - jupyter_contrib_nbextensions
+    - quilt
     - matplotlib
     - networkx
     - py2cytoscape
