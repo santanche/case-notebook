@@ -1,13 +1,14 @@
-name: visJS2jupyter
+name: beakerx
 channels:
   - conda-forge
 dependencies:
   - nodejs
   - jupyterlab==0.33.11
+  - beakerx
   - ipywidgets
   - traitlets
   - pip:
     - jupyterlab_launcher
     - ipywidgets
+    - jupyter_contrib_nbextensions
     - visJS2jupyter
-- jupyter_contrib_nbextensions
