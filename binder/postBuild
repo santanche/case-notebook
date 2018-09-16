@@ -1,2 +1,10 @@
 #!/bin/bash
 quilt install @./binder/quilt.yml
+
+# extensions for ipywidgets and python-markdown (see https://github.com/binder-examples/jupyter-extension)
+jupyter contrib nbextension install --user
+jupyter nbextension enable --py widgetsnbextension
+jupyter nbextension enable python-markdown/main
+
+# Notebooks w/ extensions that auto-run code must be "trusted" to work the first time
+jupyter trust ../jupyter/case-markdown.ipynb
