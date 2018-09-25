@@ -1,0 +1,10 @@
+contents:
+  mtrees2018:
+    file: mtrees2018.bin
+    transform: csv
+      kwargs:
+        header:
+        dtype:
+          mesh_heading: str
+          tree_number: str
+        sep: ","
