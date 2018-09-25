@@ -7,4 +7,4 @@ contents:
         dtype:
           mesh_heading: str
           tree_number: str
-        sep: ","
+        sep: ";"
