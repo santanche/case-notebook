@@ -8,3 +8,6 @@ numpy
 matplotlib
 ipywidgets
 jupyter_contrib_nbextensions
+
+# extension for Spacy
+spacy
