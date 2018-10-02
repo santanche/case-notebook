@@ -7,6 +7,10 @@ jupyter nbextension enable --py widgetsnbextension
 jupyter nbextension enable python-markdown/main
 
 # Notebooks w/ extensions that auto-run code must be "trusted" to work the first time
-jupyter trust ./jupyter/markdown-python.ipynb
-jupyter trust ./jupyter/markdown-quilt.ipynb
-jupyter trust ./jupyter/case-markdown.ipynb
+jupyter trust ./jupyter/basics/python-markdown/markdown-python.ipynb
+jupyter trust ./jupyter/basics/python-markdown/markdown-quilt.ipynb
+jupyter trust ./jupyter/case-notebook/case-notebook-first.ipynb
+
+# Installing and Activating the Case Notebook
+jupyter nbextension install ./case-notebook/nbextension/
+jupyter nbextension enable ./case-notebook/nbextension/main
