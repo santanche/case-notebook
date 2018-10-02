@@ -12,5 +12,5 @@ jupyter trust ./jupyter/basics/python-markdown/markdown-quilt.ipynb
 jupyter trust ./jupyter/case-notebook/case-notebook-first.ipynb
 
 # Installing and Activating the Case Notebook
-jupyter nbextension install ./case-notebook/nbextension/
-jupyter nbextension enable ./case-notebook/nbextension/main
+jupyter nbextension install ./nbextension/
+jupyter nbextension enable ./nbextension/main
