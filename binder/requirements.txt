@@ -13,5 +13,5 @@ jupyter_contrib_nbextensions
 spacy
 https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.0.0/en_core_web_sm-2.0.0.tar.gz#en_core_web_sm
 
-# extension for rdflib
-rdflib
+# extension for SPARQLWrapper
+SPARQLWrapper
