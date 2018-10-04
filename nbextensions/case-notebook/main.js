@@ -24,7 +24,7 @@ define([
         var marks = [
             [/\{([\w\s]*)\}/igm, markDomain],
             [/===([\w\s]*)===/igm, markKnot],
-            [/\-\>([\w\s]*)\</igm, markDivert]
+            [/->([\w\s]*)\n/igm, markDivert]
         ];
         
         for (mk in marks)
