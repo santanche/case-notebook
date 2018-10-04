@@ -23,7 +23,8 @@ define([
         
         var marks = [
             [/\{([\w\s]*)\}/igm, markDomain],
-            [/===([\w\s]*)===/igm, markKnot]
+            [/===([\w\s]*)===/igm, markKnot],
+            [/\-\>([\w\s]*)\</igm, markDivert]
         ];
         
         for (mk in marks)
@@ -58,7 +59,11 @@ define([
     };
 
     var markKnot = function(match, inside) {
-        return "<h1><span style='font-style: italic'>" + inside + "</span></h1>";
+        return "<h1><a id='" + inside + "'><span style='font-style: italic'>" + inside + "</span></a></h1>";
+    };
+
+    var markDivert = function(match, inside) {
+        return "<a href='#" + inside + "'><span style='font-style: bold'>" + inside + "</span></a>";
     };
 
     var load_ipython_extension = function() {
@@ -66,6 +71,7 @@ define([
             render_cell(data.cell);
         });
         
+        /*
         var handler = function () {
             alert('this is an alert from my_extension!');
         };
@@ -81,6 +87,7 @@ define([
 
         var full_action_name = Jupyter.actions.register(action, action_name, prefix); // returns 'my_extension:show-alert'
         Jupyter.toolbar.add_buttons_group([full_action_name]);
+        */
     };
 
     return {
