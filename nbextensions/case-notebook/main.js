@@ -33,7 +33,7 @@ define([
     };
     
     var meshBack = function(meshResult){
-    	alert("MeSH back: " + meshResult.content.data["text/plain"]);
+    	// alert("MeSH back: " + meshResult.content.data["text/plain"]);
     	
     	var regexR = /u?'#mesh_heading#([\w\s]*)#tree_number#([\w\:\/\.]*)'/igm;
     	
@@ -46,8 +46,8 @@ define([
     	var regexT = new RegExp("#tree_number#" + heading + "#", "igm");
     	mdhtml.innerHTML = mdtext.replace(regexT, code);
     	
-    	alert("heading: " + heading + "; code: " + code);
-	};
+    	// alert("heading: " + heading + "; code: " + code);
+    };
     
     var markDomain = function(match, inside) {
         notebookCell.notebook.kernel.execute("findMeshCode('" + inside + "')",
