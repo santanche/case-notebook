@@ -35,7 +35,7 @@ define([
     var meshBack = function(meshResult){
     	alert("MeSH back: " + meshResult.content.data["text/plain"]);
     	
-    	var regexR = /u?'#mesh_heading#([\w\s]*)#tree_number#([\w\.]*)'/igm;
+    	var regexR = /u?'#mesh_heading#([\w\s]*)#tree_number#([\w\:\/\.]*)'/igm;
     	
     	var result = meshResult.content.data["text/plain"];
     	var heading = result.replace(regexR, "$1");
