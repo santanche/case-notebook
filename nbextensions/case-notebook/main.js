@@ -24,7 +24,7 @@ define([
         var marks = [
             [/\{([\w\s]*)\}/igm, markDomain],
             [/===([\w\s]*)===/igm, markKnot],
-            [/->([\w\s]*)\n/igm, markDivert]
+            [/-&gt;([\w\s]*)\n/igm, markDivert]
         ];
         
         for (mk in marks)
@@ -70,24 +70,6 @@ define([
         events.on("rendered.MarkdownCell", function (event, data) {
             render_cell(data.cell);
         });
-        
-        /*
-        var handler = function () {
-            alert('this is an alert from my_extension!');
-        };
-
-        var action = {
-            icon: 'fa-comment-o', // a font-awesome class used on buttons, etc
-            help    : 'Show an alert',
-            help_index : 'zz',
-            handler : handler
-        };
-        var prefix = 'my_extension';
-        var action_name = 'show-alert';
-
-        var full_action_name = Jupyter.actions.register(action, action_name, prefix); // returns 'my_extension:show-alert'
-        Jupyter.toolbar.add_buttons_group([full_action_name]);
-        */
     };
 
     return {
