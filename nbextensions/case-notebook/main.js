@@ -13,23 +13,39 @@ define([
 
 	var notebookCell;
 	var mdhtml;
+	var knots = [];
 	
 	var render_cell = function(cell) {
-		notebookCell = cell;
-		
+        // alert("rendered cell");
+
+        notebookCell = cell;
         mdhtml = cell.element.find('div.text_cell_render')[0];
         
         var mdtext = mdhtml.innerHTML;
         
-        var marks = [
-            [/\{([\w\s]*)\}/igm, markDomain],
-            [/===([\w\s]*)===/igm, markKnot],
-            [/-&gt;([\w\s]*)\n/igm, markDivert]
+        var marksRound1 = [
+            [/\{([\w ]*)\}/igm, markDomain],
+            [/===([\w ]*)===/igm, markKnot]
         ];
         
-        for (mk in marks)
-            mdtext = mdtext.replace(marks[mk][0], marks[mk][1]);
-        	
+        var marksRound2 = [
+        	[/-(?:(?:&gt;)|>)([\w ]*)/igm, markDivert]
+        ];
+        
+        // console.log("=== Before: " + mdtext);
+        
+        notebookCell.notebook.kernel.execute("HealthDM.clearConcepts()")
+        
+        // replacing Ink marks - round 1
+        for (mk in marksRound1)
+            mdtext = mdtext.replace(marksRound1[mk][0], marksRound1[mk][1]);
+
+        // replacing Ink marks - round 2
+        for (mk in marksRound2)
+            mdtext = mdtext.replace(marksRound2[mk][0], marksRound2[mk][1]);
+        
+        // console.log("=== After: " + mdtext);
+
         mdhtml.innerHTML = mdtext;
     };
     
@@ -51,25 +67,77 @@ define([
     };
     
     var markDomain = function(match, inside) {
-        notebookCell.notebook.kernel.execute("findMeshCode('" + inside + "')",
+    	var label = inside.trim();
+    	
+        notebookCell.notebook.kernel.execute("HealthDM.findMeshCode('" + label + "')",
         		{iopub : {output: meshBack}},
         	    {silent: false, store_history : false, stop_on_error: false});
 
-    	return "<a href='#mesh_addr#" + inside + "#' title='#tree_number#" + inside + "#' target='_blank'>" + inside + "</a>";
+    	return "<a href='#mesh_addr#" + label + "#' title='#tree_number#" + label + "#' target='_blank'>" + label + "</a>";
     };
 
     var markKnot = function(match, inside) {
-        return "<h1><a id='" + inside + "'><span style='font-style: italic'>" + inside + "</span></a></h1>";
+    	var label = inside.trim();
+    	
+    	knots.push(label);
+        return "<h1><a id='knot_" + label + "'><span style='font-style: italic'>" + label + "</span></a></h1>";
     };
 
     var markDivert = function(match, inside) {
-        return "<a href='#" + inside + "'><span style='font-style: bold'>" + inside + "</span></a>";
+    	var label = inside.trim();
+    	
+    	// console.log("Knots: " + knots);
+    	// console.log("Inside: " + label);
+    	var display = (knots.indexOf(label)>=0) ? label : "?" + label + "?";
+        return "<a href='#knot_" + label + "'><span style='font-style: bold'>" + display + "</span></a>";
     };
 
     var load_ipython_extension = function() {
+        // alert("Observer installed");
+        
+        // Select the node that will be observed for mutations
+        // var targetNode = document.getElementById("notebook-container");
+
         events.on("rendered.MarkdownCell", function (event, data) {
             render_cell(data.cell);
         });
+        
+        
+        /*
+        var callbackEvent = function(event) {
+        	console.log("Event: " + event.detail);
+        };
+        
+        // targetNode.addEventListener("rendered.MarkdownCell", callbackEvent);
+        
+        var installEvent = function(node) {
+        	node.addEventListener("rendered.MarkdownCell", callbackEvent);
+        };
+        
+        document.querySelectorAll(".MarkdownCell *").forEach(installEvent);
+        
+        
+        // Options for the observer (which mutations to observe)
+        var config = { attributes: true, childList: true, subtree: true };
+
+        // Callback function to execute when mutations are observed
+        var callback = function(mutationsList, observer) {
+            for(var mutation of mutationsList) {
+                if (mutation.type == 'childList') {
+                    console.log("Observer: A child node has been added or removed.");
+                }
+                else if (mutation.type == 'attributes') {
+                    console.log('The ' + mutation.attributeName + ' attribute was modified.');
+                }
+            }
+        };
+
+        // Create an observer instance linked to the callback function
+        var observer = new MutationObserver(callback);
+
+        // Start observing the target node for configured mutations
+        observer.observe(targetNode, config);
+        */
     };
 
     return {
