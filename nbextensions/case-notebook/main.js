@@ -139,6 +139,8 @@ define([
         
         // Select the node that will be observed for mutations
         // var targetNode = document.getElementById("notebook-container");
+    	
+    	alert("activating...");
 
         events.on("rendered.MarkdownCell", function (event, data) {
             render_cell(data.cell);

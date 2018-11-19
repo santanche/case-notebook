@@ -1,0 +1,15 @@
+{
+  "name": "CaseNotebook",
+  "version": "0.0.1",
+  "description": "Notebook for Learning based on Clinical Cases",
+  "main": "main.js",
+  "author": "Andre Santanche",
+  "license": "ISC",
+  "keywords": [
+    "jupyter",
+    "jupyterlab"
+  ],
+  "jupyterlab": {
+    "extension": true
+  }
+}
