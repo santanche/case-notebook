@@ -14,39 +14,97 @@ define([
 	var notebookCell;
 	var mdhtml;
 	var knots = [];
+	var knotContext = null;
 	
 	var render_cell = function(cell) {
-        // alert("rendered cell");
-
         notebookCell = cell;
         mdhtml = cell.element.find('div.text_cell_render')[0];
         
         var mdtext = mdhtml.innerHTML;
         
-        var marksRound1 = [
-            [/\{([\w ]*)\}/igm, markDomain],
-            [/===([\w ]*)===/igm, markKnot]
+        var marks = [
+            [/^(?:<p>)? *==* *([\w]+) *=* *(?:<\/p>)?/igm, markKnot],
+            [/-(?:(?:&gt;)|>)([\w.]+)/igm, markDivert],
+            [/^(?:<p>)? *: *([\w]+) *: *(?:<\/p>)?/igm, markCharacter],
+            [/<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/igm, markImage],
+            [/\{([\w ]*)\}/igm, markDomain]
         ];
-        
-        var marksRound2 = [
-        	[/-(?:(?:&gt;)|>)([\w ]*)/igm, markDivert]
-        ];
-        
-        // console.log("=== Before: " + mdtext);
         
         notebookCell.notebook.kernel.execute("HealthDM.clearConcepts()")
         
-        // replacing Ink marks - round 1
-        for (mk in marksRound1)
-            mdtext = mdtext.replace(marksRound1[mk][0], marksRound1[mk][1]);
-
-        // replacing Ink marks - round 2
-        for (mk in marksRound2)
-            mdtext = mdtext.replace(marksRound2[mk][0], marksRound2[mk][1]);
+        // replacing Ink marks
         
-        // console.log("=== After: " + mdtext);
+        var current = 0;
+        var mdfocus = mdtext;
+        var mdresult = "";
+        
+        var matchStart;
+        do {
+	        matchStart = -1;
+	        var selected = -1;
+	        for (mk in marks) {
+	        	var pos = mdfocus.search(marks[mk][0]);
+	        	if (pos > -1 && (matchStart == -1 || pos < matchStart)) {
+	        		selected = mk;
+	        		matchStart = pos;
+	        	}
+	        }
+	        
+	        if (matchStart > -1) {
+	        	var matchSize = mdfocus.match(marks[selected][0])[0].length;
+	        	var toReplace = mdfocus.substring(0, matchStart + matchSize);
+	        	mdresult += toReplace.replace(marks[selected][0], marks[selected][1]);
+	        	if (matchStart + matchSize >= mdfocus.length)
+	        		matchStart = -1;
+	        	else
+	        		mdfocus = mdfocus.substring(matchStart + matchSize);
+	        }
+        } while (matchStart > -1);        
 
-        mdhtml.innerHTML = mdtext;
+        mdhtml.innerHTML = mdresult;
+    };
+    
+    var markKnot = function(matchStr, inside) {
+    	var label = inside.trim();
+
+    	var display = matchStr.match(/==* *([\w]+) *=*/igm);
+    	
+    	if (matchStr.indexOf("==") >= 0)
+    		knotContext = label;
+    	else
+    		label = (label.indexOf(".") < 0 && knotContext == null) ? label : knotContext + "." + label;
+    	
+    	knots.push(label);
+        return "<h1><a id='knot_" + label + "'><span style='font-style:italic'>" + display + "</span></a></h1>";
+    };
+    
+    var markDivert = function(matchStr, inside) {
+    	var label = inside.trim();
+
+    	var display = "?" + label + "?";
+    	
+    	if (knots.indexOf(label) >= 0)
+    		display = label;
+    	else if (knotContext != null && knots.indexOf(knotContext + "." + label) >= 0) {
+    		display = label;
+			label = knotContext + "." + label;
+    	}
+ 
+    	return "<a href='#knot_" + label + "'><span style='font-weight:bold'>" + display + "</span></a>";
+    };
+    
+    var markCharacter = function(matchStr, inside) {
+    	var label = inside.trim();
+    	
+    	var display = matchStr.replace(/: *([\w]+ *:)/igm, "<span style='font-weight:bold'>$1</span>");
+    	
+    	return display;
+    };
+
+    var markImage = function(matchStr, inside1, inside2) {
+    	// var display = (inside2 && inside2 != null) ? inside2 : "&nbsp;";
+    	
+    	return matchStr.replace(">", " style='float:left'><p style='clear:both'></p>");
     };
     
     var meshBack = function(meshResult){
@@ -66,7 +124,7 @@ define([
     	// alert("heading: " + heading + "; code: " + code);
     };
     
-    var markDomain = function(match, inside) {
+    var markDomain = function(matchStr, inside) {
     	var label = inside.trim();
     	
         notebookCell.notebook.kernel.execute("HealthDM.findMeshCode('" + label + "')",
@@ -74,22 +132,6 @@ define([
         	    {silent: false, store_history : false, stop_on_error: false});
 
     	return "<a href='#mesh_addr#" + label + "#' title='#tree_number#" + label + "#' target='_blank'>" + label + "</a>";
-    };
-
-    var markKnot = function(match, inside) {
-    	var label = inside.trim();
-    	
-    	knots.push(label);
-        return "<h1><a id='knot_" + label + "'><span style='font-style: italic'>" + label + "</span></a></h1>";
-    };
-
-    var markDivert = function(match, inside) {
-    	var label = inside.trim();
-    	
-    	// console.log("Knots: " + knots);
-    	// console.log("Inside: " + label);
-    	var display = (knots.indexOf(label)>=0) ? label : "?" + label + "?";
-        return "<a href='#knot_" + label + "'><span style='font-style: bold'>" + display + "</span></a>";
     };
 
     var load_ipython_extension = function() {
