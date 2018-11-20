@@ -27,13 +27,26 @@ define([
             [/-(?:(?:&gt;)|>)([\w.]+)/igm, markDivert],
             [/^(?:<p>)? *: *([\w]+) *: *(?:<\/p>)?/igm, markCharacter],
             [/<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/igm, markImage],
-            [/\{([\w ]*)\}/igm, markDomain]
+            [/\{([\w ]*)\}(?:\(([\w ]*)(?:,([\w ]*)(?:\/([\w ]*))?)?\))?/igm, markDomain]
+            /* /\{([\w ]*)\}(?:\(([\w ]*)\))?/igm */
         ];
         
-        notebookCell.notebook.kernel.execute("HealthDM.clearConcepts()")
+        notebookCell.notebook.kernel.execute("HealthDM.clearTerms()")
+
+        // indexing knots
+        var knotContext = null;
+        var knotHeads = mdtext.match(marks[0][0]);
+        for (kh in knotHeads) {
+        	var label = knotHeads[kh].match(/==* *([\w]+) *=*/i);
+        	label = label[1];
+        	if (knotHeads[kh].indexOf("==") >= 0)
+        		knotContext = label;
+        	else
+        		label = (label.indexOf(".") < 0 && knotContext == null) ? label : knotContext + "." + label;
+        	knots.push(label);
+        }
         
         // replacing Ink marks
-        
         var current = 0;
         var mdfocus = mdtext;
         var mdresult = "";
@@ -59,7 +72,9 @@ define([
 	        	else
 	        		mdfocus = mdfocus.substring(matchStart + matchSize);
 	        }
-        } while (matchStart > -1);        
+        } while (matchStart > -1);
+        
+        mdresult += mdfocus;
 
         mdhtml.innerHTML = mdresult;
     };
@@ -67,14 +82,14 @@ define([
     var markKnot = function(matchStr, inside) {
     	var label = inside.trim();
 
-    	var display = matchStr.match(/==* *([\w]+) *=*/igm);
+    	var display = matchStr.match(/==* *([\w]+) *=*/ig);
     	
     	if (matchStr.indexOf("==") >= 0)
     		knotContext = label;
     	else
     		label = (label.indexOf(".") < 0 && knotContext == null) ? label : knotContext + "." + label;
     	
-    	knots.push(label);
+    	// knots.push(label);
         return "<h1><a id='knot_" + label + "'><span style='font-style:italic'>" + display + "</span></a></h1>";
     };
     
@@ -102,8 +117,6 @@ define([
     };
 
     var markImage = function(matchStr, inside1, inside2) {
-    	// var display = (inside2 && inside2 != null) ? inside2 : "&nbsp;";
-    	
     	return matchStr.replace(">", " style='float:left'><p style='clear:both'></p>");
     };
     
@@ -112,26 +125,42 @@ define([
     	
     	var regexR = /u?'#mesh_heading#([\w\s]*)#tree_number#([\w\:\/\.]*)'/igm;
     	
-    	var result = meshResult.content.data["text/plain"];
-    	var heading = result.replace(regexR, "$1");
-    	var code = result.replace(regexR, "$2");
+    	console.log(meshResult);
     	
-    	var regexA = new RegExp("#mesh_addr#" + heading + "#", "igm");
-    	mdtext = mdhtml.innerHTML.replace(regexA, "https://meshb-prev.nlm.nih.gov/record/ui?name=" + heading);
-    	var regexT = new RegExp("#tree_number#" + heading + "#", "igm");
-    	mdhtml.innerHTML = mdtext.replace(regexT, code);
+    	if (meshResult.msg_type == "execute_result") {
+    		var result = meshResult.content.data["text/plain"];
+    		var heading = result.replace(regexR, "$1");
+    		var code = result.replace(regexR, "$2");
+    	
+	    	var regexA = new RegExp("#mesh_addr#" + heading + "#", "igm");
+	    	mdtext = mdhtml.innerHTML.replace(regexA, "https://meshb-prev.nlm.nih.gov/record/ui?name=" + heading);
+	    	var regexT = new RegExp("#tree_number#" + heading + "#", "igm");
+	    	mdhtml.innerHTML = mdtext.replace(regexT, code);
+    	} else if (meshResult.msg_type == "error")
+    		console.log("Sparql error: " + meshResult.content.evalue);
+    	else
+    		console.log("Unknown message return type: " + meshResult.msg_type);
     	
     	// alert("heading: " + heading + "; code: " + code);
     };
     
-    var markDomain = function(matchStr, inside) {
-    	var label = inside.trim();
+    var markDomain = function(matchStr, insideDescription, insideHeading, insideDetail, insideRate) {
+    	console.log("inside description: " + insideDescription);
+    	console.log("inside heading: " + insideHeading);
+    	console.log("inside detail: " + insideDetail);
+    	console.log("inside rate: " + insideRate);
     	
-        notebookCell.notebook.kernel.execute("HealthDM.findMeshCode('" + label + "')",
+    	var description = insideDescription.trim();
+    	var heading = (insideHeading && insideHeading != null) ? insideHeading.trim() : description;
+    	var detail = (insideDetail && insideDetail != null) ? insideDetail.trim() : "#";
+    	var rate = (insideRate && insideRate != null) ? insideRate.trim() : "#";
+    	
+        notebookCell.notebook.kernel.execute(
+        		"HealthDM.findMeshCode('" + heading + "','" + description + "','" + detail + "','" + rate + "')",
         		{iopub : {output: meshBack}},
         	    {silent: false, store_history : false, stop_on_error: false});
 
-    	return "<a href='#mesh_addr#" + label + "#' title='#tree_number#" + label + "#' target='_blank'>" + label + "</a>";
+    	return "<a href='#mesh_addr#" + heading + "#' title='#tree_number#" + heading + "#' target='_blank'>" + description + "</a>";
     };
 
     var load_ipython_extension = function() {
