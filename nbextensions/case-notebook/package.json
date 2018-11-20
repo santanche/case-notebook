@@ -5,6 +5,10 @@
   "main": "main.js",
   "author": "Andre Santanche",
   "license": "ISC",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/santanche/case-notebook.git"
+    },
   "keywords": [
     "jupyter",
     "jupyterlab"
