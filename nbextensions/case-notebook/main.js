@@ -23,11 +23,12 @@ define([
         var mdtext = mdhtml.innerHTML;
         
         var marks = [
-            [/^(?:<p>)? *==* *([\w]+) *=* *(?:<\/p>)?/igm, markKnot],
-            [/-(?:(?:&gt;)|>)([\w.]+)/igm, markDivert],
+            [/^(?:<p>)? *==* *(\w[\w ]*)=* *(?:<\/p>)?/igm, markKnot],
+            [/\+\+ *(\w[\w ]*)?(?:-(?:(?:&gt;)|>) *(\w[\w. ]*))?/igm, markOption],
+            [/-(?:(?:&gt;)|>) *(\w[\w. ]*)/igm, markDivert],
             [/^(?:<p>)? *: *([\w]+) *: *(?:<\/p>)?/igm, markCharacter],
             [/<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/igm, markImage],
-            [/\{([\w ]*)\}(?:\(([\w ]*)(?:,([\w ]*)(?:\/([\w ]*))?)?\))?/igm, markDomain]
+            [/\{([\w ]*)(?:=([\w %]*)(?:\/([\w %]*))?)?\}(?:\(([\w ]*)(?:=([\w %]*)(?:\/([\w %]*))?)?\))?/igm, markDomain]
             /* /\{([\w ]*)\}(?:\(([\w ]*)\))?/igm */
         ];
         
@@ -37,8 +38,8 @@ define([
         var knotContext = null;
         var knotHeads = mdtext.match(marks[0][0]);
         for (kh in knotHeads) {
-        	var label = knotHeads[kh].match(/==* *([\w]+) *=*/i);
-        	label = label[1];
+        	var label = knotHeads[kh].match(/==* *(\w[\w ]*)=*/i);
+        	label = label[1].trim();
         	if (knotHeads[kh].indexOf("==") >= 0)
         		knotContext = label;
         	else
@@ -82,30 +83,53 @@ define([
     var markKnot = function(matchStr, inside) {
     	var label = inside.trim();
 
-    	var display = matchStr.match(/==* *([\w]+) *=*/ig);
+    	var display = matchStr.match(/==* *(\w[\w ]*)=*/ig);
     	
     	if (matchStr.indexOf("==") >= 0)
     		knotContext = label;
     	else
     		label = (label.indexOf(".") < 0 && knotContext == null) ? label : knotContext + "." + label;
     	
-    	// knots.push(label);
         return "<h1><a id='knot_" + label + "'><span style='font-style:italic'>" + display + "</span></a></h1>";
+    };
+
+    var markOption = function(matchStr, insideText, insideDivert) {
+    	/*
+    	console.log("inside text: " + insideText);
+    	console.log("inside divert: " + insideDivert);
+    	*/
+    	
+    	var display = (insideText != null) ? insideText : insideDivert;
+    	var link = "#";
+    	if (insideDivert != null) {
+    		var label = insideDivert.trim();
+    		var newLabel = divertResolver(label);
+        	display = (newLabel != null) ? display : display + "-> ?" + label + "?";
+        	link = "#knot_" + ((newLabel != null) ? newLabel : label);
+    	}
+
+    	return "<ul><li><a href='" + link + "'><span style='font-weight:bold'>" + display + "</span></a></li></ul>";
     };
     
     var markDivert = function(matchStr, inside) {
     	var label = inside.trim();
-
-    	var display = "?" + label + "?";
+    	var newLabel = divertResolver(label);
+    	
+    	var display = (newLabel != null) ? inside : "?" + label + "?";
+    	var link = (newLabel != null) ? newLabel : label;
+    	
+    	return "<a href='#knot_" + link + "'><span style='font-weight:bold'>" + display + "</span></a>";
+    };
+    
+    var divertResolver = function(label) {
+    	var newLabel = null;
     	
     	if (knots.indexOf(label) >= 0)
-    		display = label;
-    	else if (knotContext != null && knots.indexOf(knotContext + "." + label) >= 0) {
-    		display = label;
-			label = knotContext + "." + label;
-    	}
- 
-    	return "<a href='#knot_" + label + "'><span style='font-weight:bold'>" + display + "</span></a>";
+    		newLabel = label;
+    	else if (knotContext != null && knots.indexOf(knotContext + "." + label) >= 0)
+    		newLabel = knotContext + "." + label;
+    	
+    	return newLabel;
     };
     
     var markCharacter = function(matchStr, inside) {
@@ -144,23 +168,30 @@ define([
     	// alert("heading: " + heading + "; code: " + code);
     };
     
-    var markDomain = function(matchStr, insideDescription, insideHeading, insideDetail, insideRate) {
+    var markDomain = function(matchStr, insideDescription, insideDetail1, insideRate1,
+    		                            insideHeading, insideDetail2, insideRate2) {
     	console.log("inside description: " + insideDescription);
+    	console.log("inside detail 1: " + insideDetail1);
+    	console.log("inside rate 1: " + insideRate1);
     	console.log("inside heading: " + insideHeading);
-    	console.log("inside detail: " + insideDetail);
-    	console.log("inside rate: " + insideRate);
+    	console.log("inside detail 2: " + insideDetail2);
+    	console.log("inside rate 2: " + insideRate2);
     	
     	var description = insideDescription.trim();
-    	var heading = (insideHeading && insideHeading != null) ? insideHeading.trim() : description;
-    	var detail = (insideDetail && insideDetail != null) ? insideDetail.trim() : "#";
-    	var rate = (insideRate && insideRate != null) ? insideRate.trim() : "#";
+    	var detail1 = (insideDetail1 != null) ? insideDetail1.trim() : "#";
+    	var rate1 = (insideRate1 != null) ? insideRate1.trim() : "#";
+    	var heading = (insideHeading != null) ? insideHeading.trim() : description;
+    	var detail2 = (insideDetail2 != null) ? insideDetail2.trim() : "#";
+    	var rate2 = (insideRate2 != null) ? insideRate2.trim() : "#";
     	
         notebookCell.notebook.kernel.execute(
-        		"HealthDM.findMeshCode('" + heading + "','" + description + "','" + detail + "','" + rate + "')",
+        		"HealthDM.findMeshCode('" + heading + "','" + detail1 + "','" + rate1 + "','" +
+        		                            description + "','" + detail2 + "','" + rate2 + "')",
         		{iopub : {output: meshBack}},
         	    {silent: false, store_history : false, stop_on_error: false});
 
-    	return "<a href='#mesh_addr#" + heading + "#' title='#tree_number#" + heading + "#' target='_blank'>" + description + "</a>";
+    	return "<a href='#mesh_addr#" + heading + "#' title='#tree_number#" + heading +
+    	                "#' target='_blank'>" + description + "</a>";
     };
 
     var load_ipython_extension = function() {
