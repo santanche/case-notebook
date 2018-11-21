@@ -15,28 +15,32 @@ define([
 	var mdhtml;
 	var knots = [];
 	var knotContext = null;
+
+	var marks = [
+        /^(?:<p>)? *==* *(\w[\w ]*)=* *(?:<\/p>)?/igm,           // knot
+        /\+\+ *(\w[\w ]*)?(?:-(?:(?:&gt;)|>) *(\w[\w. ]*))?/igm, // option
+        /-(?:(?:&gt;)|>) *(\w[\w. ]*)/igm,                       // divert
+        /^(?:<p>)? *: *([\w]+) *: *(?:<\/p>)?/igm,               // character
+        /<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/igm,  // image
+        /\{([\w ]*)(?:=([\w %]*)(?:\/([\w %]*))?)?\}(?:\(([\w ]*)(?:=([\w %]*)(?:\/([\w %]*))?)?\))?/igm // domain
+    ];
 	
 	var render_cell = function(cell) {
         notebookCell = cell;
         mdhtml = cell.element.find('div.text_cell_render')[0];
         
-        var mdtext = mdhtml.innerHTML;
-        
-        var marks = [
-            [/^(?:<p>)? *==* *(\w[\w ]*)=* *(?:<\/p>)?/igm, markKnot],
-            [/\+\+ *(\w[\w ]*)?(?:-(?:(?:&gt;)|>) *(\w[\w. ]*))?/igm, markOption],
-            [/-(?:(?:&gt;)|>) *(\w[\w. ]*)/igm, markDivert],
-            [/^(?:<p>)? *: *([\w]+) *: *(?:<\/p>)?/igm, markCharacter],
-            [/<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/igm, markImage],
-            [/\{([\w ]*)(?:=([\w %]*)(?:\/([\w %]*))?)?\}(?:\(([\w ]*)(?:=([\w %]*)(?:\/([\w %]*))?)?\))?/igm, markDomain]
-            /* /\{([\w ]*)\}(?:\(([\w ]*)\))?/igm */
-        ];
-        
-        notebookCell.notebook.kernel.execute("HealthDM.clearTerms()")
+		var mdtext = mdhtml.innerHTML;
+		var mdinterface = mdhtml.innerHTML;
 
+        notebookCell.notebook.kernel.execute("HealthDM.clearTerms()");
+
+		generateInterface(mdinterface);
+        
+        var markFs = [markKnot, markOption, markDivert, markCharacter, markImage, markDomain];
+        
         // indexing knots
         var knotContext = null;
-        var knotHeads = mdtext.match(marks[0][0]);
+        var knotHeads = mdtext.match(marks[0]);
         for (kh in knotHeads) {
         	var label = knotHeads[kh].match(/==* *(\w[\w ]*)=*/i);
         	label = label[1].trim();
@@ -48,7 +52,6 @@ define([
         }
         
         // replacing Ink marks
-        var current = 0;
         var mdfocus = mdtext;
         var mdresult = "";
         
@@ -57,7 +60,7 @@ define([
 	        matchStart = -1;
 	        var selected = -1;
 	        for (mk in marks) {
-	        	var pos = mdfocus.search(marks[mk][0]);
+	        	var pos = mdfocus.search(marks[mk]);
 	        	if (pos > -1 && (matchStart == -1 || pos < matchStart)) {
 	        		selected = mk;
 	        		matchStart = pos;
@@ -65,9 +68,9 @@ define([
 	        }
 	        
 	        if (matchStart > -1) {
-	        	var matchSize = mdfocus.match(marks[selected][0])[0].length;
+	        	var matchSize = mdfocus.match(marks[selected])[0].length;
 	        	var toReplace = mdfocus.substring(0, matchStart + matchSize);
-	        	mdresult += toReplace.replace(marks[selected][0], marks[selected][1]);
+	        	mdresult += toReplace.replace(marks[selected], markFs[selected]);
 	        	if (matchStart + matchSize >= mdfocus.length)
 	        		matchStart = -1;
 	        	else
@@ -77,10 +80,45 @@ define([
         
         mdresult += mdfocus;
 
-        mdhtml.innerHTML = mdresult;
+		mdhtml.innerHTML = mdresult;
+	};
+	
+	var generateInterface = function(mdinterface) {
+		var knotBlocks = mdinterface.split(marks[0]);
+		console.log(knotBlocks);
+		console.log('HealthDM.interfacePresentation("' + knotBlocks[1].trim() + '","""' + knotBlocks[2] + '""")');
+
+		notebookCell.notebook.kernel.execute(
+			'HealthDM.interfacePresentation("' + knotBlocks[1].trim() + '","""' + knotBlocks[2] + '""")');
+
+		for (kb = 3; kb < knotBlocks.length; kb += 2) {
+			var pageName = knotBlocks[kb].trim().replace(/ /igm, "_");
+			var pageContent = knotBlocks[kb+1].replace(marks[5], interfaceDomain).replace(marks[1], interfaceOption).
+			                  replace(marks[4], interfaceImage);
+			console.log('HealthDM.interfaceKnot("' + pageName + '","' + knotBlocks[kb].trim() + '","""' + pageContent + '""")');
+			notebookCell.notebook.kernel.execute(
+			  'HealthDM.interfaceKnot("' + pageName + '","' + knotBlocks[kb].trim() + '","""' + pageContent + '""")');
+		}
+	};
+    
+    var interfaceDomain = function(matchStr, insideDescription, insideDetail1, insideRate1,
+    		                            insideHeading, insideDetail2, insideRate2) {
+		return matchStr.match(/\{([\w= %\/]*)\}/i)[1];
+	}
+
+    var interfaceOption = function(matchStr, insideText, insideDivert) {
+		var display = (insideText != null) ? insideText : insideDivert;
+		
+        var link = (insideDivert != null) ? insideDivert.trim().replace(/ /igm, "_") : "#";
+
+		return "<div class='case_link'><a href='" + link + ".html'>" + display + "</a></div>";
+	};
+	
+	var interfaceImage = function(matchStr, inside1, inside2) {
+    	return matchStr.replace(">", " width='100%'>");
     };
     
-    var markKnot = function(matchStr, inside) {
+   var markKnot = function(matchStr, inside) {
     	var label = inside.trim();
 
     	var display = matchStr.match(/==* *(\w[\w ]*)=*/ig);
@@ -149,7 +187,7 @@ define([
     	
     	var regexR = /u?'#mesh_heading#([\w\s]*)#tree_number#([\w\:\/\.]*)'/igm;
     	
-    	console.log(meshResult);
+    	// console.log(meshResult);
     	
     	if (meshResult.msg_type == "execute_result") {
     		var result = meshResult.content.data["text/plain"];
@@ -170,12 +208,14 @@ define([
     
     var markDomain = function(matchStr, insideDescription, insideDetail1, insideRate1,
     		                            insideHeading, insideDetail2, insideRate2) {
-    	console.log("inside description: " + insideDescription);
+		/*
+		console.log("inside description: " + insideDescription);
     	console.log("inside detail 1: " + insideDetail1);
     	console.log("inside rate 1: " + insideRate1);
     	console.log("inside heading: " + insideHeading);
     	console.log("inside detail 2: " + insideDetail2);
-    	console.log("inside rate 2: " + insideRate2);
+		console.log("inside rate 2: " + insideRate2);
+		*/
     	
     	var description = insideDescription.trim();
     	var detail1 = (insideDetail1 != null) ? insideDetail1.trim() : "#";
