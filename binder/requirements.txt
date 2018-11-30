@@ -6,7 +6,6 @@ pandas
 # extensions for ipywidgets and python-markdown (see https://github.com/binder-examples/jupyter-extension)
 numpy
 matplotlib
-http://download.pytorch.org/whl/cpu/torch-0.4.1.post2-cp37-cp37m-linux_x86_64.whl
 torchvision
 pyro-ppl
 ipywidgets
