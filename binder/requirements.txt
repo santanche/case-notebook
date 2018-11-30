@@ -6,6 +6,7 @@ pandas
 # extensions for ipywidgets and python-markdown (see https://github.com/binder-examples/jupyter-extension)
 numpy
 matplotlib
+pyro-ppl 
 ipywidgets
 jupyter_contrib_nbextensions
 
