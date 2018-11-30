@@ -4,15 +4,16 @@ channels:
   - pytorch
   - defaults
 dependencies:
-  - python
+  - python=3.6
   - numpy
   - pandas
   - scipy
   - PyHamcrest
   - matplotlib
   - scikit-learn
-  - pytorch-cpu=0.4.1=py37_cpu_1
-  - torchvision-cpu=0.2.1=py37_1
+  - pytorch-cpu=0.4.1
+  - torchvision-cpu=0.2.1
+  - jupyter
   - pip:
     - nbgitpuller
     - sphinx-gallery
