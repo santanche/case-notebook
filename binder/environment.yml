@@ -27,3 +27,9 @@ dependencies:
     - tables==3.4.4
     - torch==0.4.1
     - torchvision==0.2.1
+    - ipywidgets
+    - jupyter_contrib_nbextensions
+    - spacy
+    - SPARQLWrapper
+    - https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.0.0/en_core_web_sm-2.0.0.tar.gz#en_core_web_sm
+
