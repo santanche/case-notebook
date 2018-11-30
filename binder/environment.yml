@@ -4,6 +4,9 @@ channels:
 dependencies:
   - python
   - numpy
+  - pandas
+  - scipy
+  - scikit-learn
   - pytorch-cpu
   - torchvision-cpu
   - pip:
@@ -11,4 +14,6 @@ dependencies:
     - sphinx-gallery
     - pandas
     - pyro-ppl
+    - SPARQLWrapper
+    - quilt
 - matplotlib
