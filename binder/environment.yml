@@ -1,0 +1,14 @@
+name: case-environment
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - numpy
+  - pytorch-cpu
+  - torchvision-cpu
+  - pip:
+    - nbgitpuller
+    - sphinx-gallery
+    - pandas
+    - pyro-ppl
+- matplotlib
