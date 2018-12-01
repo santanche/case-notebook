@@ -86,6 +86,11 @@ function updateScore(shift, title) {
     nextCase();
 }
 
+function endScore() {
+    traceRoute("End");
+    showScore();
+}
+
 function showScore() {
     var score = localStorage.getItem("zombie-score");
     var scorePanel = document.getElementById("score");
