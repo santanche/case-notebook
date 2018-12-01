@@ -1,9 +1,0 @@
-name: aims-ml
-channels:
-  - conda-forge
-  - pytorch
-dependencies:
-  - python=3.6
-  - pytorch=0.4.1
-  - matplotlib
-- jupyter
