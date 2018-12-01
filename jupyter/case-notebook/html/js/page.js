@@ -45,8 +45,13 @@ function generateGuid() {
 }
 
 function startGame() {
+    var usersStr = localStorage.getItem("zombie-users");
+    var users = (usersStr == null) ? {ids: []} : JSON.parse(usersStr);  
+
     var userid = generateGuid();
     localStorage.setItem("current-user", userid);
+    users.ids.push(userid);
+    localStorage.setItem("zombie-users", JSON.stringify(users));
 
     localStorage.setItem("current-case", 1);
 
@@ -101,4 +106,15 @@ function traceRoute(node) {
     var profile = JSON.parse(localStorage.getItem(userid));
     profile.route.push(currentCase + "," + node + "," + score);
     localStorage.setItem(userid, JSON.stringify(profile));
+}
+
+function reportRoute() {
+    var output = "";
+    var users = JSON.parse(localStorage.getItem("zombie-users"));
+    for (u in users.ids) {
+        output += "##userid: " + users.ids[u] + "\n";
+        profile = localStorage.getItem(users.ids[u]);
+        output += "##profile: " + profile + "\n";
+    }
+    document.querySelector("#report").innerHTML = output; 
 }
