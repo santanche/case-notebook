@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8"/>
-	<title>Caso 2</title>
+	<title>Brigas errado</title>
 	
 	<meta name="description" id="description" content="[Presentation]"/>
 	
@@ -15,24 +15,19 @@
     <script type="text/javascript" src="js/page.js"></script>
 </head>
 
-<body onload="traceRoute('Caso 2')">
+<body onload="decreaseScore('Brigas errado')">
 
 <div class="panel_presentation">
   <div class="panel_case">
-    <!-- <div class="case_title">Caso 2</div> -->
+    <!-- <div class="case_title">Brigas errado</div> -->
 
     <div class="case_text">
-    
-<img src="images/2.png" alt="Tieppaeth" style='float:left' width='300px'>
-Tieppaeth se apresentou na clínica para ser atendido. O que você deseja fazer?
-<div class='case_link'><a href='Paralisia_ok.html'>Ver movimentos </a></div>
-<div class='case_link'><a href='Lingua_ok.html'>Examinar língua </a></div>
-<div class='case_link'><a href='Dedos_ok.html'>Analisar as mãos </a></div>
-<div class='case_link'><a href='Membros_problema.html'>Examinar membros </a></div>
-<div class='case_link'><a href='Dor_problema.html'>Sente dor? </a></div>
-<div class='case_link'><a href='Raiva_problema.html'>Ver humor </a></div>
-<div class='case_link'><a href='Tratamento_2.html'>Aplicar tratamento </a></div>
+      <img src="images/treatment-wrong.png" alt="wrong treatment" style="float:left" width="300px">
+      
+Infelizmente você fez o tratamento incorreto, eram problemas que surgiram por uma briga.</p>
 
+      <h2>Placar: <span id="score"></span> pontos</h2>
+      <div class="case_link"><span id="next_case"></span></div>
     </div>
     
   </div>
