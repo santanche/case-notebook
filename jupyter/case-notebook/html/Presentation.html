@@ -15,7 +15,7 @@
     <script type="text/javascript" src="js/page.js"></script>
 </head>
 
-<body onload="startScore()">
+<body>
 
 <div class="panel_presentation">
   <div class="panel_image">
@@ -31,10 +31,13 @@ Você é um Médico Girafa (girafas não viram zumbis).
 
     </div>
     
+    <h2>Digite seu nome: <input type="text" id="name"></input></h2>
+    
     <h2>Placar: <span id="score"></span> pontos</h2>
     
     <div class="case_link">
-        <a href="Start.html">Começar</a>
+        <span id="action_ok"><a href="#" onclick="startGame()">Ok</a></span>
+        <span id="action_start"></span>
     </div>
   </div>
 </div>

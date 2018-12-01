@@ -48,31 +48,57 @@ function startGame() {
     var userid = generateGuid();
     localStorage.setItem("current-user", userid);
 
-    var userProfile = {
-      name : document.querySelector("#name").value
+    localStorage.setItem("current-case", 1);
+
+    var profile = {
+      name : document.querySelector("#name").value,
+      route : []
     };
-    localStorage.setItem(userid, JSON.stringify(userProfile));
+    localStorage.setItem(userid, JSON.stringify(profile));
 
     localStorage.setItem("zombie-score", 100);
     showScore();
+
+    document.querySelector("#action_ok").innerHTML = "";
+    document.querySelector("#action_start").innerHTML = "<a href='Caso_1.html'>Começar</a>";
+
+    traceRoute("Case Start");
 }
 
-function increaseScore() {
-    updateScore(10);
+function increaseScore(title) {
+    updateScore(10, title);
 }
 
-function decreaseScore() {
-    updateScore(-10);
+function decreaseScore(title) {
+    updateScore(-10, title);
 }
 
-function updateScore(shift) {
+function updateScore(shift, title) {
     var score = parseInt(localStorage.getItem("zombie-score")) + shift;
     localStorage.setItem("zombie-score", score);
     showScore();
+    traceRoute(title);
+    nextCase();
 }
 
 function showScore() {
     var score = localStorage.getItem("zombie-score");
     var scorePanel = document.getElementById("score");
     scorePanel.innerHTML = score;
+}
+
+function nextCase() {
+    var currentCase = parseInt(localStorage.getItem("current-case"));
+    currentCase++;
+    localStorage.setItem("current-case", currentCase);
+    document.querySelector("#next_case").innerHTML = "<a href='Caso_" + currentCase + ".html'>Próximo Caso</a>";
+}
+
+function traceRoute(node) {
+    var currentCase = localStorage.getItem("current-case");
+    var score = localStorage.getItem("zombie-score");
+    var userid = localStorage.getItem("current-user");
+    var profile = JSON.parse(localStorage.getItem(userid));
+    profile.route.push(currentCase + "," + node + "," + score);
+    localStorage.setItem(userid, JSON.stringify(profile));
 }

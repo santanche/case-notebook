@@ -1,3 +1,10 @@
+function exportScore() {
+  var userid = localStorage.getItem("current-user");
+  console.log("== user id: " + userid);
+  var profile = localStorage.getItem(userid);
+  console.log("== profile: " + profile);
+}
+
 function switchStateA()
 {
     var sourceItem = document.getElementById("stateA");

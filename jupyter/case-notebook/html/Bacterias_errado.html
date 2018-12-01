@@ -15,7 +15,7 @@
     <script type="text/javascript" src="js/page.js"></script>
 </head>
 
-<body onload="decreaseScore()">
+<body onload="decreaseScore('Bacterias errado')">
 
 <div class="panel_presentation">
   <div class="panel_case">
@@ -24,10 +24,10 @@
     <div class="case_text">
       <img src="images/treatment-wrong.png" alt="wrong treatment" style="float:left" width="300px">
       
-Infelizmente você fez o tratamento incorreto, era uma infecção de bactérias.</p>
+Infelizmente você fez o tratamento incorreto, era uma infecção por bactérias.
 
       <h2>Placar: <span id="score"></span> pontos</h2>
-      <div class="case_link"><a href="#" onclick="goBack()">Retornar</a></div>
+      <div class="case_link"><span id="next_case"></span></div>
     </div>
     
   </div>
