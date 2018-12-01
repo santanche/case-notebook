@@ -1,7 +1,7 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta charset="utf-8"/>
 	<title>{title}</title>
 	
 	<meta name="description" id="description" content="[Presentation]"/>
@@ -15,11 +15,11 @@
     <script type="text/javascript" src="js/page.js"></script>
 </head>
 
-<body onload="updateHeader()">
+<body onload="startScore()">
 
 <div class="panel_presentation">
   <div class="panel_image">
-    <img class="image_presentation" src="images/presentation.jpg"></img>
+    <img class="image_presentation" src="images/presentation.png"></img>
   </div>
 
   <div class="panel_case">
@@ -29,8 +29,13 @@
 {description}
     </div>
     
+    <h2>Digite seu nome: <input type="text" id="name"></input></h2>
+    
+    <h2>Placar: <span id="score"></span> pontos</h2>
+    
     <div class="case_link">
-        <a href="Start.html">Start</a>
+        <a href="#" onclick="startGame()">Ok</a>
+        <!-- <a href="Start.html">Começar</a> -->
     </div>
   </div>
 </div>

@@ -17,8 +17,9 @@ define([
 	var knotContext = null;
 
 	var marks = [
-        /^(?:<p>)? *==* *(\w[\w ]*)=* *(?:<\/p>)?/igm,           // knot
-        /\+\+ *(\w[\w ]*)?(?:-(?:(?:&gt;)|>) *(\w[\w. ]*))?/igm, // option
+		// /^(?:<p>)?[ \t]*==*[ \t]*(\w[\w \t]*)=*[ \t]*(?:\(([\s\w=-\+\*\/,])\))?(?:<\/p>)?/igm,
+		/^(?:<p>)?[ \t]*==*[ \t]*(\w[\w \t]*)(?:\(([\w \t]*)\))?[ \t]*=*[ \t]*(?:<\/p>)?/igm,           // knot
+        /\+\+[ \t]*([^-&> \t][^-&>]*)?(?:-(?:(?:&gt;)|>)[ \t]*(\w[\w. \t]*))?/igm, // option
         /-(?:(?:&gt;)|>) *(\w[\w. ]*)/igm,                       // divert
         /^(?:<p>)? *: *([\w]+) *: *(?:<\/p>)?/igm,               // character
         /<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/igm,  // image
@@ -42,7 +43,7 @@ define([
         var knotContext = null;
         var knotHeads = mdtext.match(marks[0]);
         for (kh in knotHeads) {
-        	var label = knotHeads[kh].match(/==* *(\w[\w ]*)=*/i);
+        	var label = knotHeads[kh].match(/==*[ \t]*(\w[\w \t]*)(?:\([\w \t]*\))?[ \t]*=*/i);
         	label = label[1].trim();
         	if (knotHeads[kh].indexOf("==") >= 0)
         		knotContext = label;
@@ -85,24 +86,32 @@ define([
 	
 	var generateInterface = function(mdinterface) {
 		var knotBlocks = mdinterface.split(marks[0]);
+
+        var knotTemplate = (knotBlocks[2] == null) ? "knot" : knotBlocks[2].trim().replace(" ", "_");
+
 		console.log(knotBlocks);
-		console.log('HealthDM.interfacePresentation("' + knotBlocks[1].trim() + '","""' + knotBlocks[2] + '""")');
+		console.log('HealthDM.interfacePresentation("' + knotBlocks[1].trim() + '","""' +
+		             knotBlocks[3] + '""","' + knotTemplate + '")');
 
 		notebookCell.notebook.kernel.execute(
-			'HealthDM.interfacePresentation("' + knotBlocks[1].trim() + '","""' + knotBlocks[2] + '""")');
+			'HealthDM.interfacePresentation("' + knotBlocks[1].trim() + '","""' + knotBlocks[3] +
+			'""","' + knotTemplate + '")');
 
-		for (kb = 3; kb < knotBlocks.length; kb += 2) {
+		for (kb = 4; kb < knotBlocks.length; kb += 3) {
 			var pageName = knotBlocks[kb].trim().replace(/ /igm, "_");
-			var pageContent = knotBlocks[kb+1].replace(marks[5], interfaceDomain).replace(marks[1], interfaceOption).
+			knotTemplate = (knotBlocks[kb+1] == null) ? "knot" : knotBlocks[kb+1].trim().replace(" ", "_");
+			var pageContent = knotBlocks[kb+2].replace(marks[5], interfaceDomain).replace(marks[1], interfaceOption).
 			                  replace(marks[4], interfaceImage);
-			console.log('HealthDM.interfaceKnot("' + pageName + '","' + knotBlocks[kb].trim() + '","""' + pageContent + '""")');
+			console.log('HealthDM.interfaceKnot("' + pageName + '","' + knotBlocks[kb].trim() + '","""' + pageContent +
+			            '""","' + knotTemplate + '")');
 			notebookCell.notebook.kernel.execute(
-			  'HealthDM.interfaceKnot("' + pageName + '","' + knotBlocks[kb].trim() + '","""' + pageContent + '""")');
+			  'HealthDM.interfaceKnot("' + pageName + '","' + knotBlocks[kb].trim() + '","""' + pageContent +
+			  '""","' + knotTemplate + '")');
 		}
 	};
     
     var interfaceDomain = function(matchStr, insideDescription, insideDetail1, insideRate1,
-    		                            insideHeading, insideDetail2, insideRate2) {
+    		                                 insideHeading, insideDetail2, insideRate2) {
 		return matchStr.match(/\{([\w= %\/]*)\}/i)[1];
 	}
 
@@ -115,11 +124,13 @@ define([
 	};
 	
 	var interfaceImage = function(matchStr, inside1, inside2) {
-    	return matchStr.replace(">", " width='100%'>");
+    	return matchStr.replace(">", " style='float:left' width='300px'>");
     };
     
-   var markKnot = function(matchStr, inside) {
-    	var label = inside.trim();
+   var markKnot = function(matchStr, insideText, insideTemplate) {
+	    // var variables = insideVariables.replace(/(?:\( *(\w*) *(?:([=-\+\*\/])([\w ]*))?\))?/igm);
+	   
+    	var label = insideText.trim();
 
     	var display = matchStr.match(/==* *(\w[\w ]*)=*/ig);
     	
@@ -179,7 +190,7 @@ define([
     };
 
     var markImage = function(matchStr, inside1, inside2) {
-    	return matchStr.replace(">", " style='float:left'><p style='clear:both'></p>");
+    	return matchStr.replace(">", " style='float:left' width='300px'><p style='clear:both'></p>");
     };
     
     var meshBack = function(meshResult){
@@ -208,7 +219,7 @@ define([
     
     var markDomain = function(matchStr, insideDescription, insideDetail1, insideRate1,
     		                            insideHeading, insideDetail2, insideRate2) {
-		/*
+        /*
 		console.log("inside description: " + insideDescription);
     	console.log("inside detail 1: " + insideDetail1);
     	console.log("inside rate 1: " + insideRate1);
@@ -216,14 +227,17 @@ define([
     	console.log("inside detail 2: " + insideDetail2);
 		console.log("inside rate 2: " + insideRate2);
 		*/
-    	
+		
     	var description = insideDescription.trim();
     	var detail1 = (insideDetail1 != null) ? insideDetail1.trim() : "#";
     	var rate1 = (insideRate1 != null) ? insideRate1.trim() : "#";
     	var heading = (insideHeading != null) ? insideHeading.trim() : description;
     	var detail2 = (insideDetail2 != null) ? insideDetail2.trim() : "#";
     	var rate2 = (insideRate2 != null) ? insideRate2.trim() : "#";
-    	
+
+		console.log("inside description: " + description);
+		console.log("inside heading: " + heading);
+		
         notebookCell.notebook.kernel.execute(
         		"HealthDM.findMeshCode('" + heading + "','" + detail1 + "','" + rate1 + "','" +
         		                            description + "','" + detail2 + "','" + rate2 + "')",
