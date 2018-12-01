@@ -98,10 +98,11 @@ ORDER BY ?d
         if len(results["results"]["bindings"]) > 0:
             code = results["results"]["bindings"][0]["d"]["value"]
 
-        if code == "none" and (heading.startswith("no") or heading.startswith("not")):
+        if code == "none" and (heading.lower().startswith("no") or
+                               heading.lower().startswith("not")):
             # looking for the heading
             present = False
-            meshHeading = heading[3:] if heading.startswith("no") else heading[4:]
+            meshHeading = heading[3:] if heading.lower().startswith("no") else heading[4:]
             sparql.setQuery(cls.sparqlQuery.format(meshHeading))
             results = sparql.query().convert()
             if len(results["results"]["bindings"]) > 0:
@@ -113,11 +114,11 @@ ORDER BY ?d
     
     @classmethod
     def interfacePresentation(cls, title, description):
-        indexTemplate = open("template/index.html", "r")
-        presentationTemplate = open("template/Presentation.html", "r")
+        indexTemplate = open("template/index.html", "r", encoding="utf-8")
+        presentationTemplate = open("template/Presentation.html", "r", encoding="utf-8")
 
-        indexResult = open("html/index.html", "w")
-        presentationResult = open("html/Presentation.html", "w")
+        indexResult = open("html/index.html", "w", encoding="utf-8")
+        presentationResult = open("html/Presentation.html", "w", encoding="utf-8")
         
         indexResult.write(indexTemplate.read().format(title=title))
         presentationResult.write(presentationTemplate.read().format(title=title, description=description))
@@ -127,9 +128,9 @@ ORDER BY ?d
 
     @classmethod
     def interfaceKnot(cls, htmlName, title, description):
-        knotTemplate = open("template/knot.html", "r")
+        knotTemplate = open("template/knot.html", "r", encoding="utf-8")
 
-        knotResult = open("html/" + htmlName + ".html", "w")
+        knotResult = open("html/" + htmlName + ".html", "w", encoding="utf-8")
         
         knotResult.write(knotTemplate.read().format(title=title, description=description))
 

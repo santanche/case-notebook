@@ -1,4 +1,5 @@
 function updateHeader() {
+    /*
 	var parentWindow = window.parent.document;
 	
 	parentWindow.getElementById("navigator_text").innerHTML =
@@ -27,5 +28,51 @@ function updateHeader() {
     	navigatorForward.className = "navigator_forward_disabled";
     	navigatorForward.innerHTML = "";
     }
+    */
 }
 
+function goBack() {
+    window.history.back();
+}
+
+function generateGuid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}
+
+function startGame() {
+    var userid = generateGuid();
+    localStorage.setItem("current-user", userid);
+
+    var userProfile = {
+      name : document.querySelector("#name").value
+    };
+    localStorage.setItem(userid, JSON.stringify(userProfile));
+
+    localStorage.setItem("zombie-score", 100);
+    showScore();
+}
+
+function increaseScore() {
+    updateScore(10);
+}
+
+function decreaseScore() {
+    updateScore(-10);
+}
+
+function updateScore(shift) {
+    var score = parseInt(localStorage.getItem("zombie-score")) + shift;
+    localStorage.setItem("zombie-score", score);
+    showScore();
+}
+
+function showScore() {
+    var score = localStorage.getItem("zombie-score");
+    var scorePanel = document.getElementById("score");
+    scorePanel.innerHTML = score;
+}
