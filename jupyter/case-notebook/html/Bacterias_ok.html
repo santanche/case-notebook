@@ -15,7 +15,7 @@
     <script type="text/javascript" src="js/page.js"></script>
 </head>
 
-<body onload="increaseScore()">
+<body onload="increaseScore('Bacterias ok')">
 
 <div class="panel_presentation">
   <div class="panel_case">
@@ -24,10 +24,10 @@
     <div class="case_text">
       <img src="images/treatment-right.png" alt="right treatment" style="float:left" width="300px">
       
-Parabéns você tratou corretamente uma infecção de bactérias.
+Parabéns você tratou corretamente uma infecção por bactérias.
 
       <h2>Placar: <span id="score"></span> pontos</h2>
-      <div class="case_link"><a href="#" onclick="goBack()">Retornar</a></div>
+      <div class="case_link"><span id="next_case"></span></div>
     </div>
     
   </div>

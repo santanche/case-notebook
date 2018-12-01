@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8"/>
-	<title>Sem Paralisia</title>
+	<title>Briga errado</title>
 	
 	<meta name="description" id="description" content="[Presentation]"/>
 	
@@ -15,18 +15,19 @@
     <script type="text/javascript" src="js/page.js"></script>
 </head>
 
-<body  onload="traceRoute('Sem Paralisia')">
+<body onload="decreaseScore('Briga errado')">
 
 <div class="panel_presentation">
   <div class="panel_case">
-    <!-- <div class="case_title">Sem Paralisia</div> -->
+    <!-- <div class="case_title">Briga errado</div> -->
 
     <div class="case_text">
-    
-<img src="images/paralysis-no.png" alt="No_paralysis" style='float:left' width='300px'>
-O está com bons movimentos.
+      <img src="images/treatment-wrong.png" alt="wrong treatment" style="float:left" width="300px">
+      
+Infelizmente você fez o tratamento incorreto, eram problemas que surgiram por uma briga.
 
-    <div class="case_link"><a href="#" onclick="goBack()">Retornar</a></div>
+      <h2>Placar: <span id="score"></span> pontos</h2>
+      <div class="case_link"><span id="next_case"></span></div>
     </div>
     
   </div>
