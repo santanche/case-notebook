@@ -15,11 +15,12 @@ define([
 	var mdhtml;
 	var knots = [];
 	var knotContext = null;
+	var knotImage = "";
 
 	var marks = [
 		// /^(?:<p>)?[ \t]*==*[ \t]*(\w[\w \t]*)=*[ \t]*(?:\(([\s\w=-\+\*\/,])\))?(?:<\/p>)?/igm,
 		/^(?:<p>)?[ \t]*==*[ \t]*(\w[\w \t]*)(?:\(([\w \t]*)\))?[ \t]*=*[ \t]*(?:<\/p>)?/igm,           // knot
-        /\+\+[ \t]*([^-&> \t][^-&>]*)?(?:-(?:(?:&gt;)|>)[ \t]*(\w[\w. \t]*))?/igm, // option
+        /\+\+[ \t]*([^-&<> \t][^-&<>\n\r\f]*)?(?:-(?:(?:&gt;)|>)[ \t]*(\w[\w. \t]*))?/igm, // option
         /-(?:(?:&gt;)|>) *(\w[\w. ]*)/igm,                       // divert
         /^(?:<p>)? *: *([\w]+) *: *(?:<\/p>)?/igm,               // character
         /<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/igm,  // image
@@ -87,26 +88,26 @@ define([
 	var generateInterface = function(mdinterface) {
 		var knotBlocks = mdinterface.split(marks[0]);
 
-        var knotTemplate = (knotBlocks[2] == null) ? "knot" : knotBlocks[2].trim().replace(" ", "_");
-
 		console.log(knotBlocks);
-		console.log('HealthDM.interfacePresentation("' + knotBlocks[1].trim() + '","""' +
-		             knotBlocks[3] + '""","' + knotTemplate + '")');
-
+		console.log('HealthDM.interfaceMain("index","' + knotBlocks[1].trim() + '","""' +
+		             knotBlocks[3] + '""","' + knotBlocks[1].trim().replace(/ /igm, "_") + '")');
 		notebookCell.notebook.kernel.execute(
-			'HealthDM.interfacePresentation("' + knotBlocks[1].trim() + '","""' + knotBlocks[3] +
-			'""","' + knotTemplate + '")');
+				'HealthDM.interfaceMain("index","' + knotBlocks[1].trim() + '","""' +
+	             knotBlocks[3] + '""","' + knotBlocks[1].trim().replace(/ /igm, "_") + '")');
 
-		for (kb = 4; kb < knotBlocks.length; kb += 3) {
+        // var knotTemplate = (knotBlocks[2] == null) ? "presentation" : knotBlocks[2].trim().replace(" ", "_");
+		for (kb = 1; kb < knotBlocks.length; kb += 3) {
 			var pageName = knotBlocks[kb].trim().replace(/ /igm, "_");
-			knotTemplate = (knotBlocks[kb+1] == null) ? "knot" : knotBlocks[kb+1].trim().replace(" ", "_");
+			knotTemplate = 
+				(knotBlocks[kb+1] == null) ? ((kb == 1) ? "presentation" : "knot") : knotBlocks[kb+1].trim().replace(" ", "_");
+			knotImage = "";
 			var pageContent = knotBlocks[kb+2].replace(marks[5], interfaceDomain).replace(marks[1], interfaceOption).
 			                  replace(marks[4], interfaceImage);
-			console.log('HealthDM.interfaceKnot("' + pageName + '","' + knotBlocks[kb].trim() + '","""' + pageContent +
-			            '""","' + knotTemplate + '")');
+			console.log('HealthDM.interfaceKnot("' + knotTemplate + '","' + pageName + '","' + knotBlocks[kb].trim() +
+					  '","""' + pageContent + '""","' + knotImage + '")');
 			notebookCell.notebook.kernel.execute(
-			  'HealthDM.interfaceKnot("' + pageName + '","' + knotBlocks[kb].trim() + '","""' + pageContent +
-			  '""","' + knotTemplate + '")');
+			  'HealthDM.interfaceKnot("' + knotTemplate + '","' + pageName + '","' + knotBlocks[kb].trim() +
+			  '","""' + pageContent + '""","' + knotImage + '")');
 		}
 	};
     
@@ -118,12 +119,17 @@ define([
     var interfaceOption = function(matchStr, insideText, insideDivert) {
 		var display = (insideText != null) ? insideText : insideDivert;
 		
-        var link = (insideDivert != null) ? insideDivert.trim().replace(/ /igm, "_") : "#";
+        var link = (insideDivert != null) ? insideDivert : insideText;
+        		
+        link = link.trim().replace(/ /igm, "_");
 
 		return "<div class='case_link'><a href='" + link + ".html'>" + display + "</a></div>";
 	};
 	
-	var interfaceImage = function(matchStr, inside1, inside2) {
+	var interfaceImage = function(matchStr, insideSrc, insideAlt) {
+		if (knotImage === "")
+			knotImage = insideSrc;
+		
     	return matchStr.replace(">", " style='float:left' width='300px'>");
     };
     
@@ -149,13 +155,10 @@ define([
     	*/
     	
     	var display = (insideText != null) ? insideText : insideDivert;
-    	var link = "#";
-    	if (insideDivert != null) {
-    		var label = insideDivert.trim();
-    		var newLabel = divertResolver(label);
-        	display = (newLabel != null) ? display : display + "-> ?" + label + "?";
-        	link = "#knot_" + ((newLabel != null) ? newLabel : label);
-    	}
+    	var label = (insideDivert != null) ? insideDivert.trim() : insideText.trim();
+    	var newLabel = divertResolver(label);
+        display = (newLabel != null) ? display : display + "-> ?" + label + "?";
+        link = "#knot_" + ((newLabel != null) ? newLabel : label);
 
     	return "<ul><li><a href='" + link + "'><span style='font-weight:bold'>" + display + "</span></a></li></ul>";
     };

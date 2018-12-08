@@ -113,22 +113,22 @@ ORDER BY ?d
         return "#mesh_heading#" + heading + "#tree_number#" + code
     
     @classmethod
-    def interfacePresentation(cls, title, description):
+    def interfacePresentation(cls, title, description, template):
         indexTemplate = open("template/index.html", "r", encoding="utf-8")
-        presentationTemplate = open("template/Presentation.html", "r", encoding="utf-8")
+        presentationTemplate = open("template/presentation.html", "r", encoding="utf-8")
 
         indexResult = open("html/index.html", "w", encoding="utf-8")
         presentationResult = open("html/Presentation.html", "w", encoding="utf-8")
         
-        indexResult.write(indexTemplate.read().format(title=title))
+        indexResult.write(indexTemplate.read().format(title=title, description=description))
         presentationResult.write(presentationTemplate.read().format(title=title, description=description))
 
         indexResult.close()
         presentationResult.close()
 
     @classmethod
-    def interfaceKnot(cls, htmlName, title, description):
-        knotTemplate = open("template/knot.html", "r", encoding="utf-8")
+    def interfaceKnot(cls, htmlName, title, description, template):
+        knotTemplate = open("template/" + template + ".html", "r", encoding="utf-8")
 
         knotResult = open("html/" + htmlName + ".html", "w", encoding="utf-8")
         
