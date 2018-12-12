@@ -94,8 +94,13 @@ define([
 		*/
 
 	  var caseTitle = knotBlocks[1].trim();
-		var caseDescription = knotBlocks[3].replace(marks[1], "").replace(marks[4], "");  // marks - option/image
-		var caseImage = knotBlocks[3].match(marks[4])[0].replace(">", " style='width:100px'>");  // marks - image
+	  var caseDescription = "";
+	  var caseImage = "";
+    if (knotBlocks[3] != null && knotBlocks[3].trim().length > 0) {
+				caseDescription = knotBlocks[3].replace(marks[1], "").replace(marks[4], "");  // marks - option/image
+				caseImage = knotBlocks[3].match(marks[4])[0];   // marks - image
+				caseImage = (caseImage == null) ? "" : caseImage.replace(">", " style='width:100px'>");
+	  }
 
 		console.log('HealthDM.interfaceMain("' + caseTitle + '","""' +
 	             caseDescription + '""","""' + caseImage + '""","' + caseTitle.replace(/ /igm, "_") + '")');

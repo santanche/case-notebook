@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8"/>
-	<title>Emergency room</title>
+	<title>{title}</title>
 	
 	<meta name="description" id="description" content="[Presentation]"/>
 	
@@ -15,21 +15,12 @@
     <script type="text/javascript" src="js/page.js"></script>
 </head>
 
-<body onload="traceRoute('Emergency room')">
+<body onload="traceRoute('{title}')">
 
 <div class="panel_presentation">
   <div class="panel_case">
-    <!-- <div class="case_title">Emergency room</div> -->
-
     <div class="case_text">
-    
-<script>computeScore('=', 'points', '100')</script>
-Nurse: Doctor, please come to the Emergency room, we have a difficult case there.</p>
-<p>Nurse: The patient is a young man, 23 years old. He had a syncope while driving a forklift. His colleagues called an ambulance and he has just arrived.</p>
-<p>What do you think it could be?</p>
-<p><textarea style='width:100%' rows=3 class='userInput' id='possible_simptoms' oninput="followInput('possible_simptoms','mesh')" ' onchange="evaluateInput('possible_simptoms','mesh')"></textarea></p>
-<p><div class='case_link'><a href='Actions.html' onclick="computeLink('Actions')">Actions</a></div></p>
-
+    {description}
     </div>
     
   </div>

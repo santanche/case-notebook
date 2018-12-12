@@ -223,7 +223,7 @@ function computeScore(operator, variable, value) {
                       break;
         }
     } else {
-        if (isNaN(casetrack))
+        if (isNaN(value))
             casetrack.inputs[variable] = value;
         else
             casetrack.inputs[variable] = parseInt(value);
@@ -238,6 +238,8 @@ function showScore(variable) {
 
     variableField.innerHTML = casetrack.inputs[variable];
 }
+
+/*
 
 function increaseScore(title) {
     updateScore(10, title);
@@ -272,4 +274,4 @@ function nextCase() {
     localStorage.setItem("current-case", currentCase);
     document.querySelector("#next_case").innerHTML = "<a href='Caso_" + currentCase + ".html'>Próximo Caso</a>";
 }
-
+*/

@@ -223,7 +223,7 @@ function computeScore(operator, variable, value) {
                       break;
         }
     } else {
-        if (isNaN(casetrack))
+        if (isNaN(value))
             casetrack.inputs[variable] = value;
         else
             casetrack.inputs[variable] = parseInt(value);
@@ -238,6 +238,8 @@ function showScore(variable) {
 
     variableField.innerHTML = casetrack.inputs[variable];
 }
+
+/*
 
 function increaseScore(title) {
     updateScore(10, title);
@@ -291,6 +293,6 @@ function showModalImage () {
   // When the user clicks on <span> (x), close the modal
   span.onclick = function() {
     modal.style.display = "none";
-
   }
+  
 }
