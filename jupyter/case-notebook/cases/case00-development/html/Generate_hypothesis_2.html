@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8"/>
-	<title>Make a decision</title>
+	<title>Generate hypothesis 2</title>
 	
 	<meta name="description" id="description" content="[Presentation]"/>
 	
@@ -15,20 +15,17 @@
     <script type="text/javascript" src="js/page.js"></script>
 </head>
 
-<body onload="traceRoute('Make a decision')">
+<body onload="traceRoute('Generate hypothesis 2')">
 
 <div class="panel_presentation">
   <div class="panel_case">
-    <!-- <div class="case_title">Make a decision</div> -->
+    <!-- <div class="case_title">Generate hypothesis 2</div> -->
 
     <div class="case_text">
     
-What is the next step?
-<div class='case_link'><a href='Get_vital_data.html' onclick="computeLink('Get_vital_data')">Get vital data</a></div>
-<div class='case_link'><a href='Offer_oxygen.html' onclick="computeLink('Offer_oxygen')">Offer oxygen</a></div>
-<div class='case_link'><a href='Perform_an_EKG.html' onclick="computeLink('Perform_an_EKG')">Perform an EKG</a></div>
-<div class='case_link'><a href='Get_a_brain_scan.html' onclick="computeLink('Get_a_brain_scan')">Get a brain scan</a></div>
-<div class='case_link'><a href='Actions.html' onclick="computeLink('Actions')">Back to actions </a></div></p>
+What is your main diagnostic hypothesis?
+<textarea style='width:100%' rows=1 class='userInput' id='hypothesis' oninput="followInput('hypothesis','mesh')" ' onchange="evaluateInput('hypothesis','mesh')"></textarea>
+<div class='case_link'><a href='Check_hypothesis_2.html' onclick="computeLink('Check_hypothesis_2')">Submit hypothesis </a></div></p>
 
     </div>
     

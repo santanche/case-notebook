@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8"/>
-	<title>Perform an EKG</title>
+	<title>Generate hypothesis 1</title>
 	
 	<meta name="description" id="description" content="[Presentation]"/>
 	
@@ -15,18 +15,18 @@
     <script type="text/javascript" src="js/page.js"></script>
 </head>
 
-<body  onload="traceRoute('Perform an EKG')">
+<body onload="traceRoute('Generate hypothesis 1')">
 
 <div class="panel_presentation">
   <div class="panel_case">
-    <!-- <div class="case_title">Perform an EKG</div> -->
+    <!-- <div class="case_title">Generate hypothesis 1</div> -->
 
     <div class="case_text">
     
-An EKG was obtained:
-<img src="images/ekg.png" alt="EKG1" style='float:left' width='300px'></p>
+What is your main diagnostic hypothesis?
+<textarea style='width:100%' rows=1 class='userInput' id='hypothesis' oninput="followInput('hypothesis','mesh')" ' onchange="evaluateInput('hypothesis','mesh')"></textarea>
+<div class='case_link'><a href='Check_hypothesis_1.html' onclick="computeLink('Check_hypothesis_1')">Submit hypothesis </a></div></p>
 
-    <div class="case_link"><a href="#" onclick="goBack()">Return</a></div>
     </div>
     
   </div>
