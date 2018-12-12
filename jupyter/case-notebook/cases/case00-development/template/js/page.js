@@ -169,7 +169,7 @@ function evaluateInput(variable, vocabulary) {
 function traceRoute(node) {
     var casekey = localStorage.getItem(storePrefix + "current-case");
     var casetrack = retrieveCase();
-    
+
     var currentTime = new Date();
     casetrack.route.push("#navigate:" + node + "," + currentTime.getTime());
 
@@ -183,7 +183,7 @@ function traceRoute(node) {
     profile.route.push(currentCase + "," + node + "," + currentTime.getTime());
     */
     // profile.route.push(currentCase + "," + node + "," + score);
-    
+
     // localStorage.setItem(userid, JSON.stringify(profile));
 }
 
@@ -204,13 +204,13 @@ function reportRoute() {
             }
         }
     }
-    document.querySelector("#report").innerHTML = output; 
+    document.querySelector("#report").innerHTML = output;
 }
 
 function computeScore(operator, variable, value) {
     var casekey = localStorage.getItem(storePrefix + "current-case");
     var casetrack = retrieveCase();
-    
+
     if (casetrack.inputs[variable] && casetrack.inputs[variable] != null && operator != "=") {
         switch (operator) {
             case "+": casetrack.inputs[variable] = casetrack.inputs[variable] + parseInt(value);
@@ -273,3 +273,24 @@ function nextCase() {
     document.querySelector("#next_case").innerHTML = "<a href='Caso_" + currentCase + ".html'>Próximo Caso</a>";
 }
 
+function showModalImage () {
+  // Get the modal
+  var modalExam = document.getElementById('modalExam');
+  var img = document.getElementById('modalImg');
+  var modalImg = document.getElementById("img");
+  var captionText = document.getElementById("caption");
+  img.onclick = function(){
+    modal.style.display = "block";
+    modalImg.src = this.src;
+    captionText.innerHTML = this.alt;
+  }
+
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];
+
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function() {
+    modal.style.display = "none";
+
+  }
+}
