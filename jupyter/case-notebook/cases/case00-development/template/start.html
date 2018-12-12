@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Start</title>
+	
+	<meta name="description" id="description" content="[Presentation]"/>
+	
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/standard.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/main-start.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page-start.css">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Raleway">
+
+    <script type="text/javascript" src="js/page.js"></script>
+</head>
+
+<body onload="startSystem()">
+
+<div class="panel_presentation">
+  <div class="panel_image">
+    <img class="image_presentation" src="images/entrance.jpg"></img>
+  </div>
+
+  <div class="panel_case">
+    <div class="case_title">Welcome to Phil Muchbetter</div>
+
+    <div class="case_text">
+      <div id="signin-register" style="display:none">
+        <p class="case_link"><a href="signin.html">Sign in</a></p>
+        <p class="case_link"><a href="register.html" onclick="register()">Register</a></p>
+      </div>
+
+      <div id="signed-user"  style="display:none">
+        <p id="user-id" >User id (e-mail): </p>
+        <p id="user-name" >Name: </p>
+        <p class="case_link" id="proceed"><a href='casesindex.html'>Start</a></p>
+        <p class="case_link" id="changeUser"><a href='start.html' onclick='changeUser()'>Change User</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
+

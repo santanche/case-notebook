@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Register</title>
+	
+	<meta name="description" id="description" content="[Presentation]"/>
+	
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/standard.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/main-start.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page-start.css">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Raleway">
+
+    <script type="text/javascript" src="js/page.js"></script>
+</head>
+
+<body>
+
+<div class="panel_presentation">
+  <div class="panel_image">
+    <img class="image_presentation" src="images/entrance.jpg"></img>
+  </div>
+
+  <div class="panel_case">
+    <div class="case_title">Registration</div>
+
+    <div class="case_text">
+      <div id="registration-form">
+        <p>User id (e-mail): <input type='text' id="idInput"></input></p>
+        <p>Name: <input type='text' id="nameInput"></input></p>
+        <p>Age: <input type='text' id="ageInput"></input></p>
+        <p class="case_link"><a href="#" onclick="register()">Register</a></p>
+      </div>
+
+      <div id="signed-user"  style="display:none">
+        <p class="case_link" id="proceed"><a href='casesindex.html'>Start</a></p>
+      </div>
+
+      <div id="invalid-id" style="display:none">
+        <p class="alert_message">This id already exists.</p>
+      </div>
+
+      <div id="answer-all" style="display:none">
+        <p class="alert_message">Please, answer all questions.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
+

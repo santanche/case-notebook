@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>{title}</title>
+	
+	<meta name="description" id="description" content="[Presentation]"/>
+	
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/standard.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/main-start.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page-start.css">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Raleway">
+
+    <script type="text/javascript" src="js/page.js"></script>
+</head>
+
+<body onload="startCase('{title}')">
+
+<div class="panel_presentation">
+  <div class="panel_image">
+    <img class="image_presentation" src="images/entrance.jpg"></img>
+  </div>
+
+  <div class="panel_case">
+    <div class="case_title">{title}</div>
+
+    <div id="request-email" type="hidden">
+      Inform your e-mail: <input type='text' id="emailInput"></input>
+      <div class="case_link"><a href="#" onclick="userLogin()">Sign in</a></div>
+      <div class="case_link"><a href="register.html" onclick="register()">Register</a></div>
+    </div>
+
+    <div id="invalid-email" type="hidden">Invalid e-mail.</div>
+
+    <div id="signed-user" type="hidden">
+      <div id="inform-email" >E-mail: </div>
+      <div class="case_link" id="proceed"><a href='{firstKnot}.html' onclick='signIn()'>Start</a></div>
+      <div class="case_link" id="changeUser"><a href='presentation.html' onclick='changeUser()'>Change User</a></div>
+    </div>
+
+    <!--
+    <input type="text" id="name"></input>
+    
+    <h2>Score: <span id="score"></span></h2>
+    
+    <div class="case_link">
+        <span id="action_ok"><a href="#" onclick="startGame()">Ok</a></span>
+        <span id="action_start"></span>
+    </div>
+    -->
+    
+  </div>
+</div>
+
+</body>
+</html>
+
