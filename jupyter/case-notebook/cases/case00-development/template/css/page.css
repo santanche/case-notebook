@@ -97,13 +97,6 @@ body {
     text-decoration: none;
 }
 
-/* selectable items */
-/* ---------------- */
-
-.case_link {
-	background-color: #999999;
-}
-
 /* Modal (background) */
 .modal {
  display: none; /* Hidden by default */
