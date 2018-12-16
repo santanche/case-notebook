@@ -137,7 +137,9 @@ define([
 
   var interfaceDomain = function(matchStr, _insideDescription, _insideDetail1, _insideRate1,
     		                                   _insideHeading, _insideDetail2, _insideRate2) {
-		return matchStr.match(/\{([\w= %\/]*)\}/i)[1];
+		// return matchStr.match(/\{([\w= %\/]*)\}/i)[1];
+		return "<a href='#mesh_addr#" + heading + "#' title='#tree_number#" + heading +
+    	         "#' target='_blank'>" + description + "</a>";
 	};
 
   var interfaceOption = function(_matchStr, insideText, insideDivert) {

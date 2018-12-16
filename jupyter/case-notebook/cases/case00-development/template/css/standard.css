@@ -1,7 +1,7 @@
-@CHARSET "UTF-8";
+@charset "UTF-8";
 
 body {
-    font-family: Raleway;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
     margin: 0px;
     background-color: #383f4f;
 }
@@ -14,7 +14,6 @@ body {
     width: 100%;
     height: 100px;
     overflow: auto;
-    font-color: #383f4f;
     color: #383f4f;
     background-color: #c4ad9d;
 }
