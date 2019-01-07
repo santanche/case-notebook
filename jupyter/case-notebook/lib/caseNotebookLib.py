@@ -1,5 +1,7 @@
 import ipywidgets as widgets
 from SPARQLWrapper import SPARQLWrapper, JSON
+import shutil
+import os
 
 class HealthDM(object):
     profile = None
@@ -40,6 +42,7 @@ ORDER BY ?d
         cls.profile = widgets.Accordion(children=[])
         return cls.profile
         
+    # Resets the widget panel cleaning up it
     @classmethod
     def clearTerms(cls):
         cls.profilePresent = widgets.Accordion(children=[])
@@ -113,11 +116,21 @@ ORDER BY ?d
         return "#mesh_heading#" + heading + "#tree_number#" + code
     
     @classmethod
-    def interfaceMain(cls, template, title, description, firstKnot):
-        indexTemplate = open("template/{}.html".format(template), "r", encoding="utf-8")
-        indexResult = open("html/index.html", "w", encoding="utf-8")
+    def interfaceMain(cls, title, description, image, firstKnot):
+        shutil.rmtree("html")
+        os.mkdir("html")
+        dirs = ["css", "js"]
+        for d in dirs:
+            shutil.copytree("template/{}".format(d), "html/{}".format(d))
+        shutil.copytree("images", "html/images")
+        files = ["index", "start", "signin", "register", "report"]
+        for f in files:
+            shutil.copyfile("template/{}.html".format(f), "html/{}.html".format(f))
+        indexTemplate = open("template/casesindex.html", "r", encoding="utf-8")
+        indexResult = open("html/casesindex.html", "w", encoding="utf-8")
         indexResult.write(
-            indexTemplate.read().format(title=title, description=description, firstKnot=firstKnot))
+            indexTemplate.read().format(title=title, description=description, image=image, firstKnot=firstKnot))
+        indexTemplate.close()
         indexResult.close()
 
     @classmethod

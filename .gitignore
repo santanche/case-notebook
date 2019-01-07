@@ -1,3 +1,4 @@
 /.project
 **/.ipynb_checkpoints/
 **/__pycache__/
+/.pydevproject
