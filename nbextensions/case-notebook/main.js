@@ -12,6 +12,7 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
    var knots = [];
    var knotContext = null;
    var knotImage = "";
+   var knotTemplate = null;
 
    var marks = {
       knot : /^(?:<p>)?[ \t]*==*[ \t]*(\w[\w \t]*)(?:\(([\w \t]*)\))?[ \t]*=*[ \t]*(?:<\/p>)?/igm,
@@ -20,7 +21,7 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
       character : /^(?:<p>)?[ \t]*:[ \t]*([\w]+)[ \t]*:[ \t]*(?:<\/p>)?/igm,
       image : /<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/igm,
       input : /\{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t%]*))?\}/igm,
-      domain : /\{([\w \t]*)(?:=([\w \t%]*)(?:\/([\w \t%]*))?)?\}(?:\(([\w \t]*)(?:=([\w \t%]*)(?:\/([\w \t%]*))?)?\))?/igm,
+      domain : /\{([\w \t\-"]*)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?\}(?:\(([\w \t\+\-=\*]*)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?\))?/igm,
       score : /^(?:<p>)?[ \t]*~[ \t]*([\+\-=\*\\%]?)[ \t]*(\w*)?[ \t]*(\w+)[ \t]*(?:<\/p>)?/igm
    };
 
@@ -63,10 +64,10 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
                   + caseDescription + '""","""' + caseImage + '""","'
                   + caseTitle.replace(/ /igm, "_") + '")');
 
-      var interfaceFs = {
+      const interfaceFs = {
             // knot   : markKnot,
             option : interfaceOption,
-            // divert : interfaceDivert,
+            divert : interfaceDivert,
             // character : interfaceCharacter,
             image  : interfaceImage,
             input  : interfaceInput,
@@ -75,11 +76,11 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
       };
       
       for (kb = 1; kb < knotBlocks.length; kb += 3) {
-         var pageName = knotBlocks[kb].trim().replace(/ /igm, "_");
+         let pageName = knotBlocks[kb].trim().replace(/ /igm, "_");
          knotTemplate = (knotBlocks[kb + 1] == null) ? "knot"
-               : knotBlocks[kb + 1].trim().replace(" ", "_");
+                          : knotBlocks[kb + 1].trim().replace(" ", "_");
          knotImage = "";
-         var pageContent = knotBlocks[kb + 2];
+         let pageContent = knotBlocks[kb + 2];
          for (mk in interfaceFs)
             pageContent = pageContent.replace(marks[mk], interfaceFs[mk]);
          /*
@@ -115,17 +116,17 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
       };
 
       // indexing knots
-      var knotContext = null;
-      var knotHeads = mdtext.match(marks.knot);
+      let knotCtx = null;
+      let knotHeads = mdtext.match(marks.knot);
       for (kh in knotHeads) {
          var label = knotHeads[kh]
                .match(/==*[ \t]*(\w[\w \t]*)(?:\([\w \t]*\))?[ \t]*=*/i);
          label = label[1].trim();
          if (knotHeads[kh].indexOf("==") >= 0)
-            knotContext = label;
+            knotCtx = label;
          else
-            label = (label.indexOf(".") < 0 && knotContext == null) ? label
-                  : knotContext + "." + label;
+            label = (label.indexOf(".") < 0 && knotCtx == null) ? label
+                  : knotCtx + "." + label;
          knots.push(label);
       }
 
@@ -182,13 +183,19 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
             + "','"
             + insideVocabulary.trim()
             + "')\">"
-            + ((rows > 0) ? "</textarea>" : "</input>");
+            + ((rows > 0) ? "</textarea>" : "</input>")
+            + "<span id='" + variable + "_result'></span>";
    };
 
    var interfaceDomain = function(matchStr, _insideDescription,
          _insideDetail1, _insideRate1, _insideHeading, _insideDetail2,
          _insideRate2) {
-      return matchStr.match(/\{([\w= %\/]*)\}/i)[1];
+      let content = matchStr.match(/\{([ \t\w=\:\-=%\/"]*)\}/i)[1];
+      
+      if (knotTemplate == "selector")
+         content = "<dcc-state-selector>" + content + "</dcc-state-selector>"; 
+      
+      return content;
    };
 
    var interfaceOption = function(_matchStr, insideText, insideDivert) {
@@ -198,16 +205,25 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
 
       link = link.trim().replace(/ /igm, "_");
 
-      return "<div class='case_link'><a href='" + link
+      return "<p class='case_link'><a href='" + link
             + ".html' onclick=\"computeLink('" + link + "')\">" + display
-            + "</a></div>";
+            + "</a></p>";
+   };
+
+   var interfaceDivert = function(_matchStr, inside) {
+      let display = inside.trim();
+      let link = display.trim().replace(/ /igm, "_");
+      
+      return "<span class='case_link'><a href='" + link
+             + ".html' onclick=\"computeLink('" + link + "')\">" + display
+             + "</a></span>";
    };
 
    var interfaceImage = function(matchStr, insideSrc, _insideAlt) {
       if (knotImage === "")
          knotImage = insideSrc;
 
-      return matchStr.replace(">", " style='float:left' width='300px'>");
+      return matchStr.replace(">", " style='float:left'>");
    };
 
    var interfaceScore = function(_matchStr, insideSymbol, insideValue,

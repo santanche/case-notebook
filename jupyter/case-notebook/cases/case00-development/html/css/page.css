@@ -72,14 +72,18 @@ body {
 .case_link {
 		color: #e0e9ce;
 		text-align: center;
+		/*
 		width: 300px;
 		height: 30px;
 		margin-left: auto;
 		margin-right: 20px;
 		margin-top: 20px;
 		margin-bottom: 20px;
+		*/
+		padding: 14px 25px;
 		background-color: #383f4f;
 		font-size: 16pt;
+		display: inline-block;
 }
 
 .case_link a:link {

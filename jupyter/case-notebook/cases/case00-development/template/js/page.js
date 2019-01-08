@@ -160,7 +160,23 @@ function followInput(variable, vocabulary) {
 }
 
 function evaluateInput(variable, vocabulary) {
-    var value = document.querySelector("#" + variable).value;
+    let value = document.querySelector("#" + variable).value.toLowerCase();
+    let result = document.querySelector("#" + variable + "_result");
+    
+    let wrong = ["infarction", "myocardial infarction", "coronary syndrome",
+                 "acute coronary syndrome", "ischemia", "myocardial ischemia",
+                 "coronary insufficiency", "angina", "angina pectoris"];
+    let right = ["pericarditis", "myopericarditis", "pericardial inflammation",
+                 "pericardial infection", "pericardial effusion"];
+    
+    
+    if (wrong.indexOf(value) >= 0 || wrong.indexOf(value) >= 0)
+       result.innerHTML = "Your answer was computed.";
+    else
+       result.innerHTML = `
+         We cannot recognize your answer. Try again or click on the [Submit to the supervisor] if you are sure that it is well spelled.
+         <span class='case_link'>Submit to the supervisor</span>
+         `;
 
     console.log("===== Evaluate input - variable: " + variable + ", value: " + value +
                 ", vocabulary: " + vocabulary);

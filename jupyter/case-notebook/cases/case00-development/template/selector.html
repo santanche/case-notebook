@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>{title}</title>
+	
+   <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/standard.css">
+   <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/main-stage.css">
+   <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page.css">
+   <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page-stage.css">
+   <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Raleway">
+
+   <script type="text/javascript" src="js/page.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-state-selector.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-group-selector.js"></script>
+</head>
+
+<body onload="traceRoute('{title}')">
+
+<div class="panel_presentation">
+  <div class="panel_case">
+
+    <div class="case_text">
+       <dcc-group-selector states=" ;+;-;=" colors="lightgrey;green;red;blue">
+          {description}
+       </dcc-group-selector>
+    </div>
+    
+  </div>
+</div>
+
+</body>
+</html>
+
