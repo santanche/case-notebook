@@ -3,14 +3,13 @@
 (function() {
   
 const template = document.createElement("template");
-template.innerHTML = `
-    <style>
+template.innerHTML = 
+   `<style>
       .state-selector:hover {
         cursor: pointer;
       }
     </style>
-    <span id="presentation-dcc" class="state-selector"><slot></slot><span id="presentation-state"></span></span>
-`;
+    <span id="presentation-dcc" class="state-selector"><slot></slot><span id="presentation-state"></span></span>`;
 
 class DCCStateSelector extends HTMLElement {
    constructor() {
