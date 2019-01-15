@@ -5,16 +5,32 @@
    <title>DCC Lively Entrance</title>
    <style>
       body {
-        font-family: "Trebuchet MS", Helvetica, sans-serif;
-        font-size: 14pt;
+          font-family: "Trebuchet MS", Helvetica, sans-serif;
+          font-size: 14pt;
+      }
+      @media screen and (min-width: 1024px) {
+        .scene-screen {
+          width: 1024px;
+          height: 768px;
+          margin: auto;
+        }
+      }
+      @media screen and (max-width: 600px) {
+        .scene-screen {
+          width: 100%;
+          height: 100%;
+          margin: auto;
+        }
       }
    </style>
    <script type="text/javascript" src="dcc-lively-entrance.js"></script>
 </head>
 <body>
-    <dcc-lively-entrance duration="2s" 
-      image="https://github.com/santanche/case-notebook/raw/master/jupyter/basics/css-animation/nurse.png"
-      text="Doctor, please you have to evaluate a man (51 years-old) who entered the emergency department reporting chest pain. His vital signs are ABP: 144x92mmHG; HR: 78bpm; RR: 21rpm; Temp: 37oC; O2Sat: 98%.">
-    </dcc-lively-entrance>
+   <div class="scene-screen">
+      <dcc-lively-entrance duration="2s" 
+         character="nurse.png" bubble="bubble.svg"
+         speech="Doctor, please you have to evaluate a man (51 years-old) who entered the emergency department reporting chest pain. His vital signs are ABP: 144x92mmHG; HR: 78bpm; RR: 21rpm; Temp: 37oC; O2Sat: 98%.">
+      </dcc-lively-entrance>
+   </div>
 </body>
 </html>

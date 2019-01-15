@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--This is a Reload version 2.5.5 SCORM 1.2 Content Package document-->
+<!--Spawned from the Reload Content Package Generator - http://www.reload.ac.uk-->
+<manifest xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2" xmlns:imsmd="http://www.imsglobal.org/xsd/imsmd_rootv1p2p1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2" identifier="MANIFEST-CF3A20EC0DA7BB5820BAE37141101EF4" xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+  <organizations default="ORG-59C70E73B41E2EED461600934A8C7423">
+    <organization identifier="ORG-59C70E73B41E2EED461600934A8C7423" structure="hierarchical">
+      <title>Organization</title>
+      <item identifier="ITEM-BEBC46B51AA95FB016E37A53BAB84FCF" identifierref="RES-29FE1B119BEA49C9EC60954A7F4C25B4" isvisible="true">
+        <title>Presentation</title>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="RES-29FE1B119BEA49C9EC60954A7F4C25B4" type="webcontent" href="index.html">
+      <file href="index.html" />
+      <file href="images/backward.png" />
+      <file href="images/forward.png" />
+      <file href="js/main.js" />
+      <file href="js/page.js" />
+      <file href="menu.html" />
+      <file href="page00.html" />
+      <file href="page01.html" />
+      <file href="page02.html" />
+      <file href="page03.html" />
+      <file href="page04.html" />
+      <file href="page05.html" />
+      <file href="standard.css" />
+    </resource>
+  </resources>
+</manifest>
+

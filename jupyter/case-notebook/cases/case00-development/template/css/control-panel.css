@@ -1,0 +1,23 @@
+@charset "UTF-8";
+
+body {
+      font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+
+.control-panel {
+   display: flex;
+   flex-direction: row;
+   height: 100%;
+   margin-left: 10%;
+   margin-right: 10%;
+}
+
+.control-icon {
+   width: 100px;
+   height: 100px;
+   padding: 10px;
+}
+
+.control-icon img {
+   width: 100%;
+}

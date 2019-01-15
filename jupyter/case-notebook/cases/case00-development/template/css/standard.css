@@ -18,6 +18,16 @@ body {
     background-color: #c4ad9d;
 }
 
+.panel_south {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    height: 120px;
+    overflow: auto;
+    margin: 0px;
+    background-color: #7C5F3E;
+}
+
 /* main menu */
 /* --------- */
 .main_menu
@@ -76,6 +86,17 @@ body {
     text-decoration: none;
 }
 
+/* bottom controls */
+/* --------------- */
+
+.bottom_controls {
+   height: auto;
+   font-size: 12pt;
+   color: white;
+   text-align: center;
+   overflow: hidden;
+}
+
 /* iFrames */
 /* ------- */
 
@@ -85,3 +106,5 @@ body {
     margin: 0px auto;
     padding: 0px;
 }
+
+.iframe-
