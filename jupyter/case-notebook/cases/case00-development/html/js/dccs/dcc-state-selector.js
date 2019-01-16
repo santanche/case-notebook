@@ -3,14 +3,13 @@
 (function() {
   
 const template = document.createElement("template");
-template.innerHTML = `
-    <style>
+template.innerHTML = 
+   `<style>
       .state-selector:hover {
         cursor: pointer;
       }
     </style>
-    <span id="presentation-dcc" class="state-selector"><slot></slot><span id="presentation-state"></span></span>
-`;
+    <span id="presentation-dcc" class="state-selector"><slot></slot><span id="presentation-state"></span></span>`;
 
 class DCCStateSelector extends HTMLElement {
    constructor() {
@@ -76,8 +75,8 @@ class DCCStateSelector extends HTMLElement {
       this._presentation.removeEventListener('mouseout', this._hideState);
       this._presentation.removeEventListener('click', this._changeState);
       
-      this._presentation.removeEventListener('update-states-event', this._updateStates);
-      this._presentation.removeEventListener('update-colors-event', this._updateColors);
+      this.removeEventListener('update-states-event', this._updateStates);
+      this.removeEventListener('update-colors-event', this._updateColors);
    }
 
    get states() {

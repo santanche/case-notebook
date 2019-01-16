@@ -1,0 +1,23 @@
+<div class="panel_presentation" onload="startSystem()">
+  <div class="panel_image">
+    <img class="image_presentation" src="images/entrance.jpg"></img>
+  </div>
+
+  <div class="panel_case">
+    <div class="case_title">Welcome to Phil Muchbetter</div>
+
+    <div class="case_text">
+      <div id="signin-register" style="display:none">
+        <p class="case_link"><a href="signin.html">Sign in</a></p>
+        <p class="case_link"><a href="register.html">Register</a></p>
+      </div>
+
+      <div id="signed-user"  style="display:none">
+        <p id="user-id" >User id (e-mail): </p>
+        <p id="user-name" >Name: </p>
+        <p class="case_link" id="proceed"><a href='casesindex.html'>Start</a></p>
+        <p class="case_link" id="changeUser"><a href='start.html' onclick='changeUser()'>Change User</a></p>
+      </div>
+    </div>
+  </div>
+</div>

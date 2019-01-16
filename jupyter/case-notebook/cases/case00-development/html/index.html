@@ -5,8 +5,10 @@
     <title>Start</title>
     <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/standard.css">
     <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/main-start.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/control-panel.css">
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Raleway">
     <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/dccs/dcc-link.js"></script>
   </head>
   <body onload="">
     <!-- Panel North -->
@@ -25,5 +27,14 @@
                 class="iframe_render" frameborder="0"></iframe>
       </div>
     </div>
-  </body>
+    <!-- Panel South -->
+    <!-- =========== -->
+    <div class="panel_south">
+       <div class="control-panel">
+         <dcc-link image="images/icon-hypothesis.svg" label="Generate hypothesis" target="render"></dcc-link>
+         <dcc-link image="images/icon-details.svg" label="More information" target="render"></dcc-link>
+         <dcc-link image="images/icon-supervisor.svg" label="Call the supervisor" target="render"></dcc-link>
+       </div>
+    </div>
+</body>
 </html>

@@ -5,10 +5,17 @@
     <title>Start</title>
     <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/standard.css">
     <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/main-start.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page-start.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/control-panel.css">
+    
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Raleway">
+    
     <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/page.js"></script>
+    <script type="text/javascript" src="js/dccs/dcc-link.js"></script>
   </head>
-  <body onload="">
+  <body onload="startPage()">
     <!-- Panel North -->
     <!-- =========== -->
     <div class="panel_north">
@@ -21,17 +28,21 @@
     <!-- ============ -->
     <div class="panel_center">
       <div class="panel_inner_center">
+        <div id="render-area"></div>
+        <!--
         <iframe id="render" name="render" src="start.html"
                 class="iframe_render" frameborder="0"></iframe>
+        -->
       </div>
     </div>
     <!-- Panel South -->
     <!-- =========== -->
     <div class="panel_south">
-        <div class="bottom_controls">
-          <iframe id="control-panel" name="control-panel" src="control-panel.html"
-                  class="iframe_render" frameborder="0"></iframe>
-        </div>
+       <div class="control-panel">
+         <div class="control-icon"><dcc-link image="images/icon-hypothesis.svg" label="Generate hypothesis" target="render"></dcc-link></div>
+         <div class="control-icon"><dcc-link image="images/icon-details.svg" label="More information" target="render"></dcc-link></div>
+         <div class="control-icon"><dcc-link image="images/icon-supervisor.svg" label="Call the supervisor" target="render"></dcc-link></div>
+       </div>
     </div>
 </body>
 </html>

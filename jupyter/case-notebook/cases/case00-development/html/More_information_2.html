@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Raleway">
 
     <script type="text/javascript" src="js/page.js"></script>
+    <script type="text/javascript" src="js/dccs/dcc-link.js"></script>
 </head>
 
 <body  onload="traceRoute('More information 2')">
@@ -25,7 +26,7 @@
     
 <p>EKG description
 <img src="images/ekg-description.png" alt="EKG Description" style='float:left'></p>
-<p><p class='case_link'><a href='EKG_Analysis.html' onclick="computeLink('EKG_Analysis')">EKG Analysis</a></p></p>
+<p><dcc-link-proxy link='EKG_Analysis.html' label='EKG Analysis'></dcc-link-proxy></p>
 
     <div class="case_link"><a href="#" onclick="goBack()">Return</a></div>
     </div>

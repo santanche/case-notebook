@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 body {
-   font-family: "Trebuchet MS", Helvetica, sans-serif;
+      font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
 
 .control-panel {
@@ -16,4 +16,8 @@ body {
    width: 100px;
    height: 100px;
    padding: 10px;
+}
+
+.control-icon img {
+   width: 100%;
 }

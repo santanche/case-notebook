@@ -199,24 +199,34 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
    };
 
    var interfaceOption = function(_matchStr, insideText, insideDivert) {
-      var display = (insideText != null) ? insideText : insideDivert;
-
-      var link = (insideDivert != null) ? insideDivert : insideText;
-
+      let display = (insideText != null) ? insideText.trim() : insideDivert.trim();
+      let link = (insideDivert != null) ? insideDivert : insideText;
       link = link.trim().replace(/ /igm, "_");
+      
+      let dccType = "";
+      if (display.endsWith("(control)"))
+         dccType = "dcc-link-proxy";
+      else
+         dccType = "dcc-link"
 
+      return "<" + dccType + " link='" + link + ".html' label='" + display + "'></" + dccType + ">"; 
+      /*
       return "<p class='case_link'><a href='" + link
             + ".html' onclick=\"computeLink('" + link + "')\">" + display
             + "</a></p>";
+      */
    };
 
    var interfaceDivert = function(_matchStr, inside) {
       let display = inside.trim();
       let link = display.trim().replace(/ /igm, "_");
       
+      return "<dcc-link link='" + link + ".html' label='" + display.trim() + "'></dcc-link>";
+      /*
       return "<span class='case_link'><a href='" + link
              + ".html' onclick=\"computeLink('" + link + "')\">" + display
              + "</a></span>";
+      */
    };
 
    var interfaceImage = function(matchStr, insideSrc, _insideAlt) {

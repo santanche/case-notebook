@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Raleway">
 
     <script type="text/javascript" src="js/page.js"></script>
+    <script type="text/javascript" src="js/dccs/dcc-link.js"></script>
 </head>
 
 <body onload="traceRoute('Generate hypothesis 1')">
@@ -25,7 +26,7 @@
     
 What is your main diagnostic hypothesis?
 <textarea style='width:100%' rows=1 class='userInput' id='hypothesis' oninput="followInput('hypothesis','mesh')" ' onchange="evaluateInput('hypothesis','mesh')"></textarea><span id='hypothesis_result'></span>
-<p class='case_link'><a href='Check_hypothesis_1.html' onclick="computeLink('Check_hypothesis_1')">Submit hypothesis </a></p></p>
+<dcc-link-proxy link='Check_hypothesis_1.html' label='Submit hypothesis'></dcc-link-proxy></p>
 
     </div>
     

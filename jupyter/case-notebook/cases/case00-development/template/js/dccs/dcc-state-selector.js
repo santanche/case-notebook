@@ -75,8 +75,8 @@ class DCCStateSelector extends HTMLElement {
       this._presentation.removeEventListener('mouseout', this._hideState);
       this._presentation.removeEventListener('click', this._changeState);
       
-      this._presentation.removeEventListener('update-states-event', this._updateStates);
-      this._presentation.removeEventListener('update-colors-event', this._updateColors);
+      this.removeEventListener('update-states-event', this._updateStates);
+      this.removeEventListener('update-colors-event', this._updateColors);
    }
 
    get states() {

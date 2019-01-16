@@ -13,6 +13,7 @@
    <script type="text/javascript" src="js/page.js"></script>
    <script type="text/javascript" src="js/dccs/dcc-state-selector.js"></script>
    <script type="text/javascript" src="js/dccs/dcc-group-selector.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-link.js"></script>
 </head>
 
 <body onload="traceRoute('Check hypothesis 1')">
@@ -27,7 +28,7 @@ Among all patient features, signs, and symptoms highlighted on text, select all 
 <p>Nurse: Doctor, please you have to evaluate a man (<dcc-state-selector>51 years-old</dcc-state-selector>) who entered the emergency department reporting <dcc-state-selector>chest pain</dcc-state-selector>.His vital signs are <dcc-state-selector>ABP: 144x92mmHG</dcc-state-selector>; <dcc-state-selector>HR: 78bpm</dcc-state-selector>; <dcc-state-selector>RR: 21rpm</dcc-state-selector>; <dcc-state-selector>Temp: 37oC</dcc-state-selector>; <dcc-state-selector>O2Sat: 98%</dcc-state-selector>.</p>
 <p>Patient: Doctor, I am feeling chest pain since yesterday. The <dcc-state-selector>pain is continuous</dcc-state-selector> and <dcc-state-selector>is located just in the middle of my chest</dcc-state-selector>, <dcc-state-selector>worsening when I breathe</dcc-state-selector> and <dcc-state-selector>when I lay down on my bed</dcc-state-selector>. I have <dcc-state-selector>arterial hypertension</dcc-state-selector> and <dcc-state-selector>I smoke 20 cigarettes</dcc-state-selector> every day. <dcc-state-selector>My father had a "heart attack"</dcc-state-selector> at my age and I am very worried about it.</p>
 <p>You perform physical examination: <dcc-state-selector>cardiac and pulmonary auscultation are normal</dcc-state-selector>; <dcc-state-selector>chest pain does not worse with palpation of the thorax</dcc-state-selector>; <dcc-state-selector>there is no jugular stasis</dcc-state-selector> <dcc-state-selector>nor lower limb edema</dcc-state-selector>.</p>
-<p><p class='case_link'><a href='Order_EKG.html' onclick="computeLink('Order_EKG')">Submit </a></p></p>
+<p><dcc-link-proxy link='Order_EKG.html' label='Submit'></dcc-link-proxy></p>
 
        </dcc-group-selector>
     </div>

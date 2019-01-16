@@ -86,17 +86,6 @@ body {
     text-decoration: none;
 }
 
-/* bottom controls */
-/* --------------- */
-
-.bottom_controls {
-   height: auto;
-   font-size: 12pt;
-   color: white;
-   text-align: center;
-   overflow: hidden;
-}
-
 /* iFrames */
 /* ------- */
 
@@ -106,5 +95,3 @@ body {
     margin: 0px auto;
     padding: 0px;
 }
-
-.iframe-
