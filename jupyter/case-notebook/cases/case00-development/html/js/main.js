@@ -13,6 +13,27 @@ function startSystem() {
 }
 */
 
+/*
+function loadHTML(source, target) {
+   let xhr = new XMLHttpRequest();
+   
+   xhr.open("GET", source, true);
+   
+   xhr.onreadystatechange = function contentLoaded() {
+      if (this.readyState === this.DONE) {
+         let targetWeb = document.querySelector("#" + target);
+         targetWeb.innerHTML = xhr.responseXML.src;
+      }
+   }
+   
+   xhr.send();
+}
+
+function startPage() {
+   loadHTML("start.xml", "render-area");
+}
+*/
+
 function exportScore() {
     console.log("=== current user ===");
     var userid = localStorage.getItem("current-user");

@@ -123,9 +123,10 @@ ORDER BY ?d
         for d in dirs:
             shutil.copytree("template/{}".format(d), "html/{}".format(d))
         shutil.copytree("images", "html/images")
-        files = ["index", "start", "signin", "register", "report"]
+        files = ["index", "signin", "register", "report"]
         for f in files:
-            shutil.copyfile("template/{}.html".format(f), "html/{}.html".format(f))
+            cls.interfaceKnot(f, f, "", "", "")
+            # shutil.copyfile("template/{}.html".format(f), "html/{}.html".format(f))
         indexTemplate = open("template/casesindex.html", "r", encoding="utf-8")
         indexResult = open("html/casesindex.html", "w", encoding="utf-8")
         indexResult.write(
@@ -135,7 +136,10 @@ ORDER BY ?d
 
     @classmethod
     def interfaceKnot(cls, template, htmlName, title, description, image):
+        mainTemplate = open("template/main.html", "r", encoding="utf-8")
         knotTemplate = open("template/{}.html".format(template), "r", encoding="utf-8")
         knotResult = open("html/" + htmlName + ".html", "w", encoding="utf-8")
-        knotResult.write(knotTemplate.read().format(title=title, description=description, image=image))
+        
+        knotWeb = knotTemplate.read().format(title=title, description=description, image=image)
+        knotResult.write(mainTemplate.read().format(title=title, knotrender=knotWeb))
         knotResult.close()

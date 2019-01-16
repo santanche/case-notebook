@@ -13,6 +13,7 @@ body {
 		display: flex;
 		flex-direction: row;
 		color: #383f4f;
+		background-color: transparent;
 }
 
 .panel_image {
@@ -36,7 +37,7 @@ body {
 
 .panel_case {
     width: auto;
-	  height: auto;
+	 height: auto;
     top: 0px;
     right: 0px;
     margin: 0px;

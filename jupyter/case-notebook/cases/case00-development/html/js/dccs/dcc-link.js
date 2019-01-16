@@ -20,6 +20,11 @@ class DCCLink extends HTMLElement {
         .link-button:hover {
           color: white;
         }
+        
+        .link-image {
+          max-width: 100%;
+          max-height: 100%;
+        }
       </style>
       <span id="presentation-dcc" class="state-selector"></span>`;
      
@@ -33,33 +38,35 @@ class DCCLink extends HTMLElement {
      this._monitor = document.querySelector("dcc-monitor");
      
      this._computeLink = this._computeLink.bind(this);
-     this._updateLink = this._updateLink.bind(this);
+     this._documentLoaded = this._documentLoaded.bind(this);
+     // this._updateLink = this._updateLink.bind(this);
    }
    
    /* Attribute Handling */
 
    static get observedAttributes() {
-     return ["link", "label", "image", "target"];
+     return ["link", "label", "image", "location"];
    }
 
    createdCallback() {
-     this._updateRendering();
+     //this._updateRendering();
    }
 
    attributeChangedCallback(name, oldValue, newValue) {
-     this._updateRendering();
+     //this._updateRendering();
    }
    
    connectedCallback() {
       this._presentation.addEventListener("click", this._computeLink);
-      this.addEventListener("update-link-event", this._updateLink);
+      // this.addEventListener("update-link-event", this._updateLink);
+      window.addEventListener("load", this._documentLoaded);
       
-      this._updateRendering();
+      //this._updateRendering();
    }
    
    disconnectedCallback() {
       this._presentation.removeEventListener("click", this._computeLink);
-      this.removeEventListener("update-link-event", this._updateLink);
+      // this.removeEventListener("update-link-event", this._updateLink);
    }
 
    get link() {
@@ -86,24 +93,34 @@ class DCCLink extends HTMLElement {
      this.setAttribute("image", newImage);
    }
 
-    get target() {
-       return this.getAttribute("target");
+    get location() {
+       return this.getAttribute("location");
     }
     
-     set target(newTarget) {
-      this.setAttribute("target", newTarget);
+    set location(newLocation) {
+      this.setAttribute("location", newLocation);
     }
 
    /* Rendering */
 
-   _updateRendering() {
-      let targetWeb = (this.target && this.target != null) ? " target='" + this.target + "'" : "";
+   _documentLoaded() {
+      let webLocation = null;
+      if (this.hasAttribute("location")) {
+         console.log(this.label + " location: #" + this.location);
+         webLocation = document.querySelector("#" + this.location);
+      }
+      let linkWeb = null;
       if (this.image && this.image != null)
-         this._presentation.innerHTML = "<a href='" + this.link + "' alt='" + this.label + "'" + targetWeb + ">" + 
-                                          "<img src='" + this.image + "'></a>";
+         linkWeb = "<a href='" + this.link + "' alt='" + this.label + "'>" + 
+                   "<img style='width: 100px' class='link-image' src='" + this.image + "'></a>";
       else
-         this._presentation.innerHTML = "<a class='link-button' href='" + this.link + "'" + targetWeb + ">" + 
-                                        this.label + "</a>";
+         linkWeb = "<a class='link-button' href='" + this.link + "'>" + 
+                   this.label + "</a>";
+      if (webLocation != null) {
+         console.log(this.label + " done!");
+         webLocation.innerHTML = webLocation.innerHTML + linkWeb;
+      } else
+         this._presentation.innerHTML = linkWeb;
    }
    
    _computeLink() {
@@ -117,18 +134,19 @@ class DCCLink extends HTMLElement {
    
    /* External DCC events */
 
+   /*
    _updateLink(event) {
      this.link = event.detail;
    }
+   */
 }
 
+/*
 class DCCLinkProxy extends HTMLElement {
    constructor() {
      super();
    }
    
-   /* Attribute Handling */
-
    static get observedAttributes() {
      return ["link", "label", "image", "target"];
    }
@@ -179,8 +197,8 @@ class DCCLinkProxy extends HTMLElement {
       this.setAttribute("target", newTarget);
     }
 }
+*/
 
 customElements.define("dcc-link", DCCLink);
-customElements.define("dcc-link-proxy", DCCLinkProxy);
 
 })();

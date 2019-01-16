@@ -203,13 +203,13 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
       let link = (insideDivert != null) ? insideDivert : insideText;
       link = link.trim().replace(/ /igm, "_");
       
-      let dccType = "";
-      if (display.endsWith("(control)"))
-         dccType = "dcc-link-proxy";
-      else
-         dccType = "dcc-link"
+      let linkImage = "";
+      if (display.endsWith("(control)")) {
+         display = display.replace("(control)", "").trim();
+         linkImage = " image='images/" + display.toLowerCase().replace(/ /igm, "-") + ".svg' location='control-panel'";
+      }
 
-      return "<" + dccType + " link='" + link + ".html' label='" + display + "'></" + dccType + ">"; 
+      return "<dcc-link link='" + link + ".html' label='" + display + "'" + linkImage + "></dcc-link>"; 
       /*
       return "<p class='case_link'><a href='" + link
             + ".html' onclick=\"computeLink('" + link + "')\">" + display

@@ -1,24 +1,36 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<meta charset="utf-8"/>
-	<title>Order EKG</title>
-	
-	<meta name="description" id="description" content="[Presentation]"/>
-	
+  <head>
+    <meta charset="utf-8"/>
+    <title>Start</title>
     <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/standard.css">
-    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/main-stage.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/main-start.css">
     <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page.css">
-    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page-stage.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page-start.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/control-panel.css">
+    
     <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Raleway">
-
+    
+    <script type="text/javascript" src="js/main.js"></script>
     <script type="text/javascript" src="js/page.js"></script>
     <script type="text/javascript" src="js/dccs/dcc-link.js"></script>
-</head>
-
-<body onload="traceRoute('Order EKG')">
-
-<div class="panel_presentation">
+    <script type="text/javascript" src="js/dccs/dcc-state-selector.js"></script>
+    <script type="text/javascript" src="js/dccs/dcc-group-selector.js"></script>
+  </head>
+  <body onload="traceRoute('Order EKG')">
+    <!-- Panel North -->
+    <!-- =========== -->
+    <div class="panel_north">
+      <!-- <div class="home_item"><a href="index.html">Zombie Health</a></div> -->
+      
+     <div class="main_menu"> &nbsp;&nbsp;&nbsp; <a href="report.html" target="_blank" onclick="exportScore()">report</a> <br>
+        <hr> </div>
+    </div>
+    <!-- Panel Center -->
+    <!-- ============ -->
+    <div class="panel_center">
+      <div class="panel_inner_center">
+        <div class="panel_presentation">
   <div class="panel_case">
     <!-- <div class="case_title">Order EKG</div> -->
 
@@ -27,9 +39,9 @@
 Our patient denies any recent long trip, immobilization or surgery.</p>
 <p>The blood pressure is symmetric in the four limbs. </p>
 <p>Game: What do you want to do?
-<dcc-link-proxy link='Generate_hypothesis_2.html' label='Generate hypothesis'></dcc-link-proxy>
-<dcc-link-proxy link='More_information_2.html' label='Get more information'></dcc-link-proxy>
-<dcc-link-proxy link='Call_the_supervisor_2.html' label='Call the supervisor'></dcc-link-proxy></p>
+<dcc-link link='Generate_hypothesis_2.html' label='Generate hypothesis'></dcc-link>
+<dcc-link link='More_information_2.html' label='Get more information'></dcc-link>
+<dcc-link link='Call_the_supervisor_2.html' label='Call the supervisor'></dcc-link></p>
 <p>EKG:</p>
 <p><img src="images/ekg2.png" alt="EKG" style='float:left'></p>
 
@@ -37,7 +49,12 @@ Our patient denies any recent long trip, immobilization or surgery.</p>
     
   </div>
 </div>
-
+      </div>
+    </div>
+    <!-- Panel South -->
+    <!-- =========== -->
+    <div class="panel_south">
+       <div id="control-panel" class="control-panel-style"></div>
+    </div>
 </body>
 </html>
-

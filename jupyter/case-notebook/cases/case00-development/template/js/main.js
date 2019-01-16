@@ -13,6 +13,7 @@ function startSystem() {
 }
 */
 
+/*
 function loadHTML(source, target) {
    let xhr = new XMLHttpRequest();
    
@@ -31,6 +32,7 @@ function loadHTML(source, target) {
 function startPage() {
    loadHTML("start.xml", "render-area");
 }
+*/
 
 function exportScore() {
     console.log("=== current user ===");

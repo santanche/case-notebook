@@ -1,29 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8"/>
-	<title>{title}</title>
-	
-	<meta name="description" id="description" content="[Presentation]"/>
-	
-    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/standard.css">
-    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/main-stage.css">
-    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page.css">
-    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page-stage.css">
-    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Raleway">
-
-    <script type="text/javascript" src="js/page.js"></script>
-    <script type="text/javascript" src="js/dccs/dcc-link.js"></script>
-    
-    <style>
-    .image-spot:hover {
-        cursor: pointer;
-      }
-    </style>
-</head>
-
-<body onload="traceRoute('{title}')">
-
 <script>
 function zoomDetail() {
   document.querySelector("#ekg1").style.display = "none";
@@ -44,6 +18,12 @@ function zoomOut() {
 }
 </script>
 
+<style>
+ .image-spot:hover {
+     cursor: pointer;
+   }
+</style>
+    
 <div class="panel_presentation">
   <div id="ekg1" class="panel_case">
    <img src="images/3-estado01.png" usemap="#ekgmap1"></img>
@@ -78,7 +58,3 @@ function zoomOut() {
   
   <div class="case_link" style="clear:both"><a href="#" onclick="goBack()">Return</a></div>
 </div>
-
-</body>
-</html>
-

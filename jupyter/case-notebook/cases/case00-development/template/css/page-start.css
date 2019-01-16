@@ -5,5 +5,7 @@ body {
 }
 
 .panel_case {
-    background-color: #e0e9ce;
+    /* background-color: #e0e9ce; */
+    
+    background-color: transparent;
 }
