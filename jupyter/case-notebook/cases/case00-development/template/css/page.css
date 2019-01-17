@@ -16,6 +16,10 @@ body {
 		background-color: transparent;
 }
 
+.opaque-background {
+   background-color: background-color: #e0e9ce;
+}
+
 .panel_image {
 		width: auto;
 		height: 100%;
