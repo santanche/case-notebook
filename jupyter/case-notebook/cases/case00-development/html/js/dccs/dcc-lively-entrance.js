@@ -66,7 +66,7 @@ class DCCLivelyEntrance extends HTMLElement {
           }
           
           .dcc-speech {
-             background-image: url("bubble-landscape.svg");
+             // background-image: url("bubble-landscape.png");
              background-repeat: no-repeat;
              background-size: 100% 100%;
              flex-basis: 800px;
@@ -74,13 +74,13 @@ class DCCLivelyEntrance extends HTMLElement {
           
           @media (orientation: landscape) {
              .dcc-speech-image {
-                background-image: url("[bubble-file]-landscape.svg");
+                background-image: url("[bubble-file]-landscape.png");
              }
           }
 
           @media (orientation: portrait) {
              .dcc-speech-image {
-                background-image: url("[bubble-file]-portrait.svg");
+                background-image: url("[bubble-file]-portrait.png");
              }
           }
 
@@ -90,7 +90,7 @@ class DCCLivelyEntrance extends HTMLElement {
           </div>`;
           templateHTML = templateHTML.replace("[duration]", this.duration);
           templateHTML = templateHTML.replace("[delay]", this.delay);
-          // templateHTML = templateHTML.replace("[bubble-file]", this.bubble);
+          templateHTML = templateHTML.replace(/\[bubble-file\]/igm, this.bubble);
           const template = document.createElement("template");
           template.innerHTML = templateHTML;
             this._shadow = this.attachShadow({mode: "open"});
@@ -101,7 +101,7 @@ class DCCLivelyEntrance extends HTMLElement {
       
       this._presentation.innerHTML =
          "<div class='dcc-character'><img src='" + this.character + "' width='100px'></div>" +
-         "<div class='dcc-speech dcc-speech-direction' style=' padding: 15px 15px 10px 80px'>" + this.speech + "</div>";
+         "<div class='dcc-speech dcc-speech-image' style=' padding: 15px 15px 10px 80px'>" + this.speech + "</div>";
       this._presentation.querySelector("img").addEventListener("load", this._imageLoaded);
    }
 

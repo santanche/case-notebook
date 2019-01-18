@@ -16,6 +16,10 @@ body {
 		background-color: transparent;
 }
 
+.opaque-background {
+   background-color: background-color: #e0e9ce;
+}
+
 .panel_image {
 		width: auto;
 		height: 100%;
@@ -58,12 +62,6 @@ body {
 		font-size: 18pt;
 		padding: 30px;
 }
-
-/*
-.case_text p {
-   background-color: rgba(255, 255, 255, 0.5);
-}
-*/
 
 .alert_message {
 		color: red;

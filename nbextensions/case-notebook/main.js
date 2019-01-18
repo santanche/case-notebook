@@ -28,6 +28,9 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
    var render_cell = function(cell) {
       notebookCell = cell;
       mdhtml = cell.element.find('div.text_cell_render')[0];
+      
+      console.log("=== MDHTML ===");
+      console.log(mdhtml.innerHTML);
 
       // Reset the widget panel cleaning up it
       notebookCell.notebook.kernel.execute("HealthDM.clearTerms()");
@@ -41,10 +44,8 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
       var mdinterface = mdhtml.innerHTML;
       
       var knotBlocks = mdinterface.split(marks.knot);
-      /*
-       * console.log(knotBlocks);
-       */
 
+      // capturing title, description and image of the starting knot
       var caseTitle = knotBlocks[1].trim();
       var caseDescription = "";
       var caseImage = "";
@@ -56,9 +57,11 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
                " style='width:100px'>"); // marks - image
       }
 
+      /*
       console.log('HealthDM.interfaceMain("' + caseTitle + '","""'
             + caseDescription + '""","""' + caseImage + '""","'
             + caseTitle.replace(/ /igm, "_") + '")');
+      */
       notebookCell.notebook.kernel
             .execute('HealthDM.interfaceMain("' + caseTitle + '","""'
                   + caseDescription + '""","""' + caseImage + '""","'
@@ -90,9 +93,11 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
                      marks.image, interfaceImage).replace(marks.score,
                      interfaceScore);
          */
+         
          console.log('HealthDM.interfaceKnot("' + knotTemplate + '","'
                + pageName + '","' + knotBlocks[kb].trim() + '","""'
                + pageContent + '""","' + knotImage + '")');
+         
          notebookCell.notebook.kernel.execute('HealthDM.interfaceKnot("'
                + knotTemplate + '","' + pageName + '","'
                + knotBlocks[kb].trim() + '","""' + pageContent + '""","'
