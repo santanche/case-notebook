@@ -1,20 +1,20 @@
-/* State Selector DCC
-*********************/
 (function() {
   
-const template = document.createElement("template");
-template.innerHTML = 
-   `<style>
-      .state-selector:hover {
-        cursor: pointer;
-      }
-    </style>
-    <span id="presentation-dcc" class="state-selector"><slot></slot><span id="presentation-state"></span></span>`;
-
+/* State Selector DCC
+ ********************/
 class DCCStateSelector extends HTMLElement {
    constructor() {
      super();
      
+     const template = document.createElement("template");
+     template.innerHTML = 
+        `<style>
+           .state-selector:hover {
+             cursor: pointer;
+           }
+         </style>
+         <span id="presentation-dcc" class="state-selector"><slot></slot><span id="presentation-state"></span></span>`;
+
      this._currentState = 0;
      this._stateVisible = false;
      
@@ -144,6 +144,61 @@ class DCCStateSelector extends HTMLElement {
    }
 }
 
+/* Group Selector DCC
+ ********************/
+class DCCGroupSelector extends HTMLElement {
+   constructor() {
+     super();
+     this._sendStates = this._sendStates.bind(this);
+     this._sendColors = this._sendColors.bind(this);
+   }
+   
+   /* Attribute Handling */
+
+   static get observedAttributes() {
+    return ["states", "colors"];
+   }
+
+   connectedCallback() {
+      this.addEventListener("request-states-event", this._sendStates);
+      this.addEventListener("request-colors-event", this._sendColors);
+   }
+
+   disconnectedCallback() {
+      this.removeEventListener("request-states-event", this._sendStates);
+      this.removeEventListener("request-colors-event", this._sendColors);
+   }
+   
+   get states() {
+     return this.getAttribute("states");
+   }
+
+    set states(newStates) {
+     this.setAttribute("states", newStates);
+   }
+
+   get colors() {
+     return this.getAttribute("colors");
+   }
+
+    set colors(newColors) {
+     this.setAttribute("colors", newColors);
+   }
+   
+   /* Rendering */
+
+   _sendStates(event) {
+       let eventStates = new CustomEvent("update-states-event", {detail: this.states});
+       event.detail.dispatchEvent(eventStates);
+   }
+       
+   _sendColors(event) {
+      let eventColors = new CustomEvent("update-colors-event", {detail: this.colors});
+      event.detail.dispatchEvent(eventColors);
+   }
+}
+
 customElements.define("dcc-state-selector", DCCStateSelector);
+customElements.define("dcc-group-selector", DCCGroupSelector);
 
 })();
