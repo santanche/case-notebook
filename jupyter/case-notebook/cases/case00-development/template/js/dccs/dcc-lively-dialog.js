@@ -17,6 +17,25 @@ class DCCLivelyTalk extends HTMLElement {
    }
 
    connectedCallback() {
+      this.addEventListener("schedule-animation", this._scheduleAnimation);
+
+      this._dialog = document.querySelector("dcc-lively-dialog");
+      if (this._dialog == null)
+         this._buildVisual();
+      else {
+         let eventReady = new CustomEvent("talk-ready", {detail: this});
+         this._dialog.dispatchEvent(eventReady);         
+      }
+   }
+      
+   _scheduleAnimation(event) {
+      this.duration = event.detail.duration;
+      this.delay = event.detail.delay;
+      this.direction = event.detail.direction;
+      this._buildVisual();
+   }
+   
+   _buildVisual() {
       const animationDirection = {
          "left":  "from {left: 100%;} to {left: 0%;}",
          "right": "from {left: -100%;} to {left: 0%;}"
@@ -124,8 +143,6 @@ class DCCLivelyTalk extends HTMLElement {
       
       this._presentation.innerHTML = (directionWeb == "left") ? imageHTML + speechHTML : speechHTML + imageHTML;
       this._presentation.querySelector("img").addEventListener("load", this._imageLoaded);
-      
-      this.addEventListener("schedule-animation", this._scheduleAnimation);
    }
    
    disconnectedCallback() {
@@ -181,23 +198,6 @@ class DCCLivelyTalk extends HTMLElement {
    }
 
    _imageLoaded() {
-      this._dialog = document.querySelector("dcc-lively-dialog");
-      
-      if (this._dialog == null)
-         this._startAnimation();
-      else {
-         let eventReady = new CustomEvent("talk-ready", {detail: this});
-         this._dialog.dispatchEvent(eventReady);         
-      }
-   }
-   
-   _scheduleAnimation(event) {
-      this.duration = event.detail.duration;
-      this.delay = event.detail.delay;
-      this._startAnimation();
-   }
-   
-   _startAnimation() {
       this._presentation.classList.add("dcc-direction");
       this._presentation.classList.add("dcc-entrance");
       this._presentation.classList.remove("dcc-hidden");
@@ -211,6 +211,7 @@ class DCCLivelyDialog extends HTMLElement {
       super();
       
       this._sequenceCounter = 0;
+      this._direction = "left";
       
       this._talkReady = this._talkReady.bind(this);
    }
@@ -248,10 +249,19 @@ class DCCLivelyDialog extends HTMLElement {
    /* Rendering */
 
    _talkReady(event) {
+      let rateValue = parseInt(this.rate);
+      console.log("rate: " + rateValue);
+      let durationValue = parseInt(this.duration);
+      console.log("duration: " + durationValue);
+      
       let eventSchedule = new CustomEvent("schedule-animation",
-            {detail: {duration: this.duration, delay: (this._sequenceCounter * this.rate) - this.duration}});
+            {detail: {duration: this.duration,
+                      delay: ((this._sequenceCounter * this.rateValue) - this.durationValue) + "s",
+                      direction: this._direction}});
       event.detail.dispatchEvent(eventSchedule);
       this._sequenceCounter++;
+      console.log("Delay: " + ((this._sequenceCounter * this.rateValue) - this.durationValue));
+      this._direction = (this._direction == "left") ? "right" : "left";
    }
 }
 

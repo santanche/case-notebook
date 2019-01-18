@@ -18,7 +18,7 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
       knot : /^(?:<p>)?[ \t]*==*[ \t]*(\w[\w \t]*)(?:\(([\w \t]*)\))?[ \t]*=*[ \t]*(?:<\/p>)?/igm,
       option : /\+\+[ \t]*([^-&<> \t][^-&<>\n\r\f]*)?(?:-(?:(?:&gt;)|>)[ \t]*(\w[\w. \t]*))?/igm,
       divert : /-(?:(?:&gt;)|>) *(\w[\w. ]*)/igm,
-      character : /^(?:<p>)?[ \t]*:[ \t]*([\w]+)[ \t]*:[ \t]*(?:<\/p>)?/igm,
+      character : /^(?:<p>)?[ \t]*(\w[\w ]*):[ \t]*(\w[\w \t]*)(?:<\/p>)?/igm,
       image : /<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/igm,
       input : /\{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t%]*))?\}/igm,
       domain : /\{([\w \t\-"]*)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?\}(?:\(([\w \t\+\-=\*]*)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?\))?/igm,
@@ -71,7 +71,7 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
             // knot   : markKnot,
             option : interfaceOption,
             divert : interfaceDivert,
-            // character : interfaceCharacter,
+            character : interfaceCharacter,
             image  : interfaceImage,
             input  : interfaceInput,
             domain : interfaceDomain,
@@ -83,6 +83,8 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
          knotTemplate = (knotBlocks[kb + 1] == null) ? "knot"
                           : knotBlocks[kb + 1].trim().replace(" ", "_");
          knotImage = "";
+         
+         // converting case-markdown in HTML
          let pageContent = knotBlocks[kb + 2];
          for (mk in interfaceFs)
             pageContent = pageContent.replace(marks[mk], interfaceFs[mk]);
@@ -233,6 +235,14 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
              + "</a></span>";
       */
    };
+   
+   var interfaceCharacter = function(matchStr, character, talk) {
+      let output = matchStr;
+      if (knotTemplate == "dialog") { 
+         
+      let display = inside.trim();
+      let link = display.trim().replace(/ /igm, "_");
+   }   
 
    var interfaceImage = function(matchStr, insideSrc, _insideAlt) {
       if (knotImage === "")
