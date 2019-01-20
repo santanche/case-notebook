@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Start</title>
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/standard.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/main-start.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page-start.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/control-panel.css">
+    
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Raleway">
+    
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/page.js"></script>
+    <script type="text/javascript" src="js/dccs/dcc-link.js"></script>
+    <script type="text/javascript" src="js/dccs/dcc-state-selector.js"></script>
+    <script type="text/javascript" src="js/dccs/dcc-lively-dialog.js"></script>
+  </head>
+  <body onload="traceRoute('')">
+    <!-- Panel North -->
+    <!-- =========== -->
+    <div class="panel_north">
+      <!-- <div class="home_item"><a href="index.html">Zombie Health</a></div> -->
+      
+     <div class="main_menu"> &nbsp;&nbsp;&nbsp; <a href="report.html" target="_blank" onclick="exportScore()">report</a> <br>
+        <hr> </div>
+    </div>
+    <!-- Panel Center -->
+    <!-- ============ -->
+    <div class="panel_center">
+      <div class="panel_inner_center">
+        <div class="panel_presentation">
+  <div class="panel_image">
+    <img class="image_presentation" src="images/entrance.jpg"></img>
+  </div>
+
+  <div class="panel_case">
+    <div class="case_title">Sign in</div>
+
+    <div class="case_text">
+      <div id="request-id">
+        <p>User id (e-mail): <input type='text' id="idInput"></input></p>
+        <p class="case_link"><a href="#" onclick="signIn()">Sign in</a></p>
+      </div>
+
+      <div id="signed-user" style="display:none">
+        <p id="user-name" >Welcome </p>
+        <p class="case_link" id="proceed"><a href='casesindex.html'>Start</a></p>
+      </div>
+
+      <div id="invalid-id" style="display:none">
+        <p class="alert_message">Invalid user id (e-mail). Please, register if you are a new user.</p>
+        <div class="case_link"><a href="register.html" onclick="register()">Register</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+    <!-- Panel South -->
+    <!-- =========== -->
+    <div class="panel_south">
+       <div id="control-panel" class="control-panel-style"></div>
+    </div>
+</body>
+</html>

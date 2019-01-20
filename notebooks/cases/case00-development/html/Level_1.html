@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Start</title>
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/standard.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/main-start.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page-start.css">
+    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/control-panel.css">
+    
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Raleway">
+    
+    <script type="text/javascript" src="js/main.js"></script>
+    <script type="text/javascript" src="js/page.js"></script>
+    <script type="text/javascript" src="js/dccs/dcc-link.js"></script>
+    <script type="text/javascript" src="js/dccs/dcc-state-selector.js"></script>
+    <script type="text/javascript" src="js/dccs/dcc-lively-dialog.js"></script>
+  </head>
+  <body onload="traceRoute('Level 1')">
+    <!-- Panel North -->
+    <!-- =========== -->
+    <div class="panel_north">
+      <!-- <div class="home_item"><a href="index.html">Zombie Health</a></div> -->
+      
+     <div class="main_menu"> &nbsp;&nbsp;&nbsp; <a href="report.html" target="_blank" onclick="exportScore()">report</a> <br>
+        <hr> </div>
+    </div>
+    <!-- Panel Center -->
+    <!-- ============ -->
+    <div class="panel_center">
+      <div class="panel_inner_center">
+        <div class="panel_presentation">
+  <div class="panel_case">
+    <dcc-lively-dialog rate="6s" duration="2s">
+    
+<dcc-lively-talk character='images/nurse.png' speech='Doctor'></dcc-lively-talk>, we have a man (51 years old) who entered the emergency department reporting chest pain. His vital signs are ABP: 144x92mmHG; HR: 78bpm; RR: 21rpm; Temp: 37oC; O2Sat: 98%.</p>
+<dcc-lively-talk character='images/doctor.png' speech='Let'></dcc-lively-talk>’s go!</p>
+<dcc-lively-talk character='images/patient.png' speech='Doctor'></dcc-lively-talk>, I am feeling chest pain since yesterday. The pain is continuous and is located just in the middle of my chest, worsening when I breathe and when I lay down on my bed. I suffer from arterial hypertension and smoke 20 cigarettes every day. My father had a “heart attack” at my age and I am very worried about it. </p>
+<dcc-lively-talk character='images/doctor.png' speech='I did a physical examination and the cardiac and pulmonary auscultation are normal'></dcc-lively-talk>; chest pain does not worse with palpation of the thorax; there is no jugular stasis nor lower limb edema.</p>
+<dcc-lively-talk character='images/jacinto.png' speech='What do you want to do'></dcc-lively-talk>?</p>
+<p><dcc-link link='Generate_hypothesis_1.html' label='Generate hypothesis' image='images/generate-hypothesis.svg' location='control-panel'></dcc-link>
+<dcc-link link='More_information_1.html' label='More information' image='images/more-information.svg' location='control-panel'></dcc-link>
+<dcc-link link='Call_the_supervisor_1.html' label='Call the supervisor' image='images/call-the-supervisor.svg' location='control-panel'></dcc-link></p>
+
+    </dcc-lively-dialog>
+    
+  </div>
+</div>
+      </div>
+    </div>
+    <!-- Panel South -->
+    <!-- =========== -->
+    <div class="panel_south">
+       <div id="control-panel" class="control-panel-style"></div>
+    </div>
+</body>
+</html>

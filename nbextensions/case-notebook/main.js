@@ -4,8 +4,7 @@ define(["base/js/namespace", "jquery", "require", "notebook/js/cell",
         "base/js/security", "components/marked/lib/marked",
         "base/js/events", "notebook/js/textcell"],
         
-function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
-      _textcell) {
+function(_IPython, _$, _requirejs, _cell, _security, _marked, events, _textcell) {
 
    var notebookCell;
    var mdhtml;
@@ -15,14 +14,14 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
    var knotTemplate = null;
 
    var marks = {
-      knot : /^(?:<p>)?[ \t]*==*[ \t]*(\w[\w \t]*)(?:\(([\w \t]*)\))?[ \t]*=*[ \t]*(?:<\/p>)?/igm,
+      knot   : /^(?:<p>)?[ \t]*==*[ \t]*(\w[\w \t]*)(?:\(([\w \t]*)\))?[ \t]*=*[ \t]*(?:<\/p>)?/igm,
       option : /\+\+[ \t]*([^-&<> \t][^-&<>\n\r\f]*)?(?:-(?:(?:&gt;)|>)[ \t]*(\w[\w. \t]*))?/igm,
       divert : /-(?:(?:&gt;)|>) *(\w[\w. ]*)/igm,
-      character : /^(?:<p>)?[ \t]*(\w[\w ]*):[ \t]*(\w[\w \t]*)(?:<\/p>)?/igm,
-      image : /<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/igm,
-      input : /\{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t%]*))?\}/igm,
+      talk   : /^(?:<p>)?[ \t]*(\w[\w ]*):[ \t]*(\w[\w \t]*)(?:<\/p>)?/igm,
+      image  : /<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/igm,
+      input  : /\{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t%]*))?\}/igm,
       domain : /\{([\w \t\-"]*)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?\}(?:\(([\w \t\+\-=\*]*)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?\))?/igm,
-      score : /^(?:<p>)?[ \t]*~[ \t]*([\+\-=\*\\%]?)[ \t]*(\w*)?[ \t]*(\w+)[ \t]*(?:<\/p>)?/igm
+      score  : /^(?:<p>)?[ \t]*~[ \t]*([\+\-=\*\\%]?)[ \t]*(\w*)?[ \t]*(\w+)[ \t]*(?:<\/p>)?/igm
    };
 
    var render_cell = function(cell) {
@@ -71,7 +70,7 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
             // knot   : markKnot,
             option : interfaceOption,
             divert : interfaceDivert,
-            character : interfaceCharacter,
+            talk   : interfaceTalk,
             image  : interfaceImage,
             input  : interfaceInput,
             domain : interfaceDomain,
@@ -115,7 +114,7 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
             knot   : markKnot,
             option : markOption,
             divert : markDivert,
-            character : markCharacter,
+            talk   : markTalk,
             image  : markImage,
             input  : markInput,
             domain : markDomain,
@@ -236,12 +235,15 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
       */
    };
    
-   var interfaceCharacter = function(matchStr, character, talk) {
+   var interfaceTalk = function(matchStr, character, talk) {
       let output = matchStr;
-      if (knotTemplate == "dialog") { 
-         
-      let display = inside.trim();
-      let link = display.trim().replace(/ /igm, "_");
+      if (knotTemplate == "dialog") {
+         let fileName = character.trim().toLowerCase().replace(/ /igm, "_");
+         output = "<dcc-lively-talk " + 
+                  "character='images/" + fileName + ".png' " +
+                  "speech='" + talk.trim() + "'></dcc-lively-talk>";
+      }
+      return output;
    }   
 
    var interfaceImage = function(matchStr, insideSrc, _insideAlt) {
@@ -326,7 +328,7 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events,
       return newLabel;
    };
 
-   var markCharacter = function(matchStr, _inside) {
+   var markTalk = function(matchStr, _inside) {
       var display = matchStr.replace(/: *([\w]+ *:)/igm,
             "<span style='font-weight:bold'>$1</span>");
 
