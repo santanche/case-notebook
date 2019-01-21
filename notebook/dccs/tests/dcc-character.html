@@ -2,24 +2,24 @@
 <html>
 <head>
    <meta charset="utf-8"/>
-   <title>DCC Lively Entrance</title>
+   <title>Character DCC</title>
+   
+   <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/tests.css">
 
+   <script type="text/javascript" src="../components/dcc-system.js"></script>
    <script type="text/javascript" src="../components/dcc-base.js"></script>
-   <script type="text/javascript" src="../components/dcc-lively-dialog.js"></script>
-   <script type="text/javascript" src="../components/editable/dcc-lively-dialog-editable.js"></script>
-   <script type="text/javascript" src="edit-dcc.js"></script>
+   <script type="text/javascript" src="../components/dcc-character.js"></script>
+   <script type="text/javascript" src="../components/editable/dcc-character-editable.js"></script>
+   <script type="text/javascript" src="../components/dcc-image-selector.js"></script>
+   <script type="text/javascript" src="js/edit-dcc.js"></script>
 </head>
 <body>
    <div class="scene-screen">
-      <dcc-lively-talk duration="2s" 
-         character="images/nurse.png"
-         speech="Doctor, please you have to evaluate a man (51 years-old) who entered the emergency department reporting chest pain. His vital signs are ABP: 144x92mmHG; HR: 78bpm; RR: 21rpm; Temp: 37oC; O2Sat: 98%.">
-      </dcc-lively-talk>
-      <dcc-lively-talk duration="2s" delay="2s" direction="right"
-         character="images/patient.svg" bubble="bubble"
-         speech="Ok.">
-      </dcc-lively-talk>
-      <a class="edit_button" href="#" onclick="editAllDCCs()">Edit</a>
+      <dcc-character character="Lucinda" role="nurse" 
+         image="images/nurse.png" icon="icons/nurse.png"
+         description="Head nurse of the hospital.">
+      </dcc-character>
+      <div class="edit-button" onclick="editAllDCCs()">Edit</div>
    </div>
 </body>
 </html>

@@ -77,7 +77,7 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events, _textcell)
             score  : interfaceScore
       };
       
-      for (kb = 1; kb < knotBlocks.length; kb += 3) {
+      for (var kb = 1; kb < knotBlocks.length; kb += 3) {
          let pageName = knotBlocks[kb].trim().replace(/ /igm, "_");
          knotTemplate = (knotBlocks[kb + 1] == null) ? "knot"
                           : knotBlocks[kb + 1].trim().replace(" ", "_");
@@ -85,7 +85,7 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events, _textcell)
          
          // converting case-markdown in HTML
          let pageContent = knotBlocks[kb + 2];
-         for (mk in interfaceFs)
+         for (var mk in interfaceFs)
             pageContent = pageContent.replace(marks[mk], interfaceFs[mk]);
          /*
          var pageContent = knotBlocks[kb + 2].replace(marks.input,
@@ -124,7 +124,7 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events, _textcell)
       // indexing knots
       let knotCtx = null;
       let knotHeads = mdtext.match(marks.knot);
-      for (kh in knotHeads) {
+      for (var kh in knotHeads) {
          var label = knotHeads[kh]
                .match(/==*[ \t]*(\w[\w \t]*)(?:\([\w \t]*\))?[ \t]*=*/i);
          label = label[1].trim();
@@ -144,7 +144,7 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events, _textcell)
       do {
          matchStart = -1;
          var selected = "";
-         for (mk in marks) {
+         for (var mk in marks) {
             var pos = mdfocus.search(marks[mk]);
             if (pos > -1 && (matchStart == -1 || pos < matchStart)) {
                selected = mk;
