@@ -1,0 +1,28 @@
+@CHARSET "UTF-8";
+
+.panel_center {
+    position: relative;
+    width: 100%;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    margin-top: 60px;
+    margin-bottom: 20px;
+    background-color: transparent;
+}
+
+.panel_inner_center {
+	position: relative;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	margin-left: 10%;
+	margin-right: 10%;
+   background-color: #e0e9ce;
+   background-image: url("../images/patient-in-bed.svg");
+   background-position: center;
+   background-repeat: no-repeat;
+   background-size: auto 100%;
+}
