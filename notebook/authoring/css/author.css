@@ -28,15 +28,6 @@ body {
    flex-direction: column;
 }
 
-
-.author-panel {
-   position: absolute;
-   top: 0px;
-   bottom: 0px;
-   left: 0px;
-   right: 0px;
-}
-
 .control-panel {
    flex: 48px;
    max-height: 48px;
@@ -71,11 +62,11 @@ body {
 }
 
 .navigation-panel {
-   flex: 20%;
+   flex: 15%;
    display: flex;
    flex-direction: column;
 }
 
 .knot-panel {
-   flex: 80%;
+   flex: 85%;
 }

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<style>
+   .case-link {
+         color: #e0e9ce;
+         text-align: center;
+         padding: 14px 25px;
+         background-color: #383f4f;
+         font-size: 16pt;
+         display: inline-block;
+   }
+   .case-link a:hover {
+         color: #e0e9ce;
+         text-decoration: none;
+         cursor: pointer;
+   }
+   .case-link a:visited {
+         color: #e0e9ce;
+         text-decoration: none;
+         cursor: pointer;
+   }
+   
+   .case-link a:hover {
+         color: #e0e9ce;
+         text-decoration: none;
+         cursor: pointer;
+   }
+</style>
+
+<script>
+const convertAngle = async () => {
+   const inputAngle = document.querySelector("#angle-input").value;
+   
+   const response = await fetch("http://127.0.0.1:8888/convert", {
+     method: "POST",
+     body: {angle: inputAngle},
+     headers:{
+       "Content-Type": "application/json"
+     }
+   });
+   
+   const outputAngle = await response.json();
+   document.querySelector("#angle-output").innerHTML = "Converted: " + outputAngle.convertedAngle;  
+}
+</script>
+
+</head>
+<body>
+   <p>Type the angle: <input type="text" id="angle-input"></input></p>
+   <a class="case-link" href="#" onclick="convertAngle()">Convert</a>
+   <p id="angle-output"></p>
+</body>
+</html>
