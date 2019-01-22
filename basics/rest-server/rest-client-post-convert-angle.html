@@ -43,8 +43,10 @@ const convertAngle = async () => {
      }
    });
    
+   console.log(response);
    const outputAngle = await response.json();
-   document.querySelector("#angle-output").innerHTML = "Converted: " + outputAngle.convertedAngle;  
+   console.log(outputAngle);
+   document.querySelector("#angle-output").innerHTML = "Converted: " + outputAngle.convertedAngle;
 }
 </script>
 
