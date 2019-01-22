@@ -1,0 +1,81 @@
+@charset "UTF-8";
+
+body {
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+    font-size: 14pt;
+}
+
+.std-border {
+   border: 1px solid lightgray;
+   border-radius: 5px;
+   margin: 5px;
+}
+
+.author-panel {
+   /* the main box (body) occupies all the visible area */
+   position: absolute;
+   left: 0px;
+   right: 0px;
+   top: 0px;
+   bottom: 0px;
+
+   /* eliminate margins etc. */
+   margin: 0px;
+   padding: 0px;
+   border-width: 0px;
+
+   display: flex;
+   flex-direction: column;
+}
+
+
+.author-panel {
+   position: absolute;
+   top: 0px;
+   bottom: 0px;
+   left: 0px;
+   right: 0px;
+}
+
+.control-panel {
+   flex: 48px;
+   max-height: 48px;
+   display: flex;
+   flex-direction: row;
+}
+
+.control-button {
+   flex: 48px;
+   max-width: 48px;
+   max-height: 48px;
+   margin-right: 10px;
+}
+
+.work-panel {
+   width: 100%;
+   heught: 100%;
+   flex: auto;
+   display: flex;
+}
+
+@media (orientation: landscape) {
+   .work-panel {
+      flex-direction: row;
+   }
+}
+
+@media (orientation: portrait) {
+   .work-panel {
+      flex-direction: column;
+   }
+}
+
+.navigation-panel {
+   flex: 20%;
+   display: flex;
+   flex-direction: column;
+}
+
+.knot-panel {
+   flex: 80%;
+}

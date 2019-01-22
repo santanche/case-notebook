@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="utf-8"/>
+   <title>DCC Link Test</title>
+   <style>
+      body {
+         font-family: "Trebuchet MS", Helvetica, sans-serif;
+         color: black;
+      }
+   </style>
+   <script type="text/javascript" src="../components/dcc-base.js"></script>
+   <script type="text/javascript" src="../components/dcc-trigger.js"></script>
+   <script>
+      function startListener() {
+         document.addEventListener("button-on", display);
+      }
+      function display(event) {
+         document.querySelector("#message").innerHTML = event.detail;
+      }
+   </script>
+</head>
+<body onload="startListener()">
+   <dcc-trigger action="button-on" label="On"></dcc-trigger>
+   <div style="width: 100px"><dcc-trigger link="#" label="Generate Hypothesis" image="images/icon-hypothesis.svg"></dcc-trigger></div>
+   
+   <h1 id="message"></h1>
+</html>
