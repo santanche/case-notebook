@@ -37,7 +37,7 @@ const convertAngle = async () => {
    
    const response = await fetch("http://127.0.0.1:8888/convert", {
      method: "POST",
-     body: {angle: inputAngle},
+     body: JSON.stringify({"angle": inputAngle}),
      headers:{
        "Content-Type": "application/json"
      }
