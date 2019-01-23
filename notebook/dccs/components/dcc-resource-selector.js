@@ -1,10 +1,12 @@
-/* Image Selector DCC
+/* Resource Selector DCC
   *******************/
-class DCCImageSelector extends DCCBase {
+class DCCResourceSelector extends DCCBase {
    constructor() {
       super();
       
       this._listeners = [];
+      this._selectList = null;
+      this._listWeb = null;
    }
    
    connectedCallback() {
@@ -36,7 +38,7 @@ class DCCImageSelector extends DCCBase {
                display: flex;
                flex-direction: column;
             }
-            .dsty-image-list {
+            .dsty-resource-list {
                flex: 50%;
             }
             .dsty-select-button {
@@ -51,10 +53,10 @@ class DCCImageSelector extends DCCBase {
                color: white;
                cursor: pointer;
             }
-            .dsty-image-preview {
+            .dsty-resource-preview {
                flex: 200px;
             }
-            .dsty-image {
+            .dsty-resource {
                object-fit: contain;
                max-width: 100%;
                max-height: 100%;
@@ -62,23 +64,15 @@ class DCCImageSelector extends DCCBase {
        </style>
        <div id="presentation-dcc" class="dsty-selector dsty-border">
           <div class="dsty-selection-block">
-             <select id="image-list" size="10" class="dsty-image-list dsty-border">
-                [files]
+             <select id="resource-list" size="10" class="dsty-resource-list dsty-border">
              </select>
              <div id="select-button" class="dsty-select-button">Select</div>
           </div>
-          <div id="image-preview" class="dsty-image-preview dsty-border">
+          <div id="resource-preview" class="dsty-resource-preview dsty-border">
           </div>
        </div>`;
       
-      let imageFiles = DCCSystem.getImageFiles();
-      let options = "";
-      for (var i in imageFiles)
-         options += "<option value='" + imageFiles[i] +
-                    ((i == 0) ? "' selected>" : "'>") +
-                    imageFiles[i] + "</option>";
-      
-      templateHTML = templateHTML.replace("[files]", options);
+      // templateHTML = templateHTML.replace("[files]", options);
 
       // building the template
       const template = document.createElement("template");
@@ -86,21 +80,55 @@ class DCCImageSelector extends DCCBase {
       let shadow = this.attachShadow({mode: "open"});
       shadow.appendChild(template.content.cloneNode(true));
       
-      this._imagePreview = shadow.querySelector("#image-preview");
-      
-      this._imageList = shadow.querySelector("#image-list");
-      this._updatePreview = this._updatePreview.bind(this);
-      this._imageList.addEventListener("change", this._updatePreview);
+      this._resourcePreview = shadow.querySelector("#resource-preview");
       
       let selectButton = shadow.querySelector("#select-button");
       this._notify = this._notify.bind(this);
       selectButton.addEventListener("click", this._notify);
       
+      this._updatePreview = this._updatePreview.bind(this);
+      this._listWeb = shadow.querySelector("#resource-list");
+      this._showSelectList();
+   }
+   
+   /* Properties
+    **********/
+    
+    static get observedAttributes() {
+       return ["preview"];
+    }
+   
+    get preview() {
+       let returnValue = this.hasAttribute("preview") && this.getAttribute("preview") != false;
+       return returnValue;
+    }
+    
+    set preview(newValue) {
+       this.setAttribute("preview", newValue);
+    }
+    
+   addSelectList(selectList) {
+      this._selectList = selectList;
+      if (this._presentationAvailable = true)
+         this._showSelectList();
+   }
+   
+   _showSelectList() {
+      if (this._selectList != null) {
+         // let imageFiles = DCCSystem.getImageFiles();
+         let options = "";
+         for (var l in this._selectList)
+            options += "<option value='" + this._selectList[l][1] +
+                       ((l == 0) ? "' selected>" : "'>") +
+                       this._selectList[l][0] + "</option>";
+         this._listWeb.innerHTML = options;
+         this._listWeb.addEventListener("change", this._updatePreview);
+      }
       this._updatePreview();
    }
    
    _updatePreview() {
-      this._imagePreview.innerHTML = "<img src='" + this._imageList.value + "' class='dsty-image'>"; 
+      this._resourcePreview.innerHTML = "<img src='" + this._listWeb.value + "' class='dsty-resource'>"; 
    }
    
    addSelectionListener(listener) {
@@ -108,13 +136,13 @@ class DCCImageSelector extends DCCBase {
    }
    
    _notify() {
-      let eventSelected = new CustomEvent("image-selected", {detail: this._imageList.value});
+      let eventSelected = new CustomEvent("resource-selected", {detail: this._listWeb.value});
       for (var l in this._listeners)
          this._listeners[l].dispatchEvent(eventSelected);
    }
 }
 
 (function() {
-   DCCImageSelector.editableCode = false;
-   customElements.define("dcc-image-selector", DCCImageSelector);
+   DCCResourceSelector.editableCode = false;
+   customElements.define("dcc-resource-selector", DCCResourceSelector);
 })();

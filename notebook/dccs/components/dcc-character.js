@@ -1,10 +1,6 @@
 /* Character DCC
   **************/
 class DCCCharacter extends DCCBase {
-   static get observedAttributes() {
-      return ["image", "character", "role", "description"];
-   }
-
    connectedCallback() {
       let templateHTML = 
          `<style>
@@ -118,6 +114,10 @@ class DCCCharacter extends DCCBase {
    /* Properties
       **********/
    
+   static get observedAttributes() {
+      return ["image", "character", "role", "description"];
+   }
+
    get image() {
       return this.getAttribute("image");
    }
