@@ -85,7 +85,6 @@ for (var d = 0; d < dccs.length; d++)
    }
    
    _caseLoaded(caseMd) {
-      console.log(caseMd);
       let knotPanel = document.querySelector("#knot-panel");
       knotPanel.removeChild(this._selector);
    }

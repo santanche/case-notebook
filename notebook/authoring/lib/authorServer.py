@@ -11,11 +11,7 @@ class AuthorDM(object):
         return [d.replace("/", "") for d in directories]
     
     def loadCase(self, caseName):
-        caseMd = open(AuthorDM.CASES_DIR + caseName + "/" + CASE_FILE, "r", encoding="utf-8")
+        caseMd = open(AuthorDM.CASES_DIR + caseName + "/" + AuthorDM.CASE_FILE, "r", encoding="utf-8")
         caseText = caseMd.read()
         caseMd.close()
-        log = open("log.txt", "w", encoding="utf-8")
-        log.write(AuthorDM.CASES_DIR + caseName + "/" + CASE_FILE)
-        log.write(caseText)
-        log.close()
         return caseText
