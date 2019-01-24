@@ -12,6 +12,12 @@ function editableDCCCharacter() {
       this._recordImages.innerHTML = "";
       this._imageSelected = this._imageSelected.bind(this);
       let imageSelector = new DCCResourceSelector();
+
+      // <TODO> provisory
+      imageSelector.addSelectList([["doctor", "images/doctor.png"],
+         ["nurse", "images/nurse.png"],
+         ["patient", "images/patient.png"]]);
+
       
       this.addEventListener("resource-selected", this._imageSelected);
       imageSelector.addSelectionListener(this);
