@@ -8,8 +8,12 @@
 
    <script type="text/javascript" src="../dccs/components/dcc-base.js"></script>
    <script type="text/javascript" src="../dccs/components/dcc-trigger.js"></script>
+   <script type="text/javascript" src="../dccs/components/dcc-resource-selector.js"></script>
+   
+   <script type="text/javascript" src="js/dcc-author-server-proxy.js"></script>
+   <script type="text/javascript" src="js/author.js"></script>
 </head>
-<body>
+<body onload="startSystem()">
    <div class="author-panel">
       <div class="control-panel std-border">
          <div class="control-button"><dcc-trigger action="control-load" label="Load" image="icons/icon-load.svg"></dcc-trigger></div>
@@ -22,7 +26,7 @@
       </div>
       <div class="work-panel">
          <div class="navigation-panel std-border"></div>
-         <div class="knot-panel std-border"></div>
+         <div id="knot-panel" class="sty-knot-panel std-border"></div>
       </div>
    </div>
 </body>

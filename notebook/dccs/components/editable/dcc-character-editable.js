@@ -11,9 +11,9 @@ function editableDCCCharacter() {
       this._recordImages.removeEventListener("click", this._editImage);
       this._recordImages.innerHTML = "";
       this._imageSelected = this._imageSelected.bind(this);
-      let imageSelector = new DCCImageSelector();
+      let imageSelector = new DCCResourceSelector();
       
-      this.addEventListener("image-selected", this._imageSelected);
+      this.addEventListener("resource-selected", this._imageSelected);
       imageSelector.addSelectionListener(this);
       
       this._recordImages.appendChild(imageSelector);

@@ -109,7 +109,7 @@ class DCCResourceSelector extends DCCBase {
     
    addSelectList(selectList) {
       this._selectList = selectList;
-      if (this._presentationAvailable = true)
+      if (this._listWeb != null)
          this._showSelectList();
    }
    
