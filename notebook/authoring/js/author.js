@@ -108,5 +108,7 @@ for (var d = 0; d < dccs.length; d++)
       let knotPanel = document.querySelector("#knot-panel");
       knotPanel.appendChild(this._selector);
    }
+   
+
 }
 
