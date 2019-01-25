@@ -25,15 +25,25 @@ class Translator {
                   + caseDescription + '""","""' + caseImage + '""","'
                   + caseTitle.replace(/ /igm, "_") + '")');
 
-      const interfaceFs = {
+      const mdToObj = {
             // knot   : translateKnot,
-            option : this.translateOption,
-            divert : this.translateDivert,
-            talk   : this.translateTalk,
-            image  : this.translateImage,
+            // option : this.translateOption,
+            // divert : this.translateDivert,
+            // talk   : this.translateTalk,
+            // image  : this.translateImage,
             input  : this.translateInput,
-            domain : this.translateDomain,
-            score  : this.translateScore
+            // domain : this.translateDomain,
+            // score  : this.translateScore
+      };
+      const objToHTML = {
+            // knot   : translateKnot,
+            // option : this.translateOption,
+            // divert : this.translateDivert,
+            // talk   : this.translateTalk,
+            // image  : this.translateImage,
+            input  : this.translateInput,
+            // domain : this.translateDomain,
+            // score  : this.translateScore
       };
       
       for (var kb = 1; kb < knotsMD.length; kb += 3) {
@@ -46,13 +56,6 @@ class Translator {
          let pageContent = knotsMD[kb + 2];
          for (var mk in interfaceFs)
             pageContent = pageContent.replace(marks[mk], interfaceFs[mk]);
-         /*
-         var pageContent = knotsMD[kb + 2].replace(marks.input,
-               translateInput).replace(marks.domain, translateDomain)
-               .replace(marks.option, translateOption).replace(
-                     marks.image, translateImage).replace(marks.score,
-                     translateScore);
-         */
          
          console.log('HealthDM.interfaceKnot("' + knotTemplate + '","'
                + pageName + '","' + knotsMD[kb].trim() + '","""'
@@ -65,33 +68,78 @@ class Translator {
       }
    }
    
-   translateInput(_matchStr, insideRows, insideVariable,
-         insideVocabulary) {
-      var variable = insideVariable.trim().replace(/ /igm, "_");
-
-      var rows = (insideRows == null) ? 0 : parseInt(insideRows);
-
-      return ((rows > 0) ? "<textarea style='width:100%' rows=" + rows
-            : "<input type='text'")
-            + " class='userInput' id='"
-            + variable
-            + "' oninput=\"followInput('"
-            + variable
-            + "','"
-            + insideVocabulary.trim()
-            + "')\" "
-            + "' onchange=\"evaluateInput('"
-            + variable
-            + "','"
-            + insideVocabulary.trim()
-            + "')\">"
-            + ((rows > 0) ? "</textarea>" : "</input>")
-            + "<span id='" + variable + "_result'></span>";
+   translateInput(_matchStr, insideRows, insideVariable, insideVocabulary) {
+      return inputObjToHTML(inputMdToObj(insideRows, insideVariable, insideVocabulary));
    }
 
-   translateDomain(matchStr, _insideDescription,
-         _insideDetail1, _insideRate1, _insideHeading, _insideDetail2,
-         _insideRate2) {
+   
+   /*
+    * Input Md to Obj
+    * Input: {?[rows]: [vocabulary]}
+    * Regular expression: \{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t]*))?\}
+    * Output: {
+    *   variable: <variable that will receive the input>
+    *   rows: <number of rows for the input>
+    *   vocabulary: <the vocabulary set to match the input>
+    * }
+    */
+   inputMdToObj(insideRows, insideVariable, insideVocabulary) {
+      return {
+         variable: insideVariable.trim().replace(/ /igm, "_"),
+         rows: (insideRows == null) ? 0 : parseInt(insideRows),
+         vocabulary: insideVocabulary.trim()
+      };
+   }
+   
+   /*
+    * Input Obj to HTML
+    * Output: <[input-type] [input-parameters] class='userInput' id='[variable]'
+               oninput="followInput('[variable]','[vocabulary]')">
+              </[input-type]>
+              <span id='[variable]_result'></span>
+    */
+   inputObjToHTML(inputObj) {
+      let inputType = ((inputObj.rows > 1) ? "textarea" : "input");
+      let inputParam = ((inputObj.rows > 1) ? "style='width:100%' rows=" + rows
+                                            : "type='text'");
+      
+      return this.marksHTML.replace(/\[input-type\]/igm, inputType)
+                           .replace("[input-parameters]", inputParam)
+                           .replace(/\[variable\]/igm, inputObject.variable)
+                           .replace("[vocabulary", inputObject.vocabulary);
+   }
+
+   /*
+    * Domain Md to Obj
+    * Input: {[expression] =|: [specification] / [rate]}([formal] =|: [specification] / [rate])
+    * Regular expression: \{([\w \t\-"]*)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?\}(?:\(([\w \t\+\-=\*]*)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?\))?
+    * Output: {
+    *   expression: <expression in the text to be evaluated
+    *   specification: specify the expession defining, for example, a measurable value, rate or origin.
+    *   rate:  
+    *   
+    *   variable: <variable that will receive the input>
+    *   rows: <number of rows for the input>
+    *   vocabulary: <the vocabulary set to match the input>
+    * }
+    */
+   domainMdToObj(matchStr, insideDescription,
+                 insideSpecification1, insideRate1,
+                 insideHeading, insideSpecification2, insideRate2) {
+      let 
+      
+      return {
+         description: insideDescription.trim(),
+         specification1: (insideSpecification1 != null) ? insideSpecification1.trim() : "#",
+         var rate1 = (insideRate1 != null) ? insideRate1.trim() : "#";
+         var heading = (insideHeading != null) ? insideHeading.trim()
+               : description;
+         var detail2 = (insideDetail2 != null) ? insideDetail2.trim() : "#";
+         var rate2 = (insideRate2 != null) ? insideRate2.trim() : "#";
+      };
+      
+
+      
       let content = matchStr.match(/\{([ \t\w=\:\-=%\/"]*)\}/i)[1];
       
       if (knotTemplate == "selector")
@@ -177,8 +225,10 @@ class Translator {
          divert : /-(?:(?:&gt;)|>) *(\w[\w. ]*)/igm,
          talk   : /^(?:<p>)?[ \t]*(\w[\w ]*):[ \t]*(\w[\w \t]*)(?:<\/p>)?/igm,
          image  : /<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/igm,
-         input  : /\{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t%]*))?\}/igm,
+         input  : /\{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t]*))?\}/igm,
          domain : /\{([\w \t\-"]*)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?\}(?:\(([\w \t\+\-=\*]*)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?\))?/igm,
          score  : /^(?:<p>)?[ \t]*~[ \t]*([\+\-=\*\\%]?)[ \t]*(\w*)?[ \t]*(\w+)[ \t]*(?:<\/p>)?/igm
    };
+   
+
 })();
