@@ -117,10 +117,12 @@ class DCCResourceSelector extends DCCBase {
       if (this._selectList != null) {
          // let imageFiles = DCCSystem.getImageFiles();
          let options = "";
-         for (var l in this._selectList)
-            options += "<option value='" + this._selectList[l][1] +
-                       ((l == 0) ? "' selected>" : "'>") +
-                       this._selectList[l][0] + "</option>";
+         let selected = "' selected>";
+         for (var sl in this._selectList) {
+            options += "<option value='" + sl + selected +
+                       sl + "</option>";
+            selected = "'>";
+         }
          this._listWeb.innerHTML = options;
          this._listWeb.addEventListener("change", this._updatePreview);
       }
@@ -128,7 +130,8 @@ class DCCResourceSelector extends DCCBase {
    }
    
    _updatePreview() {
-      this._resourcePreview.innerHTML = "<img src='" + this._listWeb.value + "' class='dsty-resource'>"; 
+      if (this._selectList != null && this._listWeb != null)
+         this._resourcePreview.innerHTML = "<img src='" + this._selectList[this._listWeb.value] + "' class='dsty-resource'>"; 
    }
    
    addSelectionListener(listener) {

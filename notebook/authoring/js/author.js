@@ -76,17 +76,32 @@ for (var d = 0; d < dccs.length; d++)
    }
    
    _resourceSelected(event) {
-      // <TODO> provisory
-      loadCase("case001-development", this);
+      console.log("Case to load [" + event.detail + "]");
+      loadCase(event.detail, this);
       
-      document.querySelector("#slide-set").style.display = "flex";
-      
-      // loadCase(event.detail, this);
+      // document.querySelector("#slide-set").style.display = "flex";
    }
    
    _caseLoaded(caseMd) {
+      let navigationPanel  = document.querySelector("#navigation-panel");
       let knotPanel = document.querySelector("#knot-panel");
       knotPanel.removeChild(this._selector);
+      
+      let translate = new Translator();
+      let compiled = translate.compileMarkdown(caseMd);
+      
+      for (let kn in compiled) {
+         if (compiled[kn].type == "knot") {
+            let miniature = document.createElement("div");
+            miniature.classList.add("navigation-knot");
+            miniature.classList.add("std-border");
+            miniature.innerHTML = "<h1>" + compiled[kn].title + "</h1>";
+            navigationPanel.appendChild(miniature);
+         }
+            
+      }
+      
+      console.log(caseMd);
    }
    
    // <TODO> Temporary

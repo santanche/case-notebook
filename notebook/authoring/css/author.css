@@ -61,10 +61,14 @@ body {
    }
 }
 
-.navigation-panel {
+.sty-navigation-panel {
    flex: 15%;
    display: flex;
    flex-direction: column;
+}
+
+.navigation-knot {
+   max-width: 100%;
 }
 
 .sty-knot-panel {

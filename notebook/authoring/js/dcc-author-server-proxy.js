@@ -12,9 +12,9 @@
       const casesReturn = await response.json();
       const cases = casesReturn.casesList;
       console.log(cases);
-      let finalCasesList = [];
+      let finalCasesList = {};
       for (var c in cases)
-         finalCasesList.push([cases[c], "images/mono-slide.svg"]);
+         finalCasesList[cases[c]] = "images/mono-slide.svg";
       selector.addSelectList(finalCasesList);
       return cases;
    }
