@@ -80,11 +80,10 @@ class Translator {
    /*
     * Input Md to Obj
     * Input: {?[rows]: [vocabulary]}
-    * Regular expression: \{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t]*))?\}
     * Output: {
     *   variable: <variable that will receive the input>
     *   rows: <number of rows for the input>
-    *   vocabulary: <the vocabulary set to match the input>
+    *   vocabulary: <the vocabulary to interpret the input>
     * }
     */
    inputMdToObj(insideRows, insideVariable, insideVocabulary) {
