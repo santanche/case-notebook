@@ -3,6 +3,98 @@
  */
 class Translator {
 
+   // Index all knots to guide references
+   indexKnots(markdown) {
+      let knots = [];
+      let knotCtx = null;
+      let knotHeads = mdtext.match(this.marks.knot);
+      for (var kh in knotHeads) {
+         var label = knotHeads[kh]
+               .match(/==*[ \t]*(\w[\w \t]*)(?:\([\w \t]*\))?[ \t]*=*/i);
+         label = label[1].trim();
+         if (knotHeads[kh].indexOf("==") >= 0)
+            knotCtx = label;
+         else
+            label = (label.indexOf(".") < 0 && knotCtx == null) ? label
+                  : knotCtx + "." + label;
+         knots.push(label);
+      }
+      return knots;
+   }
+   
+   compileMarkdown(markdown) {
+      let knots = indexKnots(markdown);
+      
+      const mdToObj = {
+            // knot   : translateKnot,
+            // option : this.translateOption,
+            // divert : this.translateDivert,
+            // talk   : this.translateTalk,
+            // image  : this.translateImage,
+            input  : this.translateInput,
+            // domain : this.translateDomain,
+            // score  : this.translateScore
+      };
+      
+      let mdfocus = mdtext;
+      let compiledCase = {};
+      
+      let current = 0;
+      let matchStart;
+      do {
+         matchStart = -1;
+         let selected = "";
+         for (let mk in marks) {
+            let pos = mdfocus.search(marks[mk]);
+            if (pos > -1 && (matchStart == -1 || pos < matchStart)) {
+               selected = mk;
+               matchStart = pos;
+            }
+         }
+
+         if (matchStart > -1) {
+            let inter = matchStart - current;
+            
+            
+            let matchSize = mdfocus.match(marks[selected])[0].length;
+            let toReplace = mdfocus.substring(0, matchStart + matchSize);
+            mdresult += toReplace.replace(marks[selected],
+                                          markFs[selected]);
+            if (matchStart + matchSize >= mdfocus.length)
+               matchStart = -1;
+            else
+               mdfocus = mdfocus.substring(matchStart + matchSize);
+         }
+      } while (matchStart > -1);
+
+      mdresult += mdfocus;
+   }
+   
+   textMdToObj(markdown) {
+      return {
+         type: "text",
+         content: markdown
+      };
+   }
+   
+   /*
+    * Input Md to Obj
+    * Input: {?[rows]: [vocabulary]}
+    * Regular expression: \{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t]*))?\}
+    * Output: {
+    *   variable: <variable that will receive the input>
+    *   rows: <number of rows for the input>
+    *   vocabulary: <the vocabulary set to match the input>
+    * }
+    */
+   inputMdToObj(insideRows, insideVariable, insideVocabulary) {
+      return {
+         variable: insideVariable.trim().replace(/ /igm, "_"),
+         rows: (insideRows == null) ? 0 : parseInt(insideRows),
+         vocabulary: insideVocabulary.trim()
+      };
+   }
+   
    // Transforms the markdown to HTML
    generateInterface(markdown) {
       let knotsMD = mdinterface.split(Translator.marks.knot);
@@ -25,16 +117,7 @@ class Translator {
                   + caseDescription + '""","""' + caseImage + '""","'
                   + caseTitle.replace(/ /igm, "_") + '")');
 
-      const mdToObj = {
-            // knot   : translateKnot,
-            // option : this.translateOption,
-            // divert : this.translateDivert,
-            // talk   : this.translateTalk,
-            // image  : this.translateImage,
-            input  : this.translateInput,
-            // domain : this.translateDomain,
-            // score  : this.translateScore
-      };
+
       const objToHTML = {
             // knot   : translateKnot,
             // option : this.translateOption,
@@ -70,25 +153,6 @@ class Translator {
    
    translateInput(_matchStr, insideRows, insideVariable, insideVocabulary) {
       return inputObjToHTML(inputMdToObj(insideRows, insideVariable, insideVocabulary));
-   }
-
-   
-   /*
-    * Input Md to Obj
-    * Input: {?[rows]: [vocabulary]}
-    * Regular expression: \{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t]*))?\}
-    * Output: {
-    *   variable: <variable that will receive the input>
-    *   rows: <number of rows for the input>
-    *   vocabulary: <the vocabulary set to match the input>
-    * }
-    */
-   inputMdToObj(insideRows, insideVariable, insideVocabulary) {
-      return {
-         variable: insideVariable.trim().replace(/ /igm, "_"),
-         rows: (insideRows == null) ? 0 : parseInt(insideRows),
-         vocabulary: insideVocabulary.trim()
-      };
    }
    
    /*

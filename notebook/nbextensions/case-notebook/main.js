@@ -156,7 +156,7 @@ function(_IPython, _$, _requirejs, _cell, _security, _marked, events, _textcell)
             var matchSize = mdfocus.match(marks[selected])[0].length;
             var toReplace = mdfocus.substring(0, matchStart + matchSize);
             mdresult += toReplace.replace(marks[selected],
-                  markFs[selected]);
+                                          markFs[selected]);
             if (matchStart + matchSize >= mdfocus.length)
                matchStart = -1;
             else
