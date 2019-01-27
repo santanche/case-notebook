@@ -3,6 +3,15 @@
  */
 class Translator {
 
+   function generateGuid() {
+      function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+          .toString(16)
+          .substring(1);
+      }
+      return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+   
    // Index all knots to guide references
    indexKnots(markdown) {
       let knots = [];
@@ -127,6 +136,14 @@ class Translator {
    }
    
    /*
+    * Text Obj to HTML
+    * Output: [content]
+    */
+   textObjToHTML(obj) {
+      return object.content;
+   }
+   
+   /*
     * Option Md to Obj
     * Input: ++ [label] -> [target]
     * Output:
@@ -150,6 +167,28 @@ class Translator {
    }
    
    /*
+    * Option Obj to HTML
+    * Output:
+    *   <dcc-trigger link='[link].html' label='[display]' [image]></dcc-trigger>
+    *   [image] -> image='[image-file].svg' location='control-panel'
+    */
+   optionObjToHTML(obj) {
+      let display = (obj.label != null) ? obj.label : obj.target;
+      let link = (obj.target != null) ? obj.target : obj.label;
+      link = link.replace(/ /igm, "_");
+      
+      let optionImage = "";
+      if (display.endsWith("(control)")) {
+         display = display.replace("(control)", "").trim();
+         optionImage = " image='images/" + display.toLowerCase().replace(/ /igm, "-") + ".svg' location='control-panel'";
+      }
+      
+      return Translator.htmlTemplates.replace("[link]", link)
+                                     .replace("[display]", display)
+                                     .replace("[image]", optionsImage;
+   }
+   
+   /*
     * Divert Md to Obj
     * Input: -> [target]
     * Output:
@@ -163,6 +202,18 @@ class Translator {
          type: "divert",
          target: matchArray[1].trim()
       };
+   }
+
+   /*
+    * Divert Obj to HTML
+    * Output:
+    *   <dcc-trigger link='[link].html' label='[display]'></dcc-trigger>
+    */
+   divertObjToHTML(obj) {
+      let link = obj.target.replace(/ /igm, "_");
+      
+      return Translator.htmlTemplates.replace("[link]", link)
+                                     .replace("[display]", target);
    }
 
    /*
