@@ -8,32 +8,112 @@ class Translator {
    constructor() {
       this._markdownTranslator = new showdown.Converter();
       
-      this.domainMdToObj = this.domainMdToObj.bind(this);
+      this.annotationMdToObj = this.annotationMdToObj.bind(this);
       this.textObjToHTML = this.textObjToHTML.bind(this);
    }
 
    // Index all knots to guide references
-   indexKnots(markdown) {
-      let knots = [];
+   _indexKnots(markdown) {
+      let knots = {
+         _sorce: markdown;
+      };
       let knotCtx = null;
       let knotHeads = markdown.match(Translator.marks.knot);
       for (var kh in knotHeads) {
-         var label = knotHeads[kh]
-               .match(/==*[ \t]*(\w[\w \t]*)(?:\([\w \t]*\))?[ \t]*=*/i);
+         var label = knotHeads[kh].match(Translator.marksKnotTitle);
          label = label[1].trim();
          if (knotHeads[kh].indexOf("==") >= 0)
             knotCtx = label;
          else
             label = (label.indexOf(".") < 0 && knotCtx == null) ? label
-                  : knotCtx + "." + label;
-         knots.push(label);
+                    : knotCtx + "." + label;
+         if (knots[label]) {
+            if (!knots._error)
+               knots._error = [];
+            knots.error.push("Duplicate knots title: " + label);
+         } else
+            knots[label] = [];
       }
       return knots;
    }
    
+   _extractAnnotations(compiledCase) {
+      const mdAnnToObj = {
+         open: this.openContextMdToObj,
+         close: this.closeContextMdToObj,
+         annotation: this.annotationMdToObj
+      };
+      
+      let knotSet = compiledCase[0];
+      let currentSet = knotSet;
+      let mdfocus = compiledCase._source;
+      let newSource = "";
+      let matchStart;
+      do {
+         // look for the next nearest expression match
+         matchStart = -1;
+         let selected = "";
+         for (let mk in Translator.marksAnnotation) {
+            let pos = mdfocus.search(Translator.marksAnnotation[mk]);
+            if (pos > -1 && (matchStart == -1 || pos < matchStart)) {
+               selected = mk;
+               matchStart = pos;
+            }
+         }
+         
+         if (matchStart > -1) {
+            // add a segment that does not match to any expression
+            if (matchStart > 0)
+               newSource += mdfocus.substring(0, matchStart);
+            
+            // translate the expression to an object
+            let matchSize = mdfocus.match(Translator.marks[selected])[0].length;
+            let toTranslate = mdfocus.substr(matchStart, matchSize);
+            let transObj = mdAnnToObj[selected](Translator.marksAnnotation[selected].exec(toTranslate)));
+            
+            // hierarquical annotation building inside contexts
+            switch (selected) {
+               case "knot":
+                  knotSet = [];
+                  compiledCase[transObj.title].annotations = knotSet;
+                  currentSet = knotSet;
+                  break;
+               case "open":
+                  currentSet.push(transObj);
+                  currentSet = [];
+                  transObj.annotations = currentSet;
+                  break;
+               case "close":
+                  currentSet = annotationSet;
+                  break;
+               case "annotation":
+                  currentSet.push(transObj);
+                  if (toTranslate.indexOf("#") > -1)
+                     newSource += toTranslate;
+                  else
+                     newSource += transObj.natural;
+                  break;
+            }
+            
+            if (matchStart + matchSize >= mdfocus.length)
+               matchStart = -1;
+            else
+               mdfocus = mdfocus.substring(matchStart + matchSize);
+         }
+      } while (matchStart > -1);
+      if (mdfocus.length > 0)
+         newSource += mdfocus;
+      
+      compileCase._source = newSource;
+      
+      return compiledCase;
+   }
+   
    // Compiles a markdown text to an object representation 
    compileMarkdown(markdown) {
-      let knots = this.indexKnots(markdown);
+      let compiledCase = this._indexKnots(markdown);
+      
+      compiledCase = this._extractAnnotations(compiledCase);
       
       const mdToObj = {
             knot   : this.knotMdToObj,
@@ -43,14 +123,12 @@ class Translator {
             // image  : this.image,
             input  : this.inputMdToObj,
             selector: this.selectorMdToObj,
-            domain : this.domainMdToObj
+            // annotation : this.annotationMdToObj
             // score  : this.translateScore
       };
       
       let mdfocus = markdown;
-      let compiledCase = [];
       let compiledKnot = compiledCase;
-      
       
       this._currentKnot = null;
       this._currentCategory = null;
@@ -83,9 +161,11 @@ class Translator {
             
             // attach to a knot array (if it is a knot) or an array inside a knot
             if (selected == "knot") {
-               compiledCase.push(transObj);
+               // compiledCase.push(transObj);
+               for (let ka in transObj)
+                  compiledCase[transObj.title][ka] = transObj[ka]; 
                compiledKnot = [];
-               transObj.content = compiledKnot;
+               compiledCase[transObj.title].content = compiledKnot;
                this._currentKnot = transObj.title;
                this._currentCategory = (transObj.category) ? transObj.category : null;
             } else
@@ -122,7 +202,7 @@ class Translator {
             // image  : this.image,
             input  : this.inputObjToHTML,
             selector: this.selectorObjToHTML,
-            domain : this.domainObjToHTML
+            annotation : this.annotationObjToHTML
             // score  : this.translateScore
       };
 
@@ -177,6 +257,64 @@ class Translator {
       return final;
    }
    
+   /*
+    * Annotation Md to Obj
+    * Input outside: {[natural]}([formal])
+    * Expression outside: \{([\w \t\+\-\*"=\:%\/]+)\}(?:\(([\w \t\+\-\*"=\:%\/]+)\))?(?!\/)
+    * Output: {
+    *    type: "annotation"
+    *    natural: {  #1
+    *       complete: <complete text in natural language>
+    *       expression: <expression in the text to be evaluated>
+    *       specification: <specify the expression defining, for example, a measurable value, rate or origin>
+    *       rate: <compose the rate of the specification>
+    *    }
+    *    formal: {   #2
+    *       complete: <complete text written in formal way to be recognized against a dictionary>
+    *       expression: <expression in the text to be evaluated>
+    *       specification: <specify the expression defining, for example, a measurable value, rate or origin>
+    *       rate: <compose the rate of the specification>
+    *    }
+    * }
+    */
+   annotationMdToObj(matchArray) {
+      let annotation = {
+         type: "annotation",
+         natural: this.annotationInsideMdToObj(Translator.marksAnnotationInside.exec(matchArray[1].trim()))
+      };
+      
+      if (matchArray[2] != null)
+         annotation.formal = this.annotationInsideMdToObj(Translator.marksAnnotationInside.exec(matchArray[2].trim()));
+     
+      return annotation;
+   }
+   
+   /*
+    * Annotation Inside Md to Obj
+    * Input inside: [expression] =|: [specification] / [rate]
+    * Expression inside: ([\w \t\+\-\*"]+)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?
+    * Output: {
+    *    complete: <complete text> #0
+    *    expression: <expression in the text to be evaluated> #1
+    *    specification: <specify the expression defining, for example, a measurable value, rate or origin> #2
+    *    rate: <compose the rate of the specification> #3
+    * }
+    */
+   annotationInsideMdToObj(matchArray) {
+      let inside = {
+         complete: matchArray[0]
+      };
+      
+      if (matchArray[1] != null)
+         inside.expression = matchArray[1].trim(); 
+      if (matchArray[2] != null)
+         inside.specification = matchArray[2].trim(); 
+      if (matchArray[3] != null)
+         inside.rate = matchArray[3].trim(); 
+      
+      return inside;
+   }
+
    /*
     * Knot Md to Obj
     * Input: == [title] ([category]) ==
@@ -375,69 +513,11 @@ class Translator {
    }
 
    /*
-    * Domain Md to Obj
-    * Input outside: {[natural]}([formal])
-    * Expression outside: \{([\w \t\+\-\*"=\:%\/]+)\}(?:\(([\w \t\+\-\*"=\:%\/]+)\))?(?!\/)
-    * Output: {
-    *    type: "domain"
-    *    natural: {  #1
-    *       complete: <complete text in natural language>
-    *       expression: <expression in the text to be evaluated>
-    *       specification: <specify the expression defining, for example, a measurable value, rate or origin>
-    *       rate: <compose the rate of the specification>
-    *    }
-    *    formal: {   #2
-    *       complete: <complete text written in formal way to be recognized against a dictionary>
-    *       expression: <expression in the text to be evaluated>
-    *       specification: <specify the expression defining, for example, a measurable value, rate or origin>
-    *       rate: <compose the rate of the specification>
-    *    }
-    * }
-    */
-   domainMdToObj(matchArray) {
-      let domain = {
-         type: "domain",
-         natural: this.domainInsideMdToObj(Translator.marksDomainInside.exec(matchArray[1].trim()))
-      };
-      
-      if (matchArray[2] != null)
-         domain.formal = this.domainInsideMdToObj(Translator.marksDomainInside.exec(matchArray[2].trim()));
-     
-      return domain;
-   }
-   
-   /*
-    * Domain Inside Md to Obj
-    * Input inside: [expression] =|: [specification] / [rate]
-    * Expression inside: ([\w \t\+\-\*"]+)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?
-    * Output: {
-    *    complete: <complete text> #0
-    *    expression: <expression in the text to be evaluated> #1
-    *    specification: <specify the expression defining, for example, a measurable value, rate or origin> #2
-    *    rate: <compose the rate of the specification> #3
-    * }
-    */
-   domainInsideMdToObj(matchArray) {
-      let inside = {
-         complete: matchArray[0]
-      };
-      
-      if (matchArray[1] != null)
-         inside.expression = matchArray[1].trim(); 
-      if (matchArray[2] != null)
-         inside.specification = matchArray[2].trim(); 
-      if (matchArray[3] != null)
-         inside.rate = matchArray[3].trim(); 
-      
-      return inside;
-   }
-
-   /*
-    * Domain Obj to HTML
+    * Annotation Obj to HTML
     * Output: [natural]
     */
-   domainObjToHTML(obj) {
-      return Translator.htmlTemplates.domain.replace("[natural]", obj.natural.complete);
+   annotationObjToHTML(obj) {
+      return Translator.htmlTemplates.annotation.replace("[natural]", obj.natural.complete);
    }   
    
    /*
@@ -465,107 +545,29 @@ class Translator {
    selectorObjToHTML(obj) {
       return Translator.htmlTemplates.selector.replace("[expression]", obj.expression);            
    }
-   
-   /*
-
-   translateImage(matchStr, insideSrc, _insideAlt) {
-      if (knotImage === "")
-         knotImage = insideSrc;
-
-      return matchStr.replace(">", " style='float:left'>");
-   }
-
-   translateScore(_matchStr, insideSymbol, insideValue,
-         insideVariable) {
-      var symbol = (insideSymbol == null || insideSymbol.trim().length == 0) ? "="
-            : insideSymbol.trim();
-
-      var output = "";
-
-      if (symbol == "%")
-         output = "<p class='case_text' id='var-" + insideVariable.trim()
-               + "'></p><script>showScore('" + insideVariable.trim()
-               + "')</script>";
-      else
-         output = "<script>computeScore('" + symbol + "', '"
-               + insideVariable.trim() + "', '" + insideValue.trim()
-               + "')</script>";
-
-      return output;
-   }
-   */
-   
-   // Transforms the markdown to HTML
-   /*
-   generateInterface(markdown) {
-      let knotsMD = mdinterface.split(Translator.marks.knot);
-      let knotsHTML = [];
-
-      // capturing title, description and image of the starting knot
-      let caseTitle = knotsMD[1].trim();
-      let caseDescription = "";
-      let caseImage = "";
-      if (knotsMD[3] != null && knotsMD[3].trim().length > 0) {
-         caseDescription = knotsMD[3].replace(marks.option, "")
-               .replace(marks.image, ""); // marks - option/image
-         var imageStr = knotsMD[3].match(marks.image);
-         caseImage = (imageStr == null) ? "" : imageStr[0].replace(">",
-               " style='width:100px'>"); // marks - image
-      }
-
-      notebookCell.notebook.kernel
-            .execute('HealthDM.interfaceMain("' + caseTitle + '","""'
-                  + caseDescription + '""","""' + caseImage + '""","'
-                  + caseTitle.replace(/ /igm, "_") + '")');
-
-
-      const objToHTML = {
-            // knot   : translateKnot,
-            // option : this.translateOption,
-            // divert : this.translateDivert,
-            // talk   : this.translateTalk,
-            // image  : this.translateImage,
-            input  : this.translateInput,
-            // domain : this.translateDomain,
-            // score  : this.translateScore
-      };
-      
-      for (var kb = 1; kb < knotsMD.length; kb += 3) {
-         let pageName = knotsMD[kb].trim().replace(/ /igm, "_");
-         knotTemplate = (knotsMD[kb + 1] == null) ? "knot"
-                          : knotsMD[kb + 1].trim().replace(" ", "_");
-         knotImage = "";
-         
-         // converting case-markdown in HTML
-         let pageContent = knotsMD[kb + 2];
-         for (var mk in interfaceFs)
-            pageContent = pageContent.replace(marks[mk], interfaceFs[mk]);
-         
-         console.log('HealthDM.interfaceKnot("' + knotTemplate + '","'
-               + pageName + '","' + knotsMD[kb].trim() + '","""'
-               + pageContent + '""","' + knotImage + '")');
-         
-         notebookCell.notebook.kernel.execute('HealthDM.interfaceKnot("'
-               + knotTemplate + '","' + pageName + '","'
-               + knotsMD[kb].trim() + '","""' + pageContent + '""","'
-               + knotImage + '")');
-      }
-   }
-   */
 }
 
 (function() {
+   Translator.marksKnotTitle = /==*[ \t]*(\w[\w \t]*)(?:\([\w \t]*\))?[ \t]*=*/i;
+
+   Translator.marksAnnotation = {
+     knot   : /^[ \t]*==*[ \t]*(\w[\w \t]*)(?:\(([\w \t]*)\))?[ \t]*=*[ \t]*[\f\n\r]/igm,
+     open : /\{\{([\w \t\+\-\*"=\:%\/]+)(?:#([\w \t\+\-\*"=\%\/]+):([\w \t\+\-\*"=\%\/,]+))?[\f\n\r]/im,
+     close: /\}\}/im,
+     annotation: /\{([\w \t\+\-\*"=\:%\/]+)(?:\(([\w \t\+\-\*"=\:%\/]+)\)[ \t]*)?(?:#([\w \t\+\-\*"=\:%\/]+))?\}/im
+   };
+   
+   Translator.marksAnnotationInside = /([\w \t\+\-\*"]+)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?/im;
+
    Translator.marks = {
-      knot   : /^[ \t]*==*[ \t]*(\w[\w \t]*)(?:\(([\w \t]*)\))?[ \t]*=*[ \t]*[\f\n\r]/igm,
+      knot   : Translator.marksAnnotation.knot,
       option : /[ \t]*\+\+[ \t]*([^-&<> \t][^-&<>\n\r\f]*)?(?:-(?:(?:&gt;)|>)[ \t]*(\w[\w. \t]*))?[\f\n\r]/im,
       divert : /-(?:(?:&gt;)|>) *(\w[\w. ]*)/im,
       talk   : /^[ \t]*: *(\w[\w ]*):[ \t]*([^\n\r\f]+)[\n\r\f]*/im,
       // image  : /<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/im,
       input  : /\{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t]*))?\}/im,
-      selector: /\{([\w \t\-\*"=\:%\/]+)\}\/([\w\+\-\*=\:]+)/im,
-      domain : /\{([\w \t\+\-\*"=\:%\/]+)\}(?:\(([\w \t\+\-\*"=\:%\/]+)\))?(?!\/)/im
+      selector: Translator.marksAnnotation.outside,
+      // annotation : 
       // score  : /^(?:<p>)?[ \t]*~[ \t]*([\+\-=\*\\%]?)[ \t]*(\w*)?[ \t]*(\w+)[ \t]*(?:<\/p>)?/im
    };
-   
-   Translator.marksDomainInside = /([\w \t\+\-\*"]+)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?/im;
 })();
