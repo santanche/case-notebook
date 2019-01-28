@@ -159,7 +159,7 @@ Markdown text that does not match to any expression.
 
 ## Selector
 * Sentence: `{[expression]}/[value]`
-* Expression: `\{([\w \t\-"]+)\}\/([\w\+\-\*=\:]+)`
+* Expression: `\{([\w \t\-\*"=\:%\/]+)\}\/([\w\+\-\*=\:]+)`
   * Group #1: expression
   * Group #2: value
 ![Selector Expression](expressions/selector.png)

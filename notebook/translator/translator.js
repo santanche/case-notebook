@@ -81,7 +81,7 @@ class Translator {
             let transObj = this._stampObject( 
                mdToObj[selected](Translator.marks[selected].exec(toTranslate)));
             
-            // build the objects vector segmented by knots
+            // attach to a knot array (if it is a knot) or an array inside a knot
             if (selected == "knot") {
                compiledCase.push(transObj);
                compiledKnot = [];
@@ -562,7 +562,7 @@ class Translator {
       talk   : /^[ \t]*: *(\w[\w ]*):[ \t]*([^\n\r\f]+)[\n\r\f]*/im,
       // image  : /<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/im,
       input  : /\{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t]*))?\}/im,
-      selector: /\{([\w \t\-"]+)\}\/([\w\+\-\*=\:]+)/im,
+      selector: /\{([\w \t\-\*"=\:%\/]+)\}\/([\w\+\-\*=\:]+)/im,
       domain : /\{([\w \t\+\-\*"=\:%\/]+)\}(?:\(([\w \t\+\-\*"=\:%\/]+)\))?(?!\/)/im
       // score  : /^(?:<p>)?[ \t]*~[ \t]*([\+\-=\*\\%]?)[ \t]*(\w*)?[ \t]*(\w+)[ \t]*(?:<\/p>)?/im
    };
