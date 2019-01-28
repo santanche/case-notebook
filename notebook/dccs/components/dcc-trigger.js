@@ -5,9 +5,13 @@
 class DCCTrigger extends DCCBase {
    constructor() {
      super();
-
+     
      let templateHTML = 
      `<style>
+        .trigger-button-minimal:hover {
+           cursor: pointer;
+        }
+     
         .trigger-button {
           background-color: #383f4f;
           color: #e0e9ce;
@@ -27,7 +31,7 @@ class DCCTrigger extends DCCBase {
           max-height: 100%;
         }
       </style>
-      <span id="presentation-dcc" class="state-selector"></span>`;
+      <span id="presentation-dcc"></span>`;
      
      const template = document.createElement("template");
      template.innerHTML = templateHTML;
@@ -39,17 +43,20 @@ class DCCTrigger extends DCCBase {
      // this._monitor = document.querySelector("dcc-monitor");
      
      this._computeTrigger = this._computeTrigger.bind(this);
-     this._documentLoaded = this._documentLoaded.bind(this);
+     this._renderInterface = this._renderInterface.bind(this);
    }
    
    /* Attribute Handling */
 
    static get observedAttributes() {
-     return ["link", "action", "label", "image", "location"];
+     return ["link", "action", "label", "image", "location", "render"];
    }
 
    connectedCallback() {
-      window.addEventListener("load", this._documentLoaded);
+      if (document.readyState === "complete")
+         this._renderInterface();
+      else
+         window.addEventListener("load", this._renderInterface);
    }
    
    disconnectedCallback() {
@@ -84,39 +91,54 @@ class DCCTrigger extends DCCBase {
       return this.getAttribute("image");
    }
    
-    set image(newImage) {
+   set image(newImage) {
      this.setAttribute("image", newImage);
    }
 
-    get location() {
-       return this.getAttribute("location");
-    }
+   get location() {
+      return this.getAttribute("location");
+   }
     
-    set location(newLocation) {
-      this.setAttribute("location", newLocation);
-    }
+   set location(newLocation) {
+     this.setAttribute("location", newLocation);
+   }
+    
+   get render() {
+      return this.getAttribute("render");
+   }
+
+   set render(newValue) {
+      this.setAttribute("render", newValue);
+   }
 
    /* Rendering */
-
-   _documentLoaded() {
+   
+   _renderInterface() {
       let webLocation = null;
-      if (this.hasAttribute("location")) {
-         console.log(this.label + " location: #" + this.location);
+      if (this.hasAttribute("location"))
          webLocation = document.querySelector("#" + this.location);
-      }
       
       let linkWeb = (this.hasAttribute("link")) ? "href='" + this.link + "' " : "";
       
+      let renderWeb = "trigger-button";
+      if (this.hasAttribute("render"))
+         if (this.render = "none")
+            renderWeb = "trigger-button-minimal";
+         else
+            renderWeb = this.style;
+      
       let triggerWeb = null;
       if (this.hasAttribute("image"))
-         triggerWeb = "<a " + linkWeb + "alt='" + this.label + "'>" + 
-                      "<img width='100%' height='100%' class='link-image' src='" + this.image + "'></a>";
+         triggerWeb = DCCTrigger.templates.image.replace("[link]", linkWeb)
+                                                .replace("[label]", this.label)
+                                                .replace("[image]", this.image);
       else
-         triggerWeb = "<a class='trigger-button' " + linkWeb + ">" + this.label + "</a>";
-      if (webLocation != null) {
-         console.log(this.label + " done!");
+         triggerWeb = DCCTrigger.templates.regular.replace("[render]", renderWeb)
+                                                  .replace("[link]", linkWeb)
+                                                  .replace("[label]", this.label);
+      if (webLocation != null)
          webLocation.innerHTML = webLocation.innerHTML + triggerWeb;
-      } else
+      else
          this._presentation.innerHTML = triggerWeb;
 
       this._presentation.addEventListener("click", this._computeTrigger);
@@ -131,6 +153,15 @@ class DCCTrigger extends DCCBase {
       }
    }
 }
+
+DCCTrigger.templates = {
+regular:
+`<a class='[render]' [link]>[label]</a>`,
+image:
+`<a [link] alt='[label]'>
+   <img width='100%' height='100%' class='link-image' src='[image]'>
+</a>`
+};
 
 customElements.define("dcc-trigger", DCCTrigger);
 

@@ -1,17 +1,17 @@
 /**
+ * Translator of Case Notebooks
  * 
+ * Translates case notebook narratives (extension of markdown) to object representations and further to HTML.
  */
 class Translator {
-
-   function generateGuid() {
-      function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-          .toString(16)
-          .substring(1);
-      }
-      return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
-    }
    
+   constructor() {
+      this._markdownTranslator = new showdown.Converter();
+      
+      this.domainMdToObj = this.domainMdToObj.bind(this);
+      this.textObjToHTML = this.textObjToHTML.bind(this);
+   }
+
    // Index all knots to guide references
    indexKnots(markdown) {
       let knots = [];
@@ -98,6 +98,29 @@ class Translator {
       return compiledCase;
    }
    
+   generateHTML(knotObj) {
+      const objToHTML = {
+            // knot   : 
+            text   : this.textObjToHTML,
+            option : this.optionObjToHTML,
+            divert : this.divertObjToHTML,
+            talk   : this.talkObjToHTML,
+            // image  : this.image,
+            input  : this.inputObjToHTML,
+            selector: this.selectorObjToHTML,
+            domain : this.domainObjToHTML
+            // score  : this.translateScore
+      };
+
+      let final = "";
+      if (knotObj != null && knotObj.content != null) {
+         for (let kc in knotObj.content)
+            final += objToHTML[knotObj.content[kc].type](knotObj.content[kc]);
+      }
+      
+      return final;
+   }
+   
    /*
     * Knot Md to Obj
     * Input: == [title] ([category]) ==
@@ -106,6 +129,7 @@ class Translator {
     *    type: "knot"
     *    title: <title of the knot> #1
     *    category: <knot category>  #2
+    *    content: [<sub-nodes>] - generated in further routines
     * }
     */
    knotMdToObj(matchArray) {
@@ -140,7 +164,7 @@ class Translator {
     * Output: [content]
     */
    textObjToHTML(obj) {
-      return object.content;
+      return this._markdownTranslator.makeHtml(obj.content);
    }
    
    /*
@@ -177,15 +201,15 @@ class Translator {
       let link = (obj.target != null) ? obj.target : obj.label;
       link = link.replace(/ /igm, "_");
       
-      let optionImage = "";
+      let optionalImage = "";
       if (display.endsWith("(control)")) {
          display = display.replace("(control)", "").trim();
-         optionImage = " image='images/" + display.toLowerCase().replace(/ /igm, "-") + ".svg' location='control-panel'";
+         optionalImage = " image='images/" + display.toLowerCase().replace(/ /igm, "-") + ".svg' location='control-panel'";
       }
       
-      return Translator.htmlTemplates.replace("[link]", link)
-                                     .replace("[display]", display)
-                                     .replace("[image]", optionsImage;
+      return Translator.htmlTemplates.option.replace("[link]", link)
+                                            .replace("[display]", display)
+                                            .replace("[image]", optionalImage);
    }
    
    /*
@@ -212,8 +236,8 @@ class Translator {
    divertObjToHTML(obj) {
       let link = obj.target.replace(/ /igm, "_");
       
-      return Translator.htmlTemplates.replace("[link]", link)
-                                     .replace("[display]", target);
+      return Translator.htmlTemplates.divert.replace("[link]", link)
+                                            .replace("[display]", obj.target);
    }
 
    /*
@@ -223,15 +247,30 @@ class Translator {
     * {
     *    type: "talk"
     *    character: <identification of the character> #1
-    *    talk: <character's talk> #2
+    *    speech: <character's speech> #2
      * }
     */
    talkMdToObj(matchArray) {
       return {
          type: "talk",
          character: matchArray[1].trim(),
-         talk: matchArray[2].trim()
+         speech: matchArray[2].trim()
       };
+   }   
+
+   /*
+    * Talk Obj to HTML
+    * Output:
+    * <dcc-lively-talk character='[character]' speech='[speech]'>
+    * </dcc-lively-talk>
+    */
+   talkObjToHTML(obj) {
+      let charImg = "images/" + obj.character.toLowerCase()
+                                   .replace(/ /igm, "_") + "-icon.png";
+      
+      
+      return Translator.htmlTemplates.talk.replace("[character]", charImg)
+                                          .replace("[speech]", obj.speech);
    }   
    
    /*
@@ -263,57 +302,87 @@ class Translator {
    /*
     * Input Obj to HTML
     * Output: <[input-type] [input-parameters] class='userInput' id='[variable]'
-               oninput="followInput('[variable]','[vocabulary]')">
-              </[input-type]>
-              <span id='[variable]_result'></span>
+    *          oninput="followInput('[variable]','[vocabulary]')">
+    *         </[input-type]>
+    *         <span id='[variable]_result'></span>
     */
-   /*
    inputObjToHTML(inputObj) {
       let inputType = ((inputObj.rows > 1) ? "textarea" : "input");
       let inputParam = ((inputObj.rows > 1) ? "style='width:100%' rows=" + rows
                                             : "type='text'");
       
-      return this.marksHTML.replace(/\[input-type\]/igm, inputType)
-                           .replace("[input-parameters]", inputParam)
-                           .replace(/\[variable\]/igm, inputObject.variable)
-                           .replace("[vocabulary", inputObject.vocabulary);
+      return Translator.htmlTemplates.input.replace(/\[input-type\]/igm, inputType)
+                                           .replace("[input-parameters]", inputParam)
+                                           .replace(/\[variable\]/igm, inputObj.variable)
+                                           .replace("[vocabulary", inputObj.vocabulary);
    }
-   */
 
    /*
     * Domain Md to Obj
-    * Input: {[expression] =|: [specification] / [rate]}([formal_expression] =|: [formal_specification] / [formal_rate])
-    * Regular expression: \{([\w \t\-"]*)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?\}(?:\(([\w \t\+\-=\*]*)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?\))?
+    * Input outside: {[natural]}([formal])
+    * Expression outside: \{([\w \t\+\-\*"=\:%\/]+)\}(?:\(([\w \t\+\-\*"=\:%\/]+)\))?(?!\/)
     * Output: {
     *    type: "domain"
-    *    expression: <expression in the text to be evaluated> #1
-    *    specification: <specify the expression defining, for example, a measurable value, rate or origin> #2
-    *    rate: <compose the rate of the specification> #3
-    *    formalExpression: <expression written in formal way to be recognized against a dictionary> #4
-    *    formalSpecification: <formal specification> #5
-    *    formalRate: <formal rate> #6
+    *    natural: {  #1
+    *       complete: <complete text in natural language>
+    *       expression: <expression in the text to be evaluated>
+    *       specification: <specify the expression defining, for example, a measurable value, rate or origin>
+    *       rate: <compose the rate of the specification>
+    *    }
+    *    formal: {   #2
+    *       complete: <complete text written in formal way to be recognized against a dictionary>
+    *       expression: <expression in the text to be evaluated>
+    *       specification: <specify the expression defining, for example, a measurable value, rate or origin>
+    *       rate: <compose the rate of the specification>
+    *    }
     * }
     */
    domainMdToObj(matchArray) {
       let domain = {
-             type: "domain",
-             expression: matchArray[1].trim()
+         type: "domain",
+         natural: this.domainInsideMdToObj(Translator.marksDomainInside.exec(matchArray[1].trim()))
       };
       
       if (matchArray[2] != null)
-         domain.specification = matchArray[2].trim(); 
-      if (matchArray[3] != null)
-         domain.rate = matchArray[3].trim(); 
-      if (matchArray[4] != null)
-         domain.formalExpression = matchArray[4].trim(); 
-      if (matchArray[5] != null)
-         domain.formalSpecification = matchArray[5].trim(); 
-      if (matchArray[6] != null)
-         domain.formalRate = matchArray[6].trim(); 
+         domain.formal = this.domainInsideMdToObj(Translator.marksDomainInside.exec(matchArray[2].trim()));
      
       return domain;
    }
+   
+   /*
+    * Domain Inside Md to Obj
+    * Input inside: [expression] =|: [specification] / [rate]
+    * Expression inside: ([\w \t\+\-\*"]+)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?
+    * Output: {
+    *    complete: <complete text> #0
+    *    expression: <expression in the text to be evaluated> #1
+    *    specification: <specify the expression defining, for example, a measurable value, rate or origin> #2
+    *    rate: <compose the rate of the specification> #3
+    * }
+    */
+   domainInsideMdToObj(matchArray) {
+      let inside = {
+         complete: matchArray[0]
+      };
+      
+      if (matchArray[1] != null)
+         inside.expression = matchArray[1].trim(); 
+      if (matchArray[2] != null)
+         inside.specification = matchArray[2].trim(); 
+      if (matchArray[3] != null)
+         inside.rate = matchArray[3].trim(); 
+      
+      return inside;
+   }
 
+   /*
+    * Domain Obj to HTML
+    * Output: [natural]
+    */
+   domainObjToHTML(obj) {
+      return Translator.htmlTemplates.domain.replace("[natural]", obj.natural.complete);
+   }   
+   
    /*
     * Selector Md to Obj
     * Input: {[expression]}/[value]
@@ -330,6 +399,14 @@ class Translator {
          expression: matchArray[1].trim(),
          value: matchArray[2].trim()
       };            
+   }
+   
+   /*
+    * Selector Obj to HTML
+    * Output: <dcc-state-selector>[expression]</dcc-state-selector>
+    */
+   selectorObjToHTML(obj) {
+      return Translator.htmlTemplates.selector.replace("[expression]", obj.expression);            
    }
    
    /*
@@ -422,16 +499,16 @@ class Translator {
 
 (function() {
    Translator.marks = {
-         knot   : /^[ \t]*==*[ \t]*(\w[\w \t]*)(?:\(([\w \t]*)\))?[ \t]*=*[ \t]*[\f\n\r]/igm,
-         option : /[ \t]\+\+[ \t]*([^-&<> \t][^-&<>\n\r\f]*)?(?:-(?:(?:&gt;)|>)[ \t]*(\w[\w. \t]*))?[\f\n\r]/igm,
-         divert : /-(?:(?:&gt;)|>) *(\w[\w. ]*)/igm,
-         talk   : /^[ \t]*: *(\w[\w ]*):[ \t]*([^\n\r\f]+)[\n\r\f]*/igm,
-         // image  : /<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/igm,
-         input  : /\{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t]*))?\}/igm,
-         selector: /\{([\w \t\-"]+)\}\/([\w\+\-\*=\:]+)/igm,
-         domain : /\{([\w \t\-"]+)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?\}(?:\(([\w \t\+\-\*]*)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?\))?(?!\/)/igm
-         // score  : /^(?:<p>)?[ \t]*~[ \t]*([\+\-=\*\\%]?)[ \t]*(\w*)?[ \t]*(\w+)[ \t]*(?:<\/p>)?/igm
+      knot   : /^[ \t]*==*[ \t]*(\w[\w \t]*)(?:\(([\w \t]*)\))?[ \t]*=*[ \t]*[\f\n\r]/igm,
+      option : /[ \t]*\+\+[ \t]*([^-&<> \t][^-&<>\n\r\f]*)?(?:-(?:(?:&gt;)|>)[ \t]*(\w[\w. \t]*))?[\f\n\r]/im,
+      divert : /-(?:(?:&gt;)|>) *(\w[\w. ]*)/im,
+      talk   : /^[ \t]*: *(\w[\w ]*):[ \t]*([^\n\r\f]+)[\n\r\f]*/im,
+      // image  : /<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/im,
+      input  : /\{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t]*))?\}/im,
+      selector: /\{([\w \t\-"]+)\}\/([\w\+\-\*=\:]+)/im,
+      domain : /\{([\w \t\+\-\*"=\:%\/]+)\}(?:\(([\w \t\+\-\*"=\:%\/]+)\))?(?!\/)/im
+      // score  : /^(?:<p>)?[ \t]*~[ \t]*([\+\-=\*\\%]?)[ \t]*(\w*)?[ \t]*(\w+)[ \t]*(?:<\/p>)?/im
    };
    
-
+   Translator.marksDomainInside = /([\w \t\+\-\*"]+)(?:[=\:]([\w \t%]*)(?:\/([\w \t%]*))?)?/im;
 })();

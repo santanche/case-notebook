@@ -44,7 +44,7 @@ body {
 
 .work-panel {
    width: 100%;
-   heught: 100%;
+   height: 100%;
    flex: auto;
    display: flex;
 }
@@ -63,8 +63,10 @@ body {
 
 .sty-navigation-panel {
    flex: 15%;
+   max-height: 100%;
    display: flex;
    flex-direction: column;
+   overflow: scroll;
 }
 
 .navigation-knot {

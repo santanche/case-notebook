@@ -4,82 +4,56 @@ function startSystem() {
 
 class AuthorDM {
    constructor() {
+      this._translator = new Translator();
+      this._compiledCase = null;
+      this._htmlKnot = null;
+      this._knotSelected = -1;
+      
+      // <TODO> Fix this problem - allow assynchronous methods inside the class
       // this._server = new DCCAuthorServer();
 
       this.actionButton = this.actionButton.bind(this);
-      let listeners = ["control-load", "control-save", "control-new-knot",
+      let actionListeners = ["control-load", "control-save", "control-new-knot",
          "control-edit-knot", "control-knot-up", "control-knot-down",
          "control-config"];
-      for (var l in listeners)
-         document.addEventListener(listeners[l], this.actionButton);
+      for (var al in actionListeners)
+         document.addEventListener(actionListeners[al], this.actionButton);
       
-      // <TODO> Temporary
-      document.addEventListener(listeners[l], this.actionButton);
-      let listenersX = ["edit-slide01", "edit-slide02"];
-      for (var lX in listenersX)
-         document.addEventListener(listenersX[lX], this.actionButton);
+      this.actionKnotSelected = this.actionKnotSelected.bind(this);
+      document.addEventListener("knot-selected", this.actionKnotSelected);
    }
    
    actionButton(event) {
       if (event.type == "control-load")
          this.selectCase();
-      
-      // <TODO> Temporary
-      if (event.type == "edit-slide01")
-         this.editSlide01();
-      if (event.type == "edit-slide02")
-         this.editSlide02();
    }
    
-   // <TODO> provisory
-   editSlide01() {
-      // <TODO> provisory
-      let slide01 =
-`<div class="scene-screen">
-   <dcc-character character="Lucinda" role="nurse" 
-      image="../dccs/tests/images/nurse.png"
-      description="Head nurse of the hospital.">
-   </dcc-character>
-</div>`;
-      let slide01Web = document.querySelector("#slide01");
-      slide01Web.innerHTML = slide01;
+   actionKnotSelected(event) {
+      this._knotSelected = -1;
+      for (let kn = 0; kn < this._compiledCase.length && this._knotSelected == -1; kn++)
+         if (this._compiledCase[kn].title == event.detail)
+            this._knotSelected = kn;
       
-      let dccs = slide01Web.querySelectorAll("*");
-      for (var d = 0; d < dccs.length; d++)
-         if (dccs[d].tagName.toLowerCase().startsWith("dcc-"))
-            dccs[d].editDCC();      
+      let template = (this._compiledCase[this._knotSelected].category) ?
+                        this._compiledCase[this._knotSelected].category : "knot";
+      loadTemplate(template, this);
    }
    
-   editSlide02() {
-let slide02 =
-`<div class="scene-screen">
-      <dcc-lively-talk duration="2s" 
-         character="images/nurse.png"
-         speech="Doctor, we have a man (51 years old) who entered the emergency department reporting chest pain. His vital signs are ABP: 144x92mmHG; HR: 78bpm; RR: 21rpm; Temp: 37oC; O2Sat: 98%.">
-      </dcc-lively-talk>
-      <dcc-lively-talk duration="2s" delay="2s" direction="right"
-         character="images/doctor.png" bubble="bubble"
-         speech="Let’s go!">
-      </dcc-lively-talk>
-      <dcc-lively-talk duration="2s" delay="4s"
-         character="images/patient.png" bubble="bubble"
-         speech="Doctor, I am feeling chest pain since yesterday. The pain is continuous and is located just in the middle of my chest, worsening when I breathe and when I lay down on my bed. I suffer from arterial hypertension and smoke 20 cigarettes every day. My father had a “heart attack” at my age and I am very worried about it.">
-      </dcc-lively-talk>
- </div>`;
-let slide02Web = document.querySelector("#slide01");
-slide02Web.innerHTML = slide02;
-
-let dccs = slide02Web.querySelectorAll("*");
-for (var d = 0; d < dccs.length; d++)
-   if (dccs[d].tagName.toLowerCase().startsWith("dcc-"))
-      dccs[d].editDCC();    
+   _templateLoaded(templateHTML) {
+      this._htmlKnot = this._translator.generateHTML(this._compiledCase[this._knotSelected]);
+      
+      let presentation = templateHTML
+                            .replace("{title}", this._compiledCase[this._knotSelected].title)
+                            .replace("{description}", this._htmlKnot);
+      
+      // console.log(this._htmlKnot);
+      
+      let knotPanel = document.querySelector("#knot-panel");
+      knotPanel.innerHTML = presentation;
    }
    
    _resourceSelected(event) {
-      console.log("Case to load [" + event.detail + "]");
       loadCase(event.detail, this);
-      
-      // document.querySelector("#slide-set").style.display = "flex";
    }
    
    _caseLoaded(caseMd) {
@@ -87,21 +61,20 @@ for (var d = 0; d < dccs.length; d++)
       let knotPanel = document.querySelector("#knot-panel");
       knotPanel.removeChild(this._selector);
       
-      let translate = new Translator();
-      let compiled = translate.compileMarkdown(caseMd);
+      this._compiledCase = this._translator.compileMarkdown(caseMd);
       
-      for (let kn in compiled) {
-         if (compiled[kn].type == "knot") {
+      for (let kn in this._compiledCase) {
+         if (this._compiledCase[kn].type == "knot") {
             let miniature = document.createElement("div");
             miniature.classList.add("navigation-knot");
             miniature.classList.add("std-border");
-            miniature.innerHTML = "<h1>" + compiled[kn].title + "</h1>";
+            miniature.innerHTML = "<h2><dcc-trigger action='knot-selected' render='none' " +
+                                      "label = '" + this._compiledCase[kn].title + "'>"
+                                  "</dcc-trigger></h2>";
             navigationPanel.appendChild(miniature);
          }
             
       }
-      
-      console.log(caseMd);
    }
    
    // <TODO> Temporary
@@ -111,15 +84,11 @@ for (var d = 0; d < dccs.length; d++)
    
    selectCase() {
       this._selector = new DCCResourceSelector();
-      // selector.preview = false;
       this._resourceSelected = this._resourceSelected.bind(this);
       document.addEventListener("resource-selected", this._resourceSelected);
       this._selector.addSelectionListener(this);
-      // selector.addSelectList(this._server.casesList());
       
       casesList(this._selector);
-      // console.log(cl);
-      // selector.addSelectList(cl);
       let knotPanel = document.querySelector("#knot-panel");
       knotPanel.appendChild(this._selector);
    }

@@ -18,7 +18,9 @@
    <script type="text/javascript" src="js/author.js"></script>
    
    <script type="text/javascript" src="../translator/translator.js"></script>
-   <script type="text/javascript" src="../translator/mark-templates.js"></script>
+   <script type="text/javascript" src="../translator/item-templates.js"></script>
+   
+   <script type="text/javascript" src="../translator/js/showdown.min.js"></script>
 </head>
 <body onload="startSystem()">
    <div class="author-panel">
@@ -32,15 +34,8 @@
          <div class="control-button"><dcc-trigger action="control-config" label="Config" image="icons/icon-config.svg"></dcc-trigger></div>
       </div>
       <div class="work-panel">
-         <div id="navigation-panel" class="sty-navigation-panel std-border">
-           <div id="slide-set" style="display:none;flex-direction: column;">
-             <div class="control-button"><dcc-trigger action="edit-slide01" label="Slide01" image="images/mono-slide.svg"></dcc-trigger></div>
-             <div class="control-button"><dcc-trigger action="edit-slide02" label="Slide02" image="images/mono-slide.svg"></dcc-trigger></div>
-           </div>
-         </div>
-         <div id="knot-panel" class="sty-knot-panel std-border">
-            <div id="slide01"></div>
-         </div>
+         <div id="navigation-panel" class="sty-navigation-panel std-border"></div>
+         <div id="knot-panel" class="sty-knot-panel std-border"></div>
       </div>
    </div>
 </body>

@@ -20,7 +20,7 @@
    }
    
    const loadCase = async (caseName, author) => {
-      console.log(caseName);
+      // console.log(caseName);
       
       const response = await fetch("http://127.0.0.1:8888/load-case", {
          method: "POST",
@@ -34,6 +34,23 @@
 
       author._caseLoaded(caseMd);
       return caseMd;
+   }
+
+   const loadTemplate = async (templateName, author) => {
+      console.log("template name: " + templateName);
+      
+      const response = await fetch("http://127.0.0.1:8888/load-template", {
+         method: "POST",
+         body: JSON.stringify({"templateName": templateName}),
+         headers:{
+           "Content-Type": "application/json"
+         }
+      });
+      const templateObj = await response.json();
+      const templateHTML = templateObj.template;
+
+      author._templateLoaded(templateHTML);
+      return templateHTML;
    }
 
 //}

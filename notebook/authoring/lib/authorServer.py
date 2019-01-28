@@ -4,6 +4,7 @@ class AuthorDM(object):
     
     CASES_DIR = "../cases/"
     CASE_FILE = "case.md"
+    TEMPLATES_DIR = "../templates/"
     
     def casesList(self):
         directories = glob.glob(AuthorDM.CASES_DIR + "*/")
@@ -15,3 +16,10 @@ class AuthorDM(object):
         caseText = caseMd.read()
         caseMd.close()
         return caseText
+    
+    def loadTemplate(self, templateName):
+        templateFile = open(AuthorDM.TEMPLATES_DIR + templateName + ".html", "r", encoding="utf-8")
+        templateHTML = templateFile.read()
+        templateFile.close()
+        return templateHTML
+        
