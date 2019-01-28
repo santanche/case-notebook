@@ -90,7 +90,7 @@ Game: What do you want to do?
 
 EKG:
 
-![EKG](images/ekg2.png)
+![EKG](images/ekg-original.png)
 
 == Generate hypothesis 2 ==
 What is your main diagnostic hypothesis?
