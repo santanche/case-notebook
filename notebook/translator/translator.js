@@ -51,8 +51,10 @@ class Translator {
       let compiledCase = [];
       let compiledKnot = compiledCase;
       
-      this.currentKnot = null;
-      this.currentCategory = null;
+      
+      this._currentKnot = null;
+      this._currentCategory = null;
+      this._objSequence = 0;
       
       let matchStart;
       do {
@@ -68,21 +70,24 @@ class Translator {
          }
 
          if (matchStart > -1) {
-            // add a segment that does not match to any expression
+            // add a segment that does not match to any expression as type="text"
             if (matchStart > 0)
-               compiledKnot.push(this.textMdToObj(mdfocus.substring(0, matchStart)));
+               compiledKnot.push(this._stampObject(
+                  this.textMdToObj(mdfocus.substring(0, matchStart))));
             
             // translate the expression to an object
             let matchSize = mdfocus.match(Translator.marks[selected])[0].length;
             let toTranslate = mdfocus.substr(matchStart, matchSize);
-            let transObj = mdToObj[selected](Translator.marks[selected].exec(toTranslate));
+            let transObj = this._stampObject( 
+               mdToObj[selected](Translator.marks[selected].exec(toTranslate)));
             
+            // build the objects vector segmented by knots
             if (selected == "knot") {
                compiledCase.push(transObj);
                compiledKnot = [];
                transObj.content = compiledKnot;
-               this.currentKnot = transObj.title;
-               this.currentCategory = (transObj.category) ? transObj.category : null;
+               this._currentKnot = transObj.title;
+               this._currentCategory = (transObj.category) ? transObj.category : null;
             } else
                compiledKnot.push(transObj);
             
@@ -93,9 +98,18 @@ class Translator {
          }
       } while (matchStart > -1);
       if (mdfocus.length > 0)
-         compiledKnot.push(this.textMdToObj(mdfocus));
+         compiledKnot.push(this._stampObject(this.textMdToObj(mdfocus)));
       
       return compiledCase;
+   }
+   
+   /*
+    * Produce a sequential stamp to uniquely identify each recognized object
+    */
+   _stampObject(obj) {
+      this._objSequence++;
+      obj.seq = this._objSequence;
+      return obj;
    }
    
    generateHTML(knotObj) {
@@ -112,11 +126,53 @@ class Translator {
             // score  : this.translateScore
       };
 
-      let final = "";
+      let preDoc = "";
+      if (knotObj != null && knotObj.content != null) {
+         // produces a pretext with object slots to process markdown
+         for (let kc in knotObj.content)
+            preDoc += (knotObj.content[kc].type == "text") 
+               ? objToHTML[knotObj.content[kc].type](knotObj.content[kc])
+               : "@@" + knotObj.content[kc].seq + "@@";
+               
+         console.log("===== Pre Doc:");
+         console.log(preDoc);
+      
+         // converts to HTML
+         let html = this._markdownTranslator.makeHtml(preDoc);
+
+         console.log("===== Pre HTML:");
+         console.log(html);
+         
+         // replaces the marks
+         let current = 0;
+         let next = html.indexOf("@@");
+         while (next != -1) {
+            let end = html.indexOf("@@", next+1);
+            let seq = parseInt(html.substring(next+2, end));
+            console.log("seq: " + seq);
+            while (knotObj.content[current].seq < seq)
+               current++;
+            if (knotObj.content[current].seq != seq)
+               console.log("Error in finding seq.");
+            else
+               html = html.substring(0, next) +
+                      objToHTML[knotObj.content[current].type](knotObj.content[current]) +
+                      html.substring(end+2);
+            next = html.indexOf("@@");
+         }
+         
+         console.log("===== Pos HTML:");
+         console.log(html);
+         
+         return html;
+      }
+      
+      /*
       if (knotObj != null && knotObj.content != null) {
          for (let kc in knotObj.content)
             final += objToHTML[knotObj.content[kc].type](knotObj.content[kc]);
       }
+      */
       
       return final;
    }
@@ -164,7 +220,8 @@ class Translator {
     * Output: [content]
     */
    textObjToHTML(obj) {
-      return this._markdownTranslator.makeHtml(obj.content);
+      // return this._markdownTranslator.makeHtml(obj.content);
+      return obj.content;
    }
    
    /*
