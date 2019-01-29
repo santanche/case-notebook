@@ -14,6 +14,10 @@ input:
 <span id='[variable]_result'></span>`,
 domain:
 `[natural]`,
+selctxopen:
+`<dcc-group-selector evaluation='[evaluation]'[states][colors]>`,
+selctxclose:
+`</dcc-group-selector>`,
 selector:
 `<dcc-state-selector>[expression]</dcc-state-selector>`
 };

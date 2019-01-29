@@ -8,14 +8,15 @@ class Translator {
    constructor() {
       this._markdownTranslator = new showdown.Converter();
       
-      this.annotationMdToObj = this.annotationMdToObj.bind(this);
-      this.textObjToHTML = this.textObjToHTML.bind(this);
+      this._annotationMdToObj = this._annotationMdToObj.bind(this);
+      this._textObjToHTML = this._textObjToHTML.bind(this);
+      this._extractAnnotations = this._extractAnnotations.bind(this);
    }
 
    // Index all knots to guide references
    _indexKnots(markdown) {
       let knots = {
-         _sorce: markdown;
+         _source: markdown
       };
       let knotCtx = null;
       let knotHeads = markdown.match(Translator.marks.knot);
@@ -32,21 +33,25 @@ class Translator {
                knots._error = [];
             knots.error.push("Duplicate knots title: " + label);
          } else
-            knots[label] = [];
+            knots[label] = {};
       }
       return knots;
    }
    
    _extractAnnotations(compiledCase) {
       const mdAnnToObj = {
-         open: this.openContextMdToObj,
-         close: this.closeContextMdToObj,
-         annotation: this.annotationMdToObj
+         knot: this._knotMdToObj,
+         ctxopen   : this._contextOpenMdToObj,
+         ctxclose  : this._contextCloseMdToObj,
+         annotation: this._annotationMdToObj
       };
       
       let knotSet = compiledCase[0];
       let currentSet = knotSet;
+      let maintainContext = false;
+
       let mdfocus = compiledCase._source;
+      
       let newSource = "";
       let matchStart;
       do {
@@ -67,9 +72,10 @@ class Translator {
                newSource += mdfocus.substring(0, matchStart);
             
             // translate the expression to an object
-            let matchSize = mdfocus.match(Translator.marks[selected])[0].length;
+            let matchSize = mdfocus.match(Translator.marksAnnotation[selected])[0].length;
             let toTranslate = mdfocus.substr(matchStart, matchSize);
-            let transObj = mdAnnToObj[selected](Translator.marksAnnotation[selected].exec(toTranslate)));
+            let transObj = mdAnnToObj[selected](
+                  Translator.marksAnnotation[selected].exec(toTranslate));
             
             // hierarquical annotation building inside contexts
             switch (selected) {
@@ -77,21 +83,30 @@ class Translator {
                   knotSet = [];
                   compiledCase[transObj.title].annotations = knotSet;
                   currentSet = knotSet;
+                  newSource += toTranslate;
                   break;
-               case "open":
+               case "ctxopen":
                   currentSet.push(transObj);
                   currentSet = [];
                   transObj.annotations = currentSet;
+                  console.log("open translate: " + toTranslate);
+                  if (toTranslate.indexOf("#") > -1) {
+                     newSource += toTranslate;
+                     maintainContext = true;
+                  }
                   break;
-               case "close":
-                  currentSet = annotationSet;
+               case "ctxclose":
+                  currentSet = knotSet;
+                  if (maintainContext)
+                     newSource += toTranslate;
+                  maintainContext = false;
                   break;
                case "annotation":
                   currentSet.push(transObj);
                   if (toTranslate.indexOf("#") > -1)
                      newSource += toTranslate;
                   else
-                     newSource += transObj.natural;
+                     newSource += transObj.natural.complete;
                   break;
             }
             
@@ -104,7 +119,11 @@ class Translator {
       if (mdfocus.length > 0)
          newSource += mdfocus;
       
-      compileCase._source = newSource;
+      compiledCase._source = newSource;
+      
+      console.log("after extracting:");
+      console.log(compiledCase);
+      console.log(newSource);
       
       return compiledCase;
    }
@@ -116,18 +135,21 @@ class Translator {
       compiledCase = this._extractAnnotations(compiledCase);
       
       const mdToObj = {
-            knot   : this.knotMdToObj,
-            option : this.optionMdToObj,
-            divert : this.divertMdToObj,
-            talk   : this.talkMdToObj,
+            knot   : this._knotMdToObj,
+            option : this._optionMdToObj,
+            divert : this._divertMdToObj,
+            talk   : this._talkMdToObj,
             // image  : this.image,
-            input  : this.inputMdToObj,
-            selector: this.selectorMdToObj,
+            input  : this._inputMdToObj,
+            selctxopen  : this._selctxopenMdToObj,
+            selctxclose : this._selctxcloseMdToObj,
+            selector    : this._selectorMdToObj
             // annotation : this.annotationMdToObj
             // score  : this.translateScore
       };
       
-      let mdfocus = markdown;
+      let mdfocus = compiledCase._source;
+      console.log("mdfocus: " + mdfocus);
       let compiledKnot = compiledCase;
       
       this._currentKnot = null;
@@ -151,11 +173,12 @@ class Translator {
             // add a segment that does not match to any expression as type="text"
             if (matchStart > 0)
                compiledKnot.push(this._stampObject(
-                  this.textMdToObj(mdfocus.substring(0, matchStart))));
+                  this._textMdToObj(mdfocus.substring(0, matchStart))));
             
             // translate the expression to an object
             let matchSize = mdfocus.match(Translator.marks[selected])[0].length;
             let toTranslate = mdfocus.substr(matchStart, matchSize);
+            console.log("selected: " + selected);
             let transObj = this._stampObject( 
                mdToObj[selected](Translator.marks[selected].exec(toTranslate)));
             
@@ -178,7 +201,9 @@ class Translator {
          }
       } while (matchStart > -1);
       if (mdfocus.length > 0)
-         compiledKnot.push(this._stampObject(this.textMdToObj(mdfocus)));
+         compiledKnot.push(this._stampObject(this._textMdToObj(mdfocus)));
+      
+      delete compiledCase._source;
       
       return compiledCase;
    }
@@ -195,14 +220,16 @@ class Translator {
    generateHTML(knotObj) {
       const objToHTML = {
             // knot   : 
-            text   : this.textObjToHTML,
-            option : this.optionObjToHTML,
-            divert : this.divertObjToHTML,
-            talk   : this.talkObjToHTML,
+            text   : this._textObjToHTML,
+            option : this._optionObjToHTML,
+            divert : this._divertObjToHTML,
+            talk   : this._talkObjToHTML,
             // image  : this.image,
-            input  : this.inputObjToHTML,
-            selector: this.selectorObjToHTML,
-            annotation : this.annotationObjToHTML
+            input  : this._inputObjToHTML,
+            "context-open"  : this._selctxopenObjToHTML,
+            "context-close" : this._selctxcloseObjToHTML,
+            selector   : this._selectorObjToHTML,
+            annotation : this._annotationObjToHTML
             // score  : this.translateScore
       };
 
@@ -229,7 +256,6 @@ class Translator {
          while (next != -1) {
             let end = html.indexOf("@@", next+1);
             let seq = parseInt(html.substring(next+2, end));
-            console.log("seq: " + seq);
             while (knotObj.content[current].seq < seq)
                current++;
             if (knotObj.content[current].seq != seq)
@@ -246,20 +272,46 @@ class Translator {
          
          return html;
       }
-      
-      /*
-      if (knotObj != null && knotObj.content != null) {
-         for (let kc in knotObj.content)
-            final += objToHTML[knotObj.content[kc].type](knotObj.content[kc]);
-      }
-      */
-      
-      return final;
    }
    
    /*
+    * Context Open Md to Obj
+    * Input: {{ [context] #[evaluation]: [option-1], ..., [option-n]
+    * Expression: \{\{([\w \t\+\-\*"=\:%\/]+)(?:#([\w \t\+\-\*"=\%\/]+):([\w \t\+\-\*"=\%\/,]+))?[\f\n\r]
+    * Output: {
+    *    type: "context"
+    *    context: <identification of the context>
+    *    evaluation: <characteristic being evaluated in the context - for selector>
+    *    options: <set of options>
+    *    annotations: [<set of annotations in this context>]
+    * }
+    */
+   _contextOpenMdToObj(matchArray) {
+      let context = {
+         type: "context",
+         context: matchArray[1].trim(),
+      };
+      
+      if (matchArray[2] != null) {
+         context.evaluation = matchArray[2].trim();
+         context.options = matchArray[3];
+      }
+     
+      return context;
+   }
+
+   /*
+    * Context Close Md to Obj
+    * Input: }}
+    * Expression: \}\}
+    * Output: {}
+    */
+   _contextCloseMdToObj(matchArray) {
+   }   
+   
+   /*
     * Annotation Md to Obj
-    * Input outside: {[natural]}([formal])
+    * Input outside: { [natural] ([formal]) #[context value] }
     * Expression outside: \{([\w \t\+\-\*"=\:%\/]+)\}(?:\(([\w \t\+\-\*"=\:%\/]+)\))?(?!\/)
     * Output: {
     *    type: "annotation"
@@ -277,14 +329,19 @@ class Translator {
     *    }
     * }
     */
-   annotationMdToObj(matchArray) {
+   _annotationMdToObj(matchArray) {
       let annotation = {
          type: "annotation",
-         natural: this.annotationInsideMdToObj(Translator.marksAnnotationInside.exec(matchArray[1].trim()))
+         natural: this._annotationInsideMdToObj(
+                     Translator.marksAnnotationInside.exec(matchArray[1].trim()))
       };
       
       if (matchArray[2] != null)
-         annotation.formal = this.annotationInsideMdToObj(Translator.marksAnnotationInside.exec(matchArray[2].trim()));
+         annotation.formal = this._annotationInsideMdToObj(
+            Translator.marksAnnotationInside.exec(matchArray[2].trim()));
+      
+      if (matchArray[3] != null)
+         annotation.value = matchArray[3].trim();
      
       return annotation;
    }
@@ -300,7 +357,7 @@ class Translator {
     *    rate: <compose the rate of the specification> #3
     * }
     */
-   annotationInsideMdToObj(matchArray) {
+   _annotationInsideMdToObj(matchArray) {
       let inside = {
          complete: matchArray[0]
       };
@@ -316,6 +373,14 @@ class Translator {
    }
 
    /*
+    * Annotation Obj to HTML
+    * Output: [natural]
+    */
+   _annotationObjToHTML(obj) {
+      return Translator.htmlTemplates.annotation.replace("[natural]", obj.natural.complete);
+   }   
+   
+   /*
     * Knot Md to Obj
     * Input: == [title] ([category]) ==
     * Output:
@@ -326,7 +391,7 @@ class Translator {
     *    content: [<sub-nodes>] - generated in further routines
     * }
     */
-   knotMdToObj(matchArray) {
+   _knotMdToObj(matchArray) {
       let knot = {
          type: "knot",
          title: matchArray[1].trim()
@@ -346,7 +411,7 @@ class Translator {
     *    content: <unprocessed content in markdown>
     * }
     */
-   textMdToObj(markdown) {
+   _textMdToObj(markdown) {
       return {
          type: "text",
          content: markdown
@@ -357,7 +422,7 @@ class Translator {
     * Text Obj to HTML
     * Output: [content]
     */
-   textObjToHTML(obj) {
+   _textObjToHTML(obj) {
       // return this._markdownTranslator.makeHtml(obj.content);
       return obj.content;
    }
@@ -372,7 +437,7 @@ class Translator {
     *    target: <target node to divert> #2
     * }
     */
-   optionMdToObj(matchArray) {
+   _optionMdToObj(matchArray) {
       let option = {
          type: "option"
       };
@@ -391,7 +456,7 @@ class Translator {
     *   <dcc-trigger link='[link].html' label='[display]' [image]></dcc-trigger>
     *   [image] -> image='[image-file].svg' location='control-panel'
     */
-   optionObjToHTML(obj) {
+   _optionObjToHTML(obj) {
       let display = (obj.label != null) ? obj.label : obj.target;
       let link = (obj.target != null) ? obj.target : obj.label;
       link = link.replace(/ /igm, "_");
@@ -416,7 +481,7 @@ class Translator {
     *    target: <target node to divert> #1
     * }
     */
-   divertMdToObj(matchArray) {
+   _divertMdToObj(matchArray) {
       return {
          type: "divert",
          target: matchArray[1].trim()
@@ -428,7 +493,7 @@ class Translator {
     * Output:
     *   <dcc-trigger link='[link].html' label='[display]'></dcc-trigger>
     */
-   divertObjToHTML(obj) {
+   _divertObjToHTML(obj) {
       let link = obj.target.replace(/ /igm, "_");
       
       return Translator.htmlTemplates.divert.replace("[link]", link)
@@ -445,7 +510,7 @@ class Translator {
     *    speech: <character's speech> #2
      * }
     */
-   talkMdToObj(matchArray) {
+   _talkMdToObj(matchArray) {
       return {
          type: "talk",
          character: matchArray[1].trim(),
@@ -459,7 +524,7 @@ class Translator {
     * <dcc-lively-talk character='[character]' speech='[speech]'>
     * </dcc-lively-talk>
     */
-   talkObjToHTML(obj) {
+   _talkObjToHTML(obj) {
       let charImg = "images/" + obj.character.toLowerCase()
                                    .replace(/ /igm, "_") + "-icon.png";
       
@@ -479,7 +544,7 @@ class Translator {
     *    vocabulary: <the vocabulary to interpret the input> #3
     * }
     */
-   inputMdToObj(matchArray) {
+   _inputMdToObj(matchArray) {
       let input = {
              type: "input",
              variable: matchArray[2].trim().replace(/ /igm, "_")
@@ -501,7 +566,7 @@ class Translator {
     *         </[input-type]>
     *         <span id='[variable]_result'></span>
     */
-   inputObjToHTML(inputObj) {
+   _inputObjToHTML(inputObj) {
       let inputType = ((inputObj.rows > 1) ? "textarea" : "input");
       let inputParam = ((inputObj.rows > 1) ? "style='width:100%' rows=" + rows
                                             : "type='text'");
@@ -513,36 +578,92 @@ class Translator {
    }
 
    /*
-    * Annotation Obj to HTML
-    * Output: [natural]
+    * Selector Context Open Md to Obj
+    * Input: {{ [context] #[evaluation]: [option-1], ..., [option-n]
+    * Output:
+    * {
+    *    type: "context-open"
+    *    context: <identification of the context> #1
+    *    evaluation: <characteristic being evaluated in the context> #2
+    *    options: <set of options> #3
+    *    colors: <set of colors> #4
+    * }
     */
-   annotationObjToHTML(obj) {
-      return Translator.htmlTemplates.annotation.replace("[natural]", obj.natural.complete);
-   }   
+   _selctxopenMdToObj(matchArray) {
+      let context = {
+         type: "context-open",
+         context: matchArray[1].trim()
+      };
+      if (matchArray[2] != null)
+         context.evaluation = matchArray[2].trim();
+      if (matchArray[3] != null)
+         context.options = matchArray[3];
+      if (matchArray[4] != null)
+         context.colors = matchArray[4].trim();
+
+      return context;
+   }
    
+   /*
+    * Selector Context Open Obj to HTML
+    * Output: <dcc-group-selector evaluation='[context]/[evaluation]' states='[options]' colors='[colors]'>
+    */
+   _selctxopenObjToHTML(obj) {
+      let evaluation = obj.context + ((obj.evaluation != null) ? "/" + obj.evaluation : "");
+      let states = (obj.options != null) ? " states='" + obj.options + "'" : "";
+      let colors = (obj.colors != null) ? " colors='" + obj.colors + "'" : "";
+      
+      return Translator.htmlTemplates.selctxopen.replace("[evaluation]", evaluation)
+                                                .replace("[states]", states)
+                                                .replace("[colors]", colors);
+   }
+
+   /*
+    * Selector Context Close Md to Obj
+    * Output:
+    * {
+    *    type: "context-close"
+    * }
+    */
+   _selctxcloseMdToObj(matchArray) {
+      return {
+         type: "context-close"
+      };
+   }
+   
+   /*
+    * Selector Context Close Obj to HTML
+    * Output: </dcc-group-selector>
+    */
+   _selctxcloseObjToHTML(obj) {
+      return Translator.htmlTemplates.selctxclose;
+   }
+
    /*
     * Selector Md to Obj
     * Input: {[expression]}/[value]
     * Output:
     * {
     *    type: "selector"
-    *    expression: <expression to be evaluated> #1
-    *    value: <right evaluation of the expression> #2
+    *    expression: <expression to be evaluated (natural)> #1
+    *    value: <right value of the expression according to the evaluated context> #3
     * }
     */
-   selectorMdToObj(matchArray) {
-      return {
+   _selectorMdToObj(matchArray) {
+      let selector = {
          type: "selector",
-         expression: matchArray[1].trim(),
-         value: matchArray[2].trim()
-      };            
+         expression: matchArray[1].trim()
+      };
+      if (matchArray[3] != null)
+         selector.value = matchArray[3].trim();
+      return selector;
    }
    
    /*
     * Selector Obj to HTML
     * Output: <dcc-state-selector>[expression]</dcc-state-selector>
     */
-   selectorObjToHTML(obj) {
+   _selectorObjToHTML(obj) {
       return Translator.htmlTemplates.selector.replace("[expression]", obj.expression);            
    }
 }
@@ -552,8 +673,8 @@ class Translator {
 
    Translator.marksAnnotation = {
      knot   : /^[ \t]*==*[ \t]*(\w[\w \t]*)(?:\(([\w \t]*)\))?[ \t]*=*[ \t]*[\f\n\r]/igm,
-     open : /\{\{([\w \t\+\-\*"=\:%\/]+)(?:#([\w \t\+\-\*"=\%\/]+):([\w \t\+\-\*"=\%\/,]+))?[\f\n\r]/im,
-     close: /\}\}/im,
+     ctxopen : /\{\{([\w \t\+\-\*"=\:%\/]+)(?:#([\w \t\+\-\*"=\%\/]+):([\w \t\+\-\*"=\%\/,]+);([\w \t#,]+)?)?[\f\n\r]/im,
+     ctxclose: /\}\}/im,
      annotation: /\{([\w \t\+\-\*"=\:%\/]+)(?:\(([\w \t\+\-\*"=\:%\/]+)\)[ \t]*)?(?:#([\w \t\+\-\*"=\:%\/]+))?\}/im
    };
    
@@ -566,7 +687,9 @@ class Translator {
       talk   : /^[ \t]*: *(\w[\w ]*):[ \t]*([^\n\r\f]+)[\n\r\f]*/im,
       // image  : /<img src="([\w:.\/\?&#\-]+)" (?:alt="([\w ]+)")?>/im,
       input  : /\{[ \t]*\?(\d+)?([\w \t]*)(?:\:([\w \t]*))?\}/im,
-      selector: Translator.marksAnnotation.outside,
+      selctxopen : Translator.marksAnnotation.ctxopen,
+      selctxclose: Translator.marksAnnotation.ctxclose,
+      selector   : Translator.marksAnnotation.annotation
       // annotation : 
       // score  : /^(?:<p>)?[ \t]*~[ \t]*([\+\-=\*\\%]?)[ \t]*(\w*)?[ \t]*(\w+)[ \t]*(?:<\/p>)?/im
    };
