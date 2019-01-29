@@ -113,7 +113,13 @@ class AuthorDM {
          let knotPanel = document.querySelector("#knot-panel");
          knotPanel.innerHTML = this._htmlKnot;,
       } else {
-         
+         let editorSpace = document.createElement("div");
+         editorSpace.id = "editor-space";
+         knotPanel.appendChild(editorSpace);
+         let quill = new Quill('#editor-space', {
+            theme: 'snow'
+          });
+         quill.insertText();
       }
    }
    

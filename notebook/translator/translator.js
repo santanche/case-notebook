@@ -19,11 +19,15 @@ class Translator {
          _source: markdown
       };
       let knotCtx = null;
-      let knotHeads = markdown.match(Translator.marks.knot);
-      for (var kh in knotHeads) {
-         var label = knotHeads[kh].match(Translator.marksKnotTitle);
+      // let knotHeads = markdown.match(Translator.marks.knot);
+      let knotBlocks = markdown.split(Translator.marksKnotTitle);
+      console.log(knotBlocks);
+      // for (var kh in knotHeads) {
+      for (var kb = 1; kb < knotBlocks.length; kb += 2) {
+         // var label = knotHeads[kh].match(Translator.marksKnotTitle);
+         let label = knotBlocks[kb].match(Translator.marks.knot);
          label = label[1].trim();
-         if (knotHeads[kh].indexOf("==") >= 0)
+         if (knotBlocks[kb].indexOf("==") >= 0)
             knotCtx = label;
          else
             label = (label.indexOf(".") < 0 && knotCtx == null) ? label
@@ -33,7 +37,9 @@ class Translator {
                knots._error = [];
             knots.error.push("Duplicate knots title: " + label);
          } else
-            knots[label] = {};
+            knots[label] = {
+               _source: knotBlocks[3]
+            };
       }
       return knots;
    }
@@ -652,7 +658,7 @@ class Translator {
 }
 
 (function() {
-   Translator.marksKnotTitle = /==*[ \t]*(\w[\w \t]*)(?:\([\w \t]*\))?[ \t]*=*/i;
+   Translator.marksKnotTitle = /(^[ \t]*==*[ \t]*(?:\w[\w \t]*)(?:\([\w \t]*\))?[ \t]*=*[ \t]*[\f\n\r])/igm;
 
    Translator.marksAnnotation = {
      knot   : /^[ \t]*==*[ \t]*(\w[\w \t]*)(?:\(([\w \t]*)\))?[ \t]*=*[ \t]*[\f\n\r]/igm,
