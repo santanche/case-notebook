@@ -19,14 +19,10 @@ class Translator {
          _source: markdown
       };
       let knotCtx = null;
-      // let knotHeads = markdown.match(Translator.marks.knot);
       let knotBlocks = markdown.split(Translator.marksKnotTitle);
-      console.log(knotBlocks);
-      // for (var kh in knotHeads) {
       for (var kb = 1; kb < knotBlocks.length; kb += 2) {
-         // var label = knotHeads[kh].match(Translator.marksKnotTitle);
-         let label = knotBlocks[kb].match(Translator.marks.knot);
-         label = label[1].trim();
+         let transObj = this._knotMdToObj(knotBlocks[kb].match(Translator.marks.knot));
+         let label = transObj.title;
          if (knotBlocks[kb].indexOf("==") >= 0)
             knotCtx = label;
          else
@@ -36,10 +32,10 @@ class Translator {
             if (!knots._error)
                knots._error = [];
             knots.error.push("Duplicate knots title: " + label);
-         } else
-            knots[label] = {
-               _source: knotBlocks[3]
-            };
+         } else {
+            transObj._source = knotBlocks[kb] + knotBlocks[kb+1];
+            knots[label] = transObj;
+         }
       }
       return knots;
    }
@@ -264,6 +260,44 @@ class Translator {
    }
    
    /*
+    * Knot Md to Obj
+    * Input: == [title] ([category]) ==
+    * Output:
+    * {
+    *    type: "knot"
+    *    title: <title of the knot> #1
+    *    category: <knot category>  #2
+    *    content: [<sub-nodes>] - generated in further routines
+    * }
+    */
+   _knotMdToObj(matchArray) {
+      let knot = {
+         type: "knot",
+         title: matchArray[1].trim()
+      };
+      
+      if (matchArray[2] != null)
+         knot.category = matchArray[2].trim();
+         
+      return knot;
+   }
+   
+   /*
+    * Text Md to Obj
+    * Output:
+    * {
+    *    type: "text"
+    *    content: <unprocessed content in markdown>
+    * }
+    */
+   _textMdToObj(markdown) {
+      return {
+         type: "text",
+         content: markdown
+      };
+   }
+   
+   /*
     * Context Open Md to Obj
     * Input: {{ [context] #[evaluation]: [option-1], ..., [option-n]
     * Expression: \{\{([\w \t\+\-\*"=\:%\/]+)(?:#([\w \t\+\-\*"=\%\/]+):([\w \t\+\-\*"=\%\/,]+))?[\f\n\r]
@@ -368,44 +402,6 @@ class Translator {
    _annotationObjToHTML(obj) {
       return Translator.htmlTemplates.annotation.replace("[natural]", obj.natural.complete);
    }   
-   
-   /*
-    * Knot Md to Obj
-    * Input: == [title] ([category]) ==
-    * Output:
-    * {
-    *    type: "knot"
-    *    title: <title of the knot> #1
-    *    category: <knot category>  #2
-    *    content: [<sub-nodes>] - generated in further routines
-    * }
-    */
-   _knotMdToObj(matchArray) {
-      let knot = {
-         type: "knot",
-         title: matchArray[1].trim()
-      };
-      
-      if (matchArray[2] != null)
-         knot.category = matchArray[2].trim();
-         
-      return knot;
-   }
-   
-   /*
-    * Text Md to Obj
-    * Output:
-    * {
-    *    type: "text"
-    *    content: <unprocessed content in markdown>
-    * }
-    */
-   _textMdToObj(markdown) {
-      return {
-         type: "text",
-         content: markdown
-      };
-   }
    
    /*
     * Text Obj to HTML
@@ -661,7 +657,7 @@ class Translator {
    Translator.marksKnotTitle = /(^[ \t]*==*[ \t]*(?:\w[\w \t]*)(?:\([\w \t]*\))?[ \t]*=*[ \t]*[\f\n\r])/igm;
 
    Translator.marksAnnotation = {
-     knot   : /^[ \t]*==*[ \t]*(\w[\w \t]*)(?:\(([\w \t]*)\))?[ \t]*=*[ \t]*[\f\n\r]/igm,
+     knot   : /^[ \t]*==*[ \t]*(\w[\w \t]*)(?:\(([\w \t]*)\))?[ \t]*=*[ \t]*[\f\n\r]/im,
      ctxopen : /\{\{([\w \t\+\-\*"=\:%\/]+)(?:#([\w \t\+\-\*"=\%\/]+):([\w \t\+\-\*"=\%\/,]+);([\w \t#,]+)?)?[\f\n\r]/im,
      ctxclose: /\}\}/im,
      annotation: /\{([\w \t\+\-\*"=\:%\/]+)(?:\(([\w \t\+\-\*"=\:%\/]+)\)[ \t]*)?(?:#([\w \t\+\-\*"=\:%\/]+))?\}/im

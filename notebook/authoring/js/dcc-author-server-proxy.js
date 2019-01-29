@@ -11,7 +11,6 @@
       });
       const casesReturn = await response.json();
       const cases = casesReturn.casesList;
-      console.log(cases);
       let finalCasesList = {};
       for (var c in cases)
          finalCasesList[cases[c]] = "images/mono-slide.svg";
@@ -37,8 +36,6 @@
    }
 
    const loadTemplate = async (templateName, author) => {
-      console.log("template name: " + templateName);
-      
       const response = await fetch("http://127.0.0.1:8888/load-template", {
          method: "POST",
          body: JSON.stringify({"templateName": templateName}),

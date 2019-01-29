@@ -13,22 +13,23 @@ class DCCTrigger extends DCCBase {
         }
      
         .trigger-button {
-          background-color: #383f4f;
-          color: #e0e9ce;
-          padding: 14px 25px;
-          text-align: center;
-          text-decoration: none;
-          display: inline-block;
+           background-color: #383f4f;
+           color: #e0e9ce;
+           padding: 14px 25px;
+           text-align: center;
+           text-decoration: none;
+           display: inline-block;
         }
         
         .trigger-button:hover {
-          color: white;
-          cursor: pointer;
+           color: white;
+           cursor: pointer;
         }
         
         .trigger-image {
-          max-width: 100%;
-          max-height: 100%;
+           max-width: 100%;
+           max-height: 100%;
+           cursor: pointer;
         }
       </style>
       <span id="presentation-dcc"></span>`;

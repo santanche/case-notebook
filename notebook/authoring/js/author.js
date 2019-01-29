@@ -81,6 +81,16 @@ class AuthorDM {
    }
 
    /*
+    * ACTION: control-load (1)
+    */
+   editKnot() {
+      if (this._knotSelected != null) {
+         this._renderSlide = !this._renderSlide;
+         this._renderKnot();
+      }
+   }
+   
+   /*
     * ACTION: knot-selected (1)
     */
    actionKnotSelected(event) {
@@ -100,26 +110,23 @@ class AuthorDM {
     */
    _templateLoaded(templateHTML) {
       this._templateHTML = templateHTML;
-      _renderKnot();
+      this._renderKnot();
       
    }
    
    _renderKnot() {
+      let knotPanel = document.querySelector("#knot-panel");
       if (this._renderSlide) {
-         this._htmlKnot = templateHTML
+         let htmlFinal = this._templateHTML
                              .replace("{title}", this._compiledCase[this._knotSelected].title)
                              .replace("{description}", this._htmlKnot);
-         
-         let knotPanel = document.querySelector("#knot-panel");
-         knotPanel.innerHTML = this._htmlKnot;,
+         knotPanel.innerHTML = htmlFinal;
       } else {
-         let editorSpace = document.createElement("div");
-         editorSpace.id = "editor-space";
-         knotPanel.appendChild(editorSpace);
+         knotPanel.innerHTML = "<div id='editor-space'></div>";
          let quill = new Quill('#editor-space', {
             theme: 'snow'
           });
-         quill.insertText();
+         quill.insertText(0, this._compiledCase[this._knotSelected]._source);
       }
    }
    
