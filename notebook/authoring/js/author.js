@@ -6,8 +6,11 @@ class AuthorDM {
    constructor() {
       this._translator = new Translator();
       this._compiledCase = null;
+
+      this._knotSelected = null;
+      this._htmlTemplate = null;
       this._htmlKnot = null;
-      this._knotSelected = -1;
+      this._renderSlide = true;
       
       // <TODO> Fix this problem - allow assynchronous methods inside the class
       // this._server = new DCCAuthorServer();
@@ -24,38 +27,38 @@ class AuthorDM {
    }
    
    actionButton(event) {
-      if (event.type == "control-load")
-         this.selectCase();
+      switch (event.type) {
+         case "control-load": this.selectCase();
+                              break;
+         case "control-edit-knot": this.editKnot();
+                                   break;
+      }
    }
    
-   actionKnotSelected(event) {
-      this._knotSelected = -1;
-      for (let kn = 0; kn < this._compiledCase.length && this._knotSelected == -1; kn++)
-         if (this._compiledCase[kn].title == event.detail)
-            this._knotSelected = kn;
+   /*
+    * ACTION: control-load (1)
+    */
+   selectCase() {
+      this._selector = new DCCResourceSelector();
+      this._resourceSelected = this._resourceSelected.bind(this);
+      document.addEventListener("resource-selected", this._resourceSelected);
+      this._selector.addSelectionListener(this);
       
-      let template = (this._compiledCase[this._knotSelected].category) ?
-                        this._compiledCase[this._knotSelected].category : "knot";
-      loadTemplate(template, this);
-   }
-   
-   _templateLoaded(templateHTML) {
-      this._htmlKnot = this._translator.generateHTML(this._compiledCase[this._knotSelected]);
-      
-      let presentation = templateHTML
-                            .replace("{title}", this._compiledCase[this._knotSelected].title)
-                            .replace("{description}", this._htmlKnot);
-      
-      // console.log(this._htmlKnot);
-      
+      casesList(this._selector);
       let knotPanel = document.querySelector("#knot-panel");
-      knotPanel.innerHTML = presentation;
+      knotPanel.appendChild(this._selector);
    }
-   
+
+   /*
+    * ACTION: control-load (2)
+    */
    _resourceSelected(event) {
       loadCase(event.detail, this);
    }
    
+   /*
+    * ACTION: control-load (3)
+    */
    _caseLoaded(caseMd) {
       let navigationPanel  = document.querySelector("#navigation-panel");
       let knotPanel = document.querySelector("#knot-panel");
@@ -76,23 +79,47 @@ class AuthorDM {
             
       }
    }
+
+   /*
+    * ACTION: knot-selected (1)
+    */
+   actionKnotSelected(event) {
+      this._htmlTemplate = null;
+      
+      if (this._compiledCase[event.detail]) {
+         this._knotSelected = event.detail;
+         this._htmlKnot = this._translator.generateHTML(this._compiledCase[this._knotSelected]);
+         let template = (this._compiledCase[this._knotSelected].category) ?
+                         this._compiledCase[this._knotSelected].category : "knot";
+         loadTemplate(template, this);
+      }
+   }
+   
+   /*
+    * ACTION: knot-selected (2)
+    */
+   _templateLoaded(templateHTML) {
+      this._templateHTML = templateHTML;
+      _renderKnot();
+      
+   }
+   
+   _renderKnot() {
+      if (this._renderSlide) {
+         this._htmlKnot = templateHTML
+                             .replace("{title}", this._compiledCase[this._knotSelected].title)
+                             .replace("{description}", this._htmlKnot);
+         
+         let knotPanel = document.querySelector("#knot-panel");
+         knotPanel.innerHTML = this._htmlKnot;,
+      } else {
+         
+      }
+   }
    
    // <TODO> Temporary
    dispatchEvent(event) {
       this._resourceSelected(event);
    }
-   
-   selectCase() {
-      this._selector = new DCCResourceSelector();
-      this._resourceSelected = this._resourceSelected.bind(this);
-      document.addEventListener("resource-selected", this._resourceSelected);
-      this._selector.addSelectionListener(this);
-      
-      casesList(this._selector);
-      let knotPanel = document.querySelector("#knot-panel");
-      knotPanel.appendChild(this._selector);
-   }
-   
-
 }
 

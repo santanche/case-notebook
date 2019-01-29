@@ -89,7 +89,6 @@ class Translator {
                   currentSet.push(transObj);
                   currentSet = [];
                   transObj.annotations = currentSet;
-                  console.log("open translate: " + toTranslate);
                   if (toTranslate.indexOf("#") > -1) {
                      newSource += toTranslate;
                      maintainContext = true;
@@ -121,10 +120,6 @@ class Translator {
       
       compiledCase._source = newSource;
       
-      console.log("after extracting:");
-      console.log(compiledCase);
-      console.log(newSource);
-      
       return compiledCase;
    }
    
@@ -149,7 +144,6 @@ class Translator {
       };
       
       let mdfocus = compiledCase._source;
-      console.log("mdfocus: " + mdfocus);
       let compiledKnot = compiledCase;
       
       this._currentKnot = null;
@@ -178,13 +172,11 @@ class Translator {
             // translate the expression to an object
             let matchSize = mdfocus.match(Translator.marks[selected])[0].length;
             let toTranslate = mdfocus.substr(matchStart, matchSize);
-            console.log("selected: " + selected);
             let transObj = this._stampObject( 
                mdToObj[selected](Translator.marks[selected].exec(toTranslate)));
             
             // attach to a knot array (if it is a knot) or an array inside a knot
             if (selected == "knot") {
-               // compiledCase.push(transObj);
                for (let ka in transObj)
                   compiledCase[transObj.title][ka] = transObj[ka]; 
                compiledKnot = [];
@@ -241,15 +233,9 @@ class Translator {
                ? objToHTML[knotObj.content[kc].type](knotObj.content[kc])
                : "@@" + knotObj.content[kc].seq + "@@";
                
-         console.log("===== Pre Doc:");
-         console.log(preDoc);
-      
          // converts to HTML
          let html = this._markdownTranslator.makeHtml(preDoc);
 
-         console.log("===== Pre HTML:");
-         console.log(html);
-         
          // replaces the marks
          let current = 0;
          let next = html.indexOf("@@");
@@ -266,9 +252,6 @@ class Translator {
                       html.substring(end+2);
             next = html.indexOf("@@");
          }
-         
-         console.log("===== Pos HTML:");
-         console.log(html);
          
          return html;
       }
