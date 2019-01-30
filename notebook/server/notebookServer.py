@@ -9,6 +9,7 @@ class NotebookDM(object):
    DIR_CASES = "../cases/"
    DIR_SHARED = "../shared/"
    DIR_TEMPLATES = "../templates/"
+   DIR_DCCS = "../dccs/components/"
    DIR_AUTHOR = "../author/"
    FILE_CASE_NAME = "case"
    FILE_CASE_EXTENSION = ".md"
@@ -42,15 +43,19 @@ class NotebookDM(object):
       versionsDir = caseDir + "version/"
       
       # copy a version of the previous file
+      versionFile = "new file"
       if os.path.isfile(caseFile):
          if not os.path.isdir(versionsDir):
            os.mkdir(versionsDir)
-         shutil.copy2(caseFile, versionsDir + NotebookDM.FILE_CASE_NAME +
-                                datetime.datetime.now().strftime("_%Y-%m-%d_") +
-                                str(uuid.uuid1()) + NotebookDM.FILE_CASE_EXTENSION)
+         versionFile = NotebookDM.FILE_CASE_NAME + \
+                       datetime.datetime.now().strftime("_%Y-%m-%d-%H-%M-%S_") + \
+                       str(uuid.uuid1()) + NotebookDM.FILE_CASE_EXTENSION
+         shutil.copy2(caseFile, versionsDir + versionFile)
          
       # write the new case
       self.saveFile(caseFile, content)
+      
+      return versionFile
         
    def loadTemplate(self, templateName):
         templateFile = open(NotebookDM.DIR_TEMPLATES + templateName + ".html", "r", encoding="utf-8")
@@ -69,6 +74,9 @@ class NotebookDM(object):
       dirs = ["css", "js"]
       for d in dirs:
          shutil.copytree(NotebookDM.DIR_TEMPLATES + d, caseDir + "html/" + d)
+         
+      # copy DCCs to the case
+      shutil.copytree(NotebookDM.DIR_DCCS, caseDir + "html/js/dccs")
       
       # copy case-specific and shared images to the case 
       shutil.copytree(caseDir + "images", caseDir + "html/images")

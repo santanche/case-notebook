@@ -1,58 +1,36 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8"/>
-    <title>Start</title>
-    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/standard.css">
-    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/main-start.css">
-    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page.css">
-    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page-start.css">
-    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/control-panel.css">
-    
-    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Raleway">
-    
-    <script type="text/javascript" src="js/main.js"></script>
-    <script type="text/javascript" src="js/page.js"></script>
-    <script type="text/javascript" src="js/dccs/dcc-link.js"></script>
-    <script type="text/javascript" src="js/dccs/dcc-state-selector.js"></script>
-    <script type="text/javascript" src="js/dccs/dcc-lively-dialog.js"></script>
-  </head>
-  <body onload="traceRoute('Check hypothesis 1')">
-    <!-- Panel North -->
-    <!-- =========== -->
-    <div class="panel_north">
-      <!-- <div class="home_item"><a href="index.html">Zombie Health</a></div> -->
-      
-     <div class="main_menu"> &nbsp;&nbsp;&nbsp; <a href="report.html" target="_blank" onclick="exportScore()">report</a> <br>
-        <hr> </div>
-    </div>
-    <!-- Panel Center -->
-    <!-- ============ -->
-    <div class="panel_center">
-      <div class="panel_inner_center">
-        <div class="panel_presentation">
-  <div class="panel_case">
+<head>
+   <meta charset="utf-8"/>
+   <title>Player</title>
+   
+   <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/player.css">
 
-    <div class="case_text">
-       <dcc-group-selector states=" ;+;-;=" colors="lightgrey;green;red;blue">
-          
-Among all patient features, signs, and symptoms highlighted on text, select all that increase the probability of your diagnostic hypothesis:</p>
+   <script type="text/javascript" src="js/dccs/dcc-base.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-trigger.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-character.js"></script>
+   <script type="text/javascript" src="js/dccs/editable/dcc-character-editable.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-lively-dialog.js"></script>
+   <script type="text/javascript" src="js/dccs/editable/dcc-lively-dialog-editable.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-resource-selector.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-state-selector.js"></script>
+   
+   <script type="text/javascript" src="js/player.js"></script>
+</head>
+<body onload="startKnot()">
+   <div class="sty-main-panel">
+      <div class="sty-control-panel std-border">
+      </div>
+      <div class="sty-work-panel">
+         <div id="knot-panel" class="sty-knot-panel std-border"><dcc-group-selector evaluation='symptoms/contribution to diagnostics' states=' ,+,=,-' colors='lightgrey,green,blue,red'>
+<p>Among all patient features, signs, and symptoms highlighted on text, select all that increase the probability of your diagnostic hypothesis:</p>
 <p>Nurse: Doctor, please you have to evaluate a man (<dcc-state-selector>51 years-old</dcc-state-selector>) who entered the emergency department reporting <dcc-state-selector>chest pain</dcc-state-selector>.His vital signs are <dcc-state-selector>ABP: 144x92mmHG</dcc-state-selector>; <dcc-state-selector>HR: 78bpm</dcc-state-selector>; <dcc-state-selector>RR: 21rpm</dcc-state-selector>; <dcc-state-selector>Temp: 37oC</dcc-state-selector>; <dcc-state-selector>O2Sat: 98%</dcc-state-selector>.</p>
 <p>Patient: Doctor, I am feeling chest pain since yesterday. The <dcc-state-selector>pain is continuous</dcc-state-selector> and <dcc-state-selector>is located just in the middle of my chest</dcc-state-selector>, <dcc-state-selector>worsening when I breathe</dcc-state-selector> and <dcc-state-selector>when I lay down on my bed</dcc-state-selector>. I have <dcc-state-selector>arterial hypertension</dcc-state-selector> and <dcc-state-selector>I smoke 20 cigarettes</dcc-state-selector> every day. <dcc-state-selector>My father had a "heart attack"</dcc-state-selector> at my age and I am very worried about it.</p>
 <p>You perform physical examination: <dcc-state-selector>cardiac and pulmonary auscultation are normal</dcc-state-selector>; <dcc-state-selector>chest pain does not worse with palpation of the thorax</dcc-state-selector>; <dcc-state-selector>there is no jugular stasis</dcc-state-selector> <dcc-state-selector>nor lower limb edema</dcc-state-selector>.</p>
-<p><dcc-link link='Order_EKG.html' label='Submit'></dcc-link></p>
-
-       </dcc-group-selector>
-    </div>
-    
-  </div>
-</div>
+</dcc-group-selector>
+<p><dcc-trigger link='Order_EKG.html' label='Submit' ></dcc-trigger></p></div>
+         <div id="player-panel" class="sty-player-panel std-border"></div>
       </div>
-    </div>
-    <!-- Panel South -->
-    <!-- =========== -->
-    <div class="panel_south">
-       <div id="control-panel" class="control-panel-style"></div>
-    </div>
+   </div>
 </body>
 </html>

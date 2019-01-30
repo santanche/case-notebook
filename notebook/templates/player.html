@@ -6,21 +6,23 @@
    
    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/player.css">
 
-   <script type="text/javascript" src="../dccs/components/dcc-base.js"></script>
-   <script type="text/javascript" src="../dccs/components/dcc-trigger.js"></script>
-   <script type="text/javascript" src="../dccs/components/dcc-character.js"></script>
-   <script type="text/javascript" src="../dccs/components/editable/dcc-character-editable.js"></script>
-   <script type="text/javascript" src="../dccs/components/dcc-lively-dialog.js"></script>
-   <script type="text/javascript" src="../dccs/components/editable/dcc-lively-dialog-editable.js"></script>
-   <script type="text/javascript" src="../dccs/components/dcc-resource-selector.js"></script>
-   <script type="text/javascript" src="../dccs/components/dcc-state-selector.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-base.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-trigger.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-character.js"></script>
+   <script type="text/javascript" src="js/dccs/editable/dcc-character-editable.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-lively-dialog.js"></script>
+   <script type="text/javascript" src="js/dccs/editable/dcc-lively-dialog-editable.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-resource-selector.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-state-selector.js"></script>
+   
+   <script type="text/javascript" src="js/player.js"></script>
 </head>
-<body>
+<body onload="startKnot()">
    <div class="sty-main-panel">
       <div class="sty-control-panel std-border">
       </div>
       <div class="sty-work-panel">
-         <div id="knot-panel" class="sty-knot-panel std-border"></div>
+         <div id="knot-panel" class="sty-knot-panel std-border">[knot-html]</div>
          <div id="player-panel" class="sty-player-panel std-border"></div>
       </div>
    </div>

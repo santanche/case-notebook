@@ -1,8 +1,6 @@
-(function() {
-  
 /* Lively Talk DCC
  *****************/
-class DCCLivelyTalk extends HTMLElement {
+class DCCLivelyTalk extends DCCBase {
    constructor() {
      super();
 
@@ -138,8 +136,8 @@ class DCCLivelyTalk extends HTMLElement {
           
       this._presentation = this._shadow.querySelector("#presentation-dcc");
       
-      const imageHTML = "<div class='dcc-character'><img src='" + this.character + "' width='100px'></div>";
-      const speechHTML = "<div class='dcc-bubble'><div class='dcc-speech'>" + this.speech + "</div></div>";
+      const imageHTML = "<div class='dcc-character'><img id='dcc-talk-character' src='" + this.character + "' width='100px'></div>";
+      const speechHTML = "<div class='dcc-bubble'><div id='dcc-talk-text' class='dcc-speech'>" + this.speech + "</div></div>";
       
       this._presentation.innerHTML = (directionWeb == "left") ? imageHTML + speechHTML : speechHTML + imageHTML;
       this._presentation.querySelector("img").addEventListener("load", this._imageLoaded);
@@ -177,7 +175,7 @@ class DCCLivelyTalk extends HTMLElement {
      return this.getAttribute("character");
    }
 
-    set character(newCharacter) {
+   set character(newCharacter) {
      this.setAttribute("character", newCharacter);
    }
 
@@ -202,11 +200,20 @@ class DCCLivelyTalk extends HTMLElement {
       this._presentation.classList.add("dcc-entrance");
       this._presentation.classList.remove("dcc-hidden");
    }
+   
+   /* Editable Component */
+   editDCC() {
+      if (!DCCLivelyTalk.editableCode) {
+        editableDCCLivelyTalk();
+        DCCLivelyTalk.editableCode = true;
+      }
+      this._editDCC();
+   }
 }
 
 /* Lively Dialog DCC
  *******************/
-class DCCLivelyDialog extends HTMLElement {
+class DCCLivelyDialog extends DCCBase {
    constructor() {
       super();
       
@@ -262,7 +269,9 @@ class DCCLivelyDialog extends HTMLElement {
    }
 }
 
-customElements.define("dcc-lively-talk", DCCLivelyTalk);
-customElements.define("dcc-lively-dialog", DCCLivelyDialog);
-
+(function() {
+   DCCLivelyTalk.editableCode = false;
+   customElements.define("dcc-lively-talk", DCCLivelyTalk);
+   DCCLivelyDialog.editableCode = false;
+   customElements.define("dcc-lively-dialog", DCCLivelyDialog);
 })();

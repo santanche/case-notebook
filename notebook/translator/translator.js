@@ -210,8 +210,8 @@ class Translator {
       obj.seq = this._objSequence;
       return obj;
    }
-   
-   generateHTML(knotObj) {
+
+   generateKnotHTML(knotObj) {
       const objToHTML = {
             // knot   : 
             text   : this._textObjToHTML,
@@ -262,6 +262,16 @@ class Translator {
          
          return html;
       }
+   }
+   
+   /*
+    * Put together all source fragments
+    */
+   assembleMarkdown(compiledCase) {
+      let md = "";
+      for (let cc in compiledCase)
+         md += compiledCase[cc]._source;
+      return md;
    }
    
    /*

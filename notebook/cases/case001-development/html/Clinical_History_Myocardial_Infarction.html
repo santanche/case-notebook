@@ -1,54 +1,31 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8"/>
-    <title>Start</title>
-    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/standard.css">
-    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/main-start.css">
-    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page.css">
-    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/page-start.css">
-    <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/control-panel.css">
-    
-    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Raleway">
-    
-    <script type="text/javascript" src="js/main.js"></script>
-    <script type="text/javascript" src="js/page.js"></script>
-    <script type="text/javascript" src="js/dccs/dcc-link.js"></script>
-    <script type="text/javascript" src="js/dccs/dcc-state-selector.js"></script>
-    <script type="text/javascript" src="js/dccs/dcc-lively-dialog.js"></script>
-  </head>
-  <body onload="traceRoute('Clinical History Myocardial Infarction')">
-    <!-- Panel North -->
-    <!-- =========== -->
-    <div class="panel_north">
-      <!-- <div class="home_item"><a href="index.html">Zombie Health</a></div> -->
-      
-     <div class="main_menu"> &nbsp;&nbsp;&nbsp; <a href="report.html" target="_blank" onclick="exportScore()">report</a> <br>
-        <hr> </div>
-    </div>
-    <!-- Panel Center -->
-    <!-- ============ -->
-    <div class="panel_center">
-      <div class="panel_inner_center">
-        <div class="panel_presentation">
-  <div class="panel_case">
-    <!-- <div class="case_title">Clinical History Myocardial Infarction</div> -->
+<head>
+   <meta charset="utf-8"/>
+   <title>Player</title>
+   
+   <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/player.css">
 
-    <div class="case_text">
-    
-<img src="images/ebm-clinical-history-myocardial-infarction.png" alt="Clinical History Myocardial Infarction" style='float:left'></p>
-
-    <div class="case_link"><a href="#" onclick="goBack()">Return</a></div>
-    </div>
-    
-  </div>
-</div>
+   <script type="text/javascript" src="js/dccs/dcc-base.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-trigger.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-character.js"></script>
+   <script type="text/javascript" src="js/dccs/editable/dcc-character-editable.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-lively-dialog.js"></script>
+   <script type="text/javascript" src="js/dccs/editable/dcc-lively-dialog-editable.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-resource-selector.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-state-selector.js"></script>
+   
+   <script type="text/javascript" src="js/player.js"></script>
+</head>
+<body onload="startKnot()">
+   <div class="sty-main-panel">
+      <div class="sty-control-panel std-border">
       </div>
-    </div>
-    <!-- Panel South -->
-    <!-- =========== -->
-    <div class="panel_south">
-       <div id="control-panel" class="control-panel-style"></div>
-    </div>
+      <div class="sty-work-panel">
+         <div id="knot-panel" class="sty-knot-panel std-border"><p><img src="images/ebm-clinical-history-myocardial-infarction.png" alt="Clinical History Myocardial Infarction" /></p>
+<dcc-trigger action="previous-knot" label="Previous Knot"  image="images/icon-back.svg" location="player-panel"></dcc-trigger></div>
+         <div id="player-panel" class="sty-player-panel std-border"></div>
+      </div>
+   </div>
 </body>
 </html>

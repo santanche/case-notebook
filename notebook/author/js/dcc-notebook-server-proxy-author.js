@@ -1,11 +1,11 @@
 /**
  * 
  */
-//class DCCAuthorServer {
-   const serverAddress = "http://127.0.0.1:8888/";
+// class DCCNotebookServer {
+   const DCCNS_serverAddress = "http://127.0.0.1:8888/";
 
-   const casesList = async (selector) => {
-      const response = await fetch(serverAddress + "cases-list", {
+   const DCCNS_casesList = async (selector) => {
+      const response = await fetch(DCCNS_serverAddress + "cases-list", {
          method: "POST",
          headers:{
            "Content-Type": "application/json"
@@ -15,13 +15,13 @@
       const cases = jsonResponse.casesList;
       let finalCasesList = {};
       for (var c in cases)
-         finalCasesList[cases[c]] = "images/mono-slide.svg";
+         finalCasesList[cases[c]] = "icons/mono-slide.svg";
       selector.addSelectList(finalCasesList);
       return cases;
    }
    
-   const loadCase = async (caseName, author) => {
-      const response = await fetch(serverAddress + "load-case", {
+   const DCCNS_loadCase = async (caseName, author) => {
+      const response = await fetch(DCCNS_serverAddress + "load-case", {
          method: "POST",
          body: JSON.stringify({"caseName": caseName}),
          headers:{
@@ -35,8 +35,8 @@
       return caseMd;
    }
 
-   const saveCase = async (caseName, caseText, author) => {
-      const response = await fetch(serverAddress + "save-case", {
+   const DCCNS_saveCase = async (caseName, caseText, author) => {
+      const response = await fetch(DCCNS_serverAddress + "save-case", {
          method: "POST",
          body: JSON.stringify({"caseName": caseName,
                                "caseText": caseText}),
@@ -45,14 +45,14 @@
          }
       });
       const jsonResponse = await response.json();
-      const status = jsonResponse.status;
+      const versionFile = jsonResponse.versionFile;
 
-      author._caseSaved(status);
+      author._caseSaved(versionFile);
       return status;
    }
 
-   const loadTemplate = async (templateName, author) => {
-      const response = await fetch(serverAddress + "load-template", {
+   const DCCNS_loadTemplate = async (templateName, author, source) => {
+      const response = await fetch(DCCNS_serverAddress + "load-template", {
          method: "POST",
          body: JSON.stringify({"templateName": templateName}),
          headers:{
@@ -62,12 +62,12 @@
       const jsonResponse = await response.json();
       const templateHTML = jsonResponse.template;
 
-      author._templateLoaded(templateHTML);
+      author._templateLoaded(templateName, templateHTML, source);
       return templateHTML;
    }
 
-   const prepareCaseHTML = async (caseName, author) => {
-      const response = await fetch(serverAddress + "prepare-case-html", {
+   const DCCNS_prepareCaseHTML = async (caseName, author) => {
+      const response = await fetch(DCCNS_serverAddress + "prepare-case-html", {
          method: "POST",
          body: JSON.stringify({"caseName": caseName}),
          headers:{
@@ -81,8 +81,8 @@
       return status;
    }
 
-   const saveKnotHTML = async (caseName, knotFile, knotHTML, author) => {
-      const response = await fetch(serverAddress + "save-knot-html", {
+   const DCCNS_saveKnotHTML = async (caseName, knotFile, knotHTML, author) => {
+      const response = await fetch(DCCNS_serverAddress + "save-knot-html", {
          method: "POST",
          body: JSON.stringify({"caseName": caseName,
                                "knotFile": knotFile,
@@ -94,12 +94,12 @@
       const jsonResponse = await response.json();
       const status = jsonResponse.status;
 
-      author._knotSaved(status);
+      author._knotCheck(knotFile);
       return status;
    }
 
-   const saveCaseScript = async (caseName, scriptFile, scriptJS, author) => {
-      const response = await fetch(serverAddress + "save-case-script", {
+   const DCCNS_saveCaseScript = async (caseName, scriptFile, scriptJS, author) => {
+      const response = await fetch(DCCNS_serverAddress + "save-case-script", {
          method: "POST",
          body: JSON.stringify({"caseName": caseName,
                                "scriptFile": scriptFile,
@@ -114,7 +114,6 @@
       author._scriptSaved(status);
       return status;
    }
-
-
-//}
+   
+// }
 

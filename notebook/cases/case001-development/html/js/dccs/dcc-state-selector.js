@@ -101,13 +101,13 @@ class DCCStateSelector extends HTMLElement {
      if (this._presentation != null) {
        if (this._presentationState != null) {
           if (this._stateVisible && this.states != null) {
-             const statesArr = this.states.split(";");
+             const statesArr = this.states.split(",");
              this._presentationState.innerHTML = "[" + statesArr[this._currentState] + "]";
           } else
              this._presentationState.innerHTML = "";
        }
        if (this.colors != null) {
-         const colorsArr = this.colors.split(";");
+         const colorsArr = this.colors.split(",");
          this._presentation.style.backgroundColor = colorsArr[this._currentState];
        }
      }
@@ -127,7 +127,7 @@ class DCCStateSelector extends HTMLElement {
    
    _changeState() {
      if (this.states != null) {
-       const statesArr = this.states.split(";");
+       const statesArr = this.states.split(",");
        this._currentState = (this._currentState + 1) % statesArr.length;
      }
      this._updateRendering();
