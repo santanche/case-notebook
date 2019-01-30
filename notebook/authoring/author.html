@@ -14,6 +14,7 @@
    <script type="text/javascript" src="../dccs/components/dcc-lively-dialog.js"></script>
    <script type="text/javascript" src="../dccs/components/editable/dcc-lively-dialog-editable.js"></script>
    <script type="text/javascript" src="../dccs/components/dcc-resource-selector.js"></script>
+   <script type="text/javascript" src="../dccs/components/dcc-state-selector.js"></script>
    
    <script type="text/javascript" src="js/dcc-author-server-proxy.js"></script>
    <script type="text/javascript" src="js/author.js"></script>
@@ -25,8 +26,8 @@
    <script type="text/javascript" src="js/quill-1-3-6/quill.min.js"></script>
 </head>
 <body onload="startSystem()">
-   <div class="author-panel">
-      <div class="control-panel std-border">
+   <div class="sty-main-panel">
+      <div class="sty-control-panel std-border">
          <div class="control-button"><dcc-trigger action="control-load" label="Load" image="icons/icon-load.svg"></dcc-trigger></div>
          <div class="control-button"><dcc-trigger action="control-save" label="Save" image="icons/icon-save.svg"></dcc-trigger></div>
          <div class="control-button"><dcc-trigger action="control-new-knot" label="New Knot" image="icons/icon-new-knot.svg"></dcc-trigger></div>
@@ -35,9 +36,10 @@
          <div class="control-button"><dcc-trigger action="control-knot-down" label="Knot Down" image="icons/icon-knot-down.svg"></dcc-trigger></div>
          <div class="control-button"><dcc-trigger action="control-config" label="Config" image="icons/icon-config.svg"></dcc-trigger></div>
       </div>
-      <div class="work-panel">
+      <div class="sty-work-panel">
          <div id="navigation-panel" class="sty-navigation-panel std-border"></div>
          <div id="knot-panel" class="sty-knot-panel std-border"></div>
+         <div id="player-panel" class="sty-player-panel std-border"></div>
       </div>
    </div>
 </body>

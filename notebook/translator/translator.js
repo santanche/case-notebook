@@ -231,7 +231,9 @@ class Translator {
       if (knotObj != null && knotObj.content != null) {
          // produces a pretext with object slots to process markdown
          for (let kc in knotObj.content)
-            preDoc += (knotObj.content[kc].type == "text") 
+            preDoc += (knotObj.content[kc].type == "text" ||
+                       knotObj.content[kc].type == "context-open" ||
+                       knotObj.content[kc].type == "context-close") 
                ? objToHTML[knotObj.content[kc].type](knotObj.content[kc])
                : "@@" + knotObj.content[kc].seq + "@@";
                
@@ -255,8 +257,18 @@ class Translator {
             next = html.indexOf("@@");
          }
          
+         html = html.replace(Translator.contextHTML.open, this._contextSelectorHTMLAdjust);
+         html = html.replace(Translator.contextHTML.close, this._contextSelectorHTMLAdjust);
+         
          return html;
       }
+   }
+   
+   /*
+    * Adjusts the HTML generated to avoid trapping the constext selector tag in a paragraph
+    */
+   _contextSelectorHTMLAdjust(matchStr, insideP) {
+      return insideP;
    }
    
    /*
@@ -449,7 +461,9 @@ class Translator {
       let optionalImage = "";
       if (display.endsWith("(control)")) {
          display = display.replace("(control)", "").trim();
-         optionalImage = " image='images/" + display.toLowerCase().replace(/ /igm, "-") + ".svg' location='control-panel'";
+         optionalImage = " image='images/" + 
+                         display.toLowerCase().replace(/ /igm, "-") +
+                         ".svg' location='player-panel'";
       }
       
       return Translator.htmlTemplates.option.replace("[link]", link)
@@ -677,5 +691,10 @@ class Translator {
       selector   : Translator.marksAnnotation.annotation
       // annotation : 
       // score  : /^(?:<p>)?[ \t]*~[ \t]*([\+\-=\*\\%]?)[ \t]*(\w*)?[ \t]*(\w+)[ \t]*(?:<\/p>)?/im
+   };
+   
+   Translator.contextHTML = {
+      open:  /<p>(<dcc-group-selector(?:[\w \t\+\-\*"'=\%\/,]*)?>)<\/p>/igm,
+      close: /<p>(<\/dcc-group-selector>)<\/p>/igm
    };
 })();

@@ -15,9 +15,17 @@ input:
 domain:
 `[natural]`,
 selctxopen:
-`<dcc-group-selector evaluation='[evaluation]'[states][colors]>`,
+`
+
+<dcc-group-selector evaluation='[evaluation]'[states][colors]>
+
+`,
 selctxclose:
-`</dcc-group-selector>`,
+`
+
+</dcc-group-selector>
+
+`,
 selector:
 `<dcc-state-selector>[expression]</dcc-state-selector>`
 };

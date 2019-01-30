@@ -67,7 +67,7 @@ Likelihood ratio (LR) - like sensitivity and specificity, LR describe the discri
 ![Pulmonary Embolism Wells Criteria](images/ebm-pulmonary-embolism-wells-criteria.png)
 
 == Check hypothesis 1 (selector) ==
-{{symptoms#contribution to diagnostics: ,+,=,-;lightgrey,green,red,blue
+{{symptoms#contribution to diagnostics: ,+,=,-;lightgrey,green,blue,red
 Among all patient features, signs, and symptoms highlighted on text, select all that increase the probability of your diagnostic hypothesis:
 
 Nurse: Doctor, please you have to evaluate a {man(male)} ({51 years-old(aging=51)#=}) who entered the emergency department reporting {chest pain#=}.His vital signs are {ABP: 144x92mmHG#=}; {HR: 78bpm#=}; {RR: 21rpm#=}; {Temp: 37oC#=}; {O2Sat: 98%#=}.

@@ -61,25 +61,18 @@ body {
    }
 }
 
-.sty-navigation-panel {
-   flex: 15%;
-   max-height: 100%;
-   display: flex;
-   flex-direction: column;
-   overflow: scroll;
-}
-
-.navigation-knot {
-   max-width: 100%;
-}
-
 .sty-knot-panel {
-   flex: 75%;
+   flex: 90%;
 }
 
 .sty-player-panel {
    flex: 10%;
+   max-height: 100%;
    display: flex;
    flex-direction: column;
    overflow: hidden;
+}
+
+.player-item {
+   max-width: 100%;
 }
