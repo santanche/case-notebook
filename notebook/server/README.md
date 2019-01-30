@@ -1,11 +1,6 @@
 # # Notebook Server
 It uses the Jupyter Kernel Gateway: https://test-jupyterkernelgateway.readthedocs.io/en/latest/index.html
 
-# Turn any Jupyter notebook into a REST API
-
-Adapted to POST from the tutorial of Eliot Andres:
-https://ndres.me/post/jupyter-notebook-rest-api/
-
 To start the server run in the terminal:
 ## Linux
 ~~~~
