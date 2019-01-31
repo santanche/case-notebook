@@ -87,9 +87,3 @@ body {
    flex: 75%;
 }
 
-.sty-player-panel {
-   flex: 10%;
-   display: flex;
-   flex-direction: column;
-   overflow: hidden;
-}

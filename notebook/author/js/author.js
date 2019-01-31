@@ -29,7 +29,6 @@ class AuthorManager {
    }
    
    actionButton(event) {
-      console.log("Event: " + event.type);
       switch (event.type) {
          case "control-load": this.selectCase();
                               break;
@@ -168,6 +167,9 @@ class AuthorManager {
          this._htmlGenerated();
    }
    
+   /*
+    * ACTION: control-play (5)
+    */
    _knotSave(template) {
       let knotTitle = this._allKnotTitles[this._knotLoop];
       let htmlName = knotTitle.replace(/ /igm, "_");
@@ -225,15 +227,18 @@ class AuthorManager {
    _renderKnot() {
       let knotPanel = document.querySelector("#knot-panel");
       if (this._renderSlide) {
+         document.querySelector("#player-panel").innerHTML = "";
          let htmlFinal = this._templateHTML
                              .replace("{title}", this._compiledCase[this._knotSelected].title)
                              .replace("{knot}", this._htmlKnot);
          knotPanel.innerHTML = htmlFinal;
          
+         /*
          let dccs = document.querySelectorAll("*");
          for (let d = 0; d < dccs.length; d++)
             if (dccs[d].tagName.toLowerCase().startsWith("dcc-lively-talk"))
                dccs[d].editDCC();
+         */
       } else {
          knotPanel.innerHTML = "<div id='editor-space'></div>";
          let quill = new Quill('#editor-space', {

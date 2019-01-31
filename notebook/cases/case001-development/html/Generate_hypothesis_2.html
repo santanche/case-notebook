@@ -4,7 +4,9 @@
    <meta charset="utf-8"/>
    <title>Player</title>
    
-   <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/player.css">
+   <link rel="stylesheet" type="text/css" href="css/player.css">
+   <link rel="stylesheet" type="text/css" href="css/presentation.css">
+   <link rel="stylesheet" type="text/css" href="css/templates.css">
 
    <script type="text/javascript" src="js/dccs/dcc-base.js"></script>
    <script type="text/javascript" src="js/dccs/dcc-trigger.js"></script>
@@ -22,12 +24,16 @@
       <div class="sty-control-panel std-border">
       </div>
       <div class="sty-work-panel">
-         <div id="knot-panel" class="sty-knot-panel std-border"><p>What is your main diagnostic hypothesis?
+         <div id="knot-panel" class="sty-knot-panel std-border"><div class="template-tablet">
+<div class="template-tablet-inside">
+<p>What is your main diagnostic hypothesis?
 <input type='text' class='userInput' id='hypothesis'
    oninput="followInput('hypothesis','mesh]')">
 </input>
 <span id='hypothesis_result'></span>
-<dcc-trigger link='Check_hypothesis_2.html' label='Submit hypothesis' ></dcc-trigger></p></div>
+<dcc-trigger link='Check_hypothesis_2.html' label='Submit hypothesis' ></dcc-trigger></p>
+</div>
+</div></div>
          <div id="player-panel" class="sty-player-panel std-border"></div>
       </div>
    </div>

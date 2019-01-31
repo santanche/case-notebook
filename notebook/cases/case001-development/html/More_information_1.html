@@ -4,7 +4,9 @@
    <meta charset="utf-8"/>
    <title>Player</title>
    
-   <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/player.css">
+   <link rel="stylesheet" type="text/css" href="css/player.css">
+   <link rel="stylesheet" type="text/css" href="css/presentation.css">
+   <link rel="stylesheet" type="text/css" href="css/templates.css">
 
    <script type="text/javascript" src="js/dccs/dcc-base.js"></script>
    <script type="text/javascript" src="js/dccs/dcc-trigger.js"></script>
@@ -22,8 +24,10 @@
       <div class="sty-control-panel std-border">
       </div>
       <div class="sty-work-panel">
-         <div id="knot-panel" class="sty-knot-panel std-border"><p>The patient never felt chest pain before. He exercises regularly and has lost weight in the last three months. He takes amlodipine and losartan regularly.</p>
+         <div id="knot-panel" class="sty-knot-panel std-border"><div class="template-presentation">
+<p>The patient never felt chest pain before. He exercises regularly and has lost weight in the last three months. He takes amlodipine and losartan regularly.</p>
 <p>Two weeks ago, he had an auto-limited gastroenteritis episode. He denies recent travels and surgery .</p>
+</div>
 <dcc-trigger action="previous-knot" label="Previous Knot"  image="images/icon-back.svg" location="player-panel"></dcc-trigger></div>
          <div id="player-panel" class="sty-player-panel std-border"></div>
       </div>

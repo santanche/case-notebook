@@ -162,7 +162,6 @@ class DCCTrigger extends DCCBase {
          let eventLabel = (this.hasAttribute("action")) ? this.action : "compute-trigger";
          let message = (this.hasAttribute("label")) ? this.label : this.action;
          let eventButton = new CustomEvent(eventLabel, {detail: message});
-         console.log(eventButton);
          document.dispatchEvent(eventButton);
       }
    }

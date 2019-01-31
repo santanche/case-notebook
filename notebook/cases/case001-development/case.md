@@ -24,12 +24,12 @@ What is your main diagnostic hypothesis?
 
 ++ Submit hypothesis -> Check hypothesis 1
 
-== More information 1 (notice) ==
+== More information 1 (presnotice) ==
 The patient never felt chest pain before. He exercises regularly and has lost weight in the last three months. He takes amlodipine and losartan regularly.
 
 Two weeks ago, he had an auto-limited gastroenteritis episode. He denies recent travels and surgery .
 
-== Call the supervisor 1 (notice) ==
+== Call the supervisor 1 ==
 Hi! I am glad that you called me. Chest pain is an important complaint at the emergency department and we have to exclude the fatal causes: myocardial infarction (MI), acute aortic dissection (AAD), pulmonary embolism PE), hypertensive pneumothorax (HP), and Boerhaave Syndrome (BS).
 
 The best way to find out what is happening with your patient, my young padawan, is to gather as much information as possible through history taking and physical examination. We need to search for the signs and symptoms that can guide our clinical reasoning process by changing the pre-test probabilities of each disease.
@@ -41,6 +41,8 @@ Do you know the concept of Likelihood ratio (LR)? -> Likelihood Ratio
 ++ Clinical History Aortic Dissection
 ++ Physical Examination Aortic Dissection
 ++ Pulmonary Embolism Wells Criteria
+++ Back to the Case -> Level 1
+
 
 Hypertensive pneumothorax is more common in tall and thin young adults (primary pneumothorax) or in patients with chronic pulmonary diseases or chest trauma (secondary pneumothorax). On physical examination, we expect asymmetry in lung auscultation and the trachea may be dislocated to the contralateral side of the pneumothorax.
 
@@ -67,7 +69,7 @@ Likelihood ratio (LR) - like sensitivity and specificity, LR describe the discri
 == Pulmonary Embolism Wells Criteria (notice) ==
 ![Pulmonary Embolism Wells Criteria](images/ebm-pulmonary-embolism-wells-criteria.png)
 
-== Check hypothesis 1 (selector) ==
+== Check hypothesis 1 (tablet) ==
 
 Let us check out your hypothesis.
 
@@ -101,7 +103,7 @@ EKG:
 
 ![EKG](images/ekg-original.png)
 
-== Generate hypothesis 2 ==
+== Generate hypothesis 2 (tablet) ==
 What is your main diagnostic hypothesis?
 {?1 hypothesis:mesh}
 ++ Submit hypothesis -> Check hypothesis 2
@@ -117,7 +119,9 @@ EKG description
 
 Image zoom.
 
-== Call the supervisor 2 (notice) ==
+== Call the supervisor 2 (presnotice) ==
+![EKG-A](images/ampliacao-eletro.gif)
+
 We did not find features that increase the likelihood of myocardial ischemia. Moreover, our patient has a pleuritic chest pain that gets worse when the patient lays down.
 
 In the EKG we found ST-segment elevation in almost all leads. Also, we found a depression of the PR segment in the DII lead.
