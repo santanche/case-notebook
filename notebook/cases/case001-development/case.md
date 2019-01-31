@@ -68,9 +68,17 @@ Likelihood ratio (LR) - like sensitivity and specificity, LR describe the discri
 ![Pulmonary Embolism Wells Criteria](images/ebm-pulmonary-embolism-wells-criteria.png)
 
 == Check hypothesis 1 (selector) ==
-{{symptoms#contribution to diagnostics: ,+,=,-;lightgrey,green,blue,red
-Among all patient features, signs, and symptoms highlighted on text, select all that increase the probability of your diagnostic hypothesis:
 
+Let us check out your hypothesis.
+
+In the next screen, highlight in green the findings that corroborate your hypothesis, 
+in blue those that are neutral and in red the ones speaking against your hypothesis.
+
+++ Proceed -> Check hypothesis 1b
+
+== Check hypothesis 1b (selector) ==
+
+{{symptoms#contribution to diagnostics: ,+,=,-;lightgrey,green,blue,red
 Nurse: Doctor, please you have to evaluate a {man(male)} ({51 years-old(aging=51)#=}) who entered the emergency department reporting {chest pain#=}.His vital signs are {ABP: 144x92mmHG#=}; {HR: 78bpm#=}; {RR: 21rpm#=}; {Temp: 37oC#=}; {O2Sat: 98%#=}.
 
 Patient: Doctor, I am feeling chest pain since yesterday. The {pain is continuous#=} and {is located just in the middle of my chest#=}, {worsening when I breathe#+} and {when I lay down on my bed#+}. I have {arterial hypertension#-} and {I smoke 20 cigarettes(smoking=20/day)#-} every day. {My father had a "heart attack"#-} at my age and I am very worried about it.

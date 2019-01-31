@@ -229,6 +229,11 @@ class AuthorManager {
                              .replace("{title}", this._compiledCase[this._knotSelected].title)
                              .replace("{knot}", this._htmlKnot);
          knotPanel.innerHTML = htmlFinal;
+         
+         let dccs = document.querySelectorAll("*");
+         for (let d = 0; d < dccs.length; d++)
+            if (dccs[d].tagName.toLowerCase().startsWith("dcc-lively-talk"))
+               dccs[d].editDCC();
       } else {
          knotPanel.innerHTML = "<div id='editor-space'></div>";
          let quill = new Quill('#editor-space', {
