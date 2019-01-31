@@ -1,30 +1,61 @@
-<div class="panel_presentation">
-  <div class="panel_image">
-    <img class="image_presentation" src="images/entrance.jpg"></img>
-  </div>
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="utf-8"/>
+   <title>Player</title>
+   
+   <link title="Standard Stylesheet" rel="stylesheet" type="text/css" href="css/player.css">
 
-  <div class="panel_case">
-    <div class="case_title">Registration</div>
+   <script type="text/javascript" src="js/dccs/dcc-base.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-trigger.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-character.js"></script>
+   <script type="text/javascript" src="js/dccs/editable/dcc-character-editable.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-lively-dialog.js"></script>
+   <script type="text/javascript" src="js/dccs/editable/dcc-lively-dialog-editable.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-resource-selector.js"></script>
+   <script type="text/javascript" src="js/dccs/dcc-state-selector.js"></script>
+   
+   <script type="text/javascript" src="js/player.js"></script>
+</head>
+<body onload="PlayerManager.instance().startKnot()">
+   <div class="sty-main-panel">
+      <div class="sty-control-panel std-border">
+      </div>
+      <div class="sty-work-panel">
+         <div id="knot-panel" class="sty-knot-panel std-border"><div class="panel-left-pict">
+   <div class="panel-left-pict-image">
+      <img  src="images/entrance.jpg">
+   </div>
 
-    <div class="case_text">
+   <div class="panel-left-pict-text">
+      <h1>Registration</h1>
+      
       <div id="registration-form">
         <p>User id (e-mail): <input type="text" id="idInput"></input></p>
         <p>Name: <input type="text" id="nameInput"></input></p>
         <p>Age: <input type="text" id="ageInput"></input></p>
-        <p class="case_link"><a href="#" onclick="register()">Register</a></p>
+        <div class="central-buttons">
+           <dcc-trigger action="control-register" label="Sign In"></dcc-trigger>
+        </div>
       </div>
 
       <div id="signed-user"  style="display:none">
-        <p class="case_link" id="proceed"><a href='casesindex.html'>Start</a></p>
+        <div class="central-buttons">
+           <dcc-trigger link="Case_001.html" label="Proceed"></dcc-trigger>
+        </div>
       </div>
 
       <div id="invalid-id" style="display:none">
-        <p class="alert_message">This id already exists.</p>
+        <p class="alert-message">This id already exists.</p>
       </div>
 
       <div id="answer-all" style="display:none">
-        <p class="alert_message">Please, answer all questions.</p>
+        <p class="alert-message">Please, answer all questions.</p>
       </div>
-    </div>
-  </div>
-</div>
+   </div>
+</div></div>
+         <div id="player-panel" class="sty-player-panel std-border"></div>
+      </div>
+   </div>
+</body>
+</html>

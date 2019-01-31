@@ -17,12 +17,12 @@
    
    <script type="text/javascript" src="js/player.js"></script>
 </head>
-<body onload="startKnot()">
+<body onload="PlayerManager.instance().startKnot()">
    <div class="sty-main-panel">
       <div class="sty-control-panel std-border">
       </div>
       <div class="sty-work-panel">
-         <div id="knot-panel" class="sty-knot-panel std-border">[knot-html]</div>
+         <div id="knot-panel" class="sty-knot-panel std-border">{knot}</div>
          <div id="player-panel" class="sty-player-panel std-border"></div>
       </div>
    </div>

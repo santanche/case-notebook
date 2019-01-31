@@ -1,26 +1,29 @@
-<div class="panel_presentation">
-  <div class="panel_image">
-    <img class="image_presentation" src="images/entrance.jpg"></img>
-  </div>
+<div class="panel-left-pict">
+   <div class="panel-left-pict-image">
+      <img  src="images/entrance.jpg">
+   </div>
 
-  <div class="panel_case">
-    <div class="case_title">Sign in</div>
-
-    <div class="case_text">
+   <div class="panel-left-pict-text">
+      <h1>Sign In</h1>
       <div id="request-id">
         <p>User id (e-mail): <input type='text' id="idInput"></input></p>
-        <p class="case_link"><a href="#" onclick="signIn()">Sign in</a></p>
+        <div class="central-buttons">
+           <dcc-trigger action="control-signin" label="Sign In"></dcc-trigger>
+        </div>
       </div>
 
       <div id="signed-user" style="display:none">
         <p id="user-name" >Welcome </p>
-        <p class="case_link" id="proceed"><a href='casesindex.html'>Start</a></p>
+        <div class="central-buttons">
+           <dcc-trigger link="Case_001.html" label="Proceed"></dcc-trigger>
+        </div>
       </div>
 
       <div id="invalid-id" style="display:none">
-        <p class="alert_message">Invalid user id (e-mail). Please, register if you are a new user.</p>
-        <div class="case_link"><a href="register.html" onclick="register()">Register</a></div>
+        <p class="alert-message">Invalid user id (e-mail). Please, register if you are a new user.</p>
+        <div class="central-buttons">
+           <dcc-trigger link="register.html" label="Register"></dcc-trigger>
+        </div>
       </div>
-    </div>
-  </div>
+   </div>
 </div>

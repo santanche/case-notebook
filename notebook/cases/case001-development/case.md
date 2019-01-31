@@ -1,6 +1,6 @@
-== Case 001 ==
-![Forklift](images/case-forklift.png)
+== Case 001 (presentation) ==
 Man, 51 years old, present to an emergency department complaining of chest pain.
+![Forklift](images/patient-in-bed.svg)
 ++ Start -> Level 1
 
 == Level 1 (dialog) ==
@@ -12,15 +12,16 @@ Man, 51 years old, present to an emergency department complaining of chest pain.
 
 :Doctor: I did a physical examination and the cardiac and pulmonary auscultation are normal; chest pain does not worse with palpation of the thorax; there is no jugular stasis nor lower limb edema.
 
-Jacinto: What do you want to do?
+:Jacinto: What do you want to do?
 
 ++ Generate hypothesis (control) -> Generate hypothesis 1
 ++ More information (control) -> More information 1
 ++ Call the supervisor (control) -> Call the supervisor 1
 
-== Generate hypothesis 1 ==
+== Generate hypothesis 1 (tablet) ==
 What is your main diagnostic hypothesis?
 {?1 hypothesis:mesh}
+
 ++ Submit hypothesis -> Check hypothesis 1
 
 == More information 1 (notice) ==
@@ -66,7 +67,7 @@ Likelihood ratio (LR) - like sensitivity and specificity, LR describe the discri
 == Pulmonary Embolism Wells Criteria (notice) ==
 ![Pulmonary Embolism Wells Criteria](images/ebm-pulmonary-embolism-wells-criteria.png)
 
-== Check hypothesis 1 ==
+== Check hypothesis 1 (selector) ==
 {{symptoms#contribution to diagnostics: ,+,=,-;lightgrey,green,blue,red
 Among all patient features, signs, and symptoms highlighted on text, select all that increase the probability of your diagnostic hypothesis:
 

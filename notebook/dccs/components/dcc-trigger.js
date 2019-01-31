@@ -13,8 +13,14 @@ class DCCTrigger extends DCCBase {
         }
      
         .trigger-button {
+           border: 1px solid lightgray;
+           border-radius: 5px;
+           margin: 5px;
+           color: #1d1d1b;   
+           /*
            background-color: #383f4f;
            color: #e0e9ce;
+           */
            padding: 14px 25px;
            text-align: center;
            text-decoration: none;
@@ -22,7 +28,8 @@ class DCCTrigger extends DCCBase {
         }
         
         .trigger-button:hover {
-           color: white;
+           color: black;
+           font-weight: bold;
            cursor: pointer;
         }
         
@@ -165,8 +172,8 @@ DCCTrigger.templates = {
 regular:
 `<a class='[render]' [link]>[label]</a>`,
 image:
-`<a [link] alt='[label]' style='cursor:pointer'>
-   <img width='100%' height='100%' class='trigger-image' src='[image]'>
+`<a [link] style='cursor:pointer'>
+   <img width='100%' height='100%' class='trigger-image' src='[image]' title='[label]'>
 </a>`
 };
 

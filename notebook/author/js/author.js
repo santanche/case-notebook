@@ -171,8 +171,8 @@ class AuthorManager {
    _knotSave(template) {
       let knotTitle = this._allKnotTitles[this._knotLoop];
       let htmlName = knotTitle.replace(/ /igm, "_");
-      let finalHTML =  this._templateSet["player"].replace("[knot-html]",
-         this._templateSet[template].replace("[knot-html]",
+      let finalHTML =  this._templateSet["player"].replace("{knot}",
+         this._templateSet[template].replace("{knot}",
             this._translator.generateKnotHTML(this._compiledCase[knotTitle])));      
       DCCNS_saveKnotHTML(this._currentCaseName,
                          htmlName + ".html", finalHTML, this);
@@ -226,8 +226,8 @@ class AuthorManager {
       let knotPanel = document.querySelector("#knot-panel");
       if (this._renderSlide) {
          let htmlFinal = this._templateHTML
-                             .replace("[knot-title]", this._compiledCase[this._knotSelected].title)
-                             .replace("[knot-html]", this._htmlKnot);
+                             .replace("{title}", this._compiledCase[this._knotSelected].title)
+                             .replace("{knot}", this._htmlKnot);
          knotPanel.innerHTML = htmlFinal;
       } else {
          knotPanel.innerHTML = "<div id='editor-space'></div>";

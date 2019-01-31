@@ -95,7 +95,7 @@ class DCCLivelyTalk extends DCCBase {
           .dcc-bubble {
              background-repeat: no-repeat;
              background-size: 100% 100%;
-             flex-basis: 800px;
+             flex-basis: 100%;
              padding: 15px 15px 10px 80px;
              transform: scale([transform]);
           }
@@ -136,7 +136,11 @@ class DCCLivelyTalk extends DCCBase {
           
       this._presentation = this._shadow.querySelector("#presentation-dcc");
       
-      const imageHTML = "<div class='dcc-character'><img id='dcc-talk-character' src='" + this.character + "' width='100px'></div>";
+      let charImg = "images/" + this.character.toLowerCase()
+                                    .replace(/ /igm, "_") + "-icon.png";
+      
+      const imageHTML = "<div class='dcc-character'><img id='dcc-talk-character' src='" +
+                        charImg + "' title='" + this.character + "' width='100px'></div>";
       const speechHTML = "<div class='dcc-bubble'><div id='dcc-talk-text' class='dcc-speech'>" + this.speech + "</div></div>";
       
       this._presentation.innerHTML = (directionWeb == "left") ? imageHTML + speechHTML : speechHTML + imageHTML;

@@ -17,18 +17,18 @@
    
    <script type="text/javascript" src="js/player.js"></script>
 </head>
-<body onload="startKnot()">
+<body onload="PlayerManager.instance().startKnot()">
    <div class="sty-main-panel">
       <div class="sty-control-panel std-border">
       </div>
       <div class="sty-work-panel">
          <div id="knot-panel" class="sty-knot-panel std-border"><dcc-lively-dialog rate="6s" duration="2s">
-<p><dcc-lively-talk character='images/nurse-icon.png' speech='Doctor, we have a man (51 years old) who entered the emergency department reporting chest pain. His vital signs are ABP: 144x92mmHG; HR: 78bpm; RR: 21rpm; Temp: 37oC; O2Sat: 98%.'>
-</dcc-lively-talk><dcc-lively-talk character='images/doctor-icon.png' speech='Let’s go!'>
-</dcc-lively-talk><dcc-lively-talk character='images/patient-icon.png' speech='Doctor, I am feeling chest pain since yesterday. The pain is continuous and is located just in the middle of my chest, worsening when I breathe and when I lay down on my bed. I suffer from arterial hypertension and smoke 20 cigarettes every day. My father had a “heart attack” at my age and I am very worried about it.'>
-</dcc-lively-talk><dcc-lively-talk character='images/doctor-icon.png' speech='I did a physical examination and the cardiac and pulmonary auscultation are normal; chest pain does not worse with palpation of the thorax; there is no jugular stasis nor lower limb edema.'>
-</dcc-lively-talk>Jacinto: What do you want to do?</p>
-<p><dcc-trigger link='Generate_hypothesis_1.html' label='Generate hypothesis'  image='images/generate-hypothesis.svg' location='player-panel'></dcc-trigger><dcc-trigger link='More_information_1.html' label='More information'  image='images/more-information.svg' location='player-panel'></dcc-trigger><dcc-trigger link='Call_the_supervisor_1.html' label='Call the supervisor'  image='images/call-the-supervisor.svg' location='player-panel'></dcc-trigger></p>
+<p><dcc-lively-talk character='Nurse' speech='Doctor, we have a man (51 years old) who entered the emergency department reporting chest pain. His vital signs are ABP: 144x92mmHG; HR: 78bpm; RR: 21rpm; Temp: 37oC; O2Sat: 98%.'>
+</dcc-lively-talk><dcc-lively-talk character='Doctor' speech='Let’s go!'>
+</dcc-lively-talk><dcc-lively-talk character='Patient' speech='Doctor, I am feeling chest pain since yesterday. The pain is continuous and is located just in the middle of my chest, worsening when I breathe and when I lay down on my bed. I suffer from arterial hypertension and smoke 20 cigarettes every day. My father had a “heart attack” at my age and I am very worried about it.'>
+</dcc-lively-talk><dcc-lively-talk character='Doctor' speech='I did a physical examination and the cardiac and pulmonary auscultation are normal; chest pain does not worse with palpation of the thorax; there is no jugular stasis nor lower limb edema.'>
+</dcc-lively-talk><dcc-lively-talk character='Jacinto' speech='What do you want to do?'>
+</dcc-lively-talk><dcc-trigger link='Generate_hypothesis_1.html' label='Generate hypothesis'  image='images/generate-hypothesis.svg' location='player-panel'></dcc-trigger><dcc-trigger link='More_information_1.html' label='More information'  image='images/more-information.svg' location='player-panel'></dcc-trigger><dcc-trigger link='Call_the_supervisor_1.html' label='Call the supervisor'  image='images/call-the-supervisor.svg' location='player-panel'></dcc-trigger></p>
 </dcc-lively-dialog></div>
          <div id="player-panel" class="sty-player-panel std-border"></div>
       </div>

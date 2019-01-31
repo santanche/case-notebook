@@ -534,11 +534,11 @@ class Translator {
     * </dcc-lively-talk>
     */
    _talkObjToHTML(obj) {
-      let charImg = "images/" + obj.character.toLowerCase()
-                                   .replace(/ /igm, "_") + "-icon.png";
+      // let charImg = "images/" + obj.character.toLowerCase()
+      //                              .replace(/ /igm, "_") + "-icon.png";
       
       
-      return Translator.htmlTemplates.talk.replace("[character]", charImg)
+      return Translator.htmlTemplates.talk.replace("[character]", obj.character)
                                           .replace("[speech]", obj.speech);
    }   
    

@@ -14,6 +14,7 @@ class NotebookDM(object):
    FILE_CASE_NAME = "case"
    FILE_CASE_EXTENSION = ".md"
    FILE_CASE = FILE_CASE_NAME + FILE_CASE_EXTENSION
+   FILE_PLAYER_TEMPLATE = "player.html";
     
    def casesList(self):
        directories = glob.glob(NotebookDM.DIR_CASES + "*/")
@@ -84,10 +85,19 @@ class NotebookDM(object):
          shutil.copy2(fi, caseDir + "html/images")
       
       # copy general case start files to the case directory
+      playerTemplateFile = open(
+         NotebookDM.DIR_TEMPLATES + NotebookDM.FILE_PLAYER_TEMPLATE, "r", encoding="utf-8")
+      playerTemplate = playerTemplateFile.read();
+      playerTemplateFile.close()
       files = ["index", "signin", "register", "report"]
       for f in files:
-          # cls.interfaceKnot(f, f, "", "", "")
-          shutil.copy2((NotebookDM.DIR_TEMPLATES + "{}.html").format(f), (caseDir + "html/{}.html").format(f))
+         htmlSourceFile = open((NotebookDM.DIR_TEMPLATES + "{}.html").format(f), "r", encoding="utf-8")
+         htmlTargetFile = open((caseDir + "html/{}.html").format(f), "w", encoding="utf-8")
+         htmlTargetFile.write(playerTemplate.format(knot = htmlSourceFile.read()))
+         htmlSourceFile.close()
+         htmlTargetFile.close()
+         # cls.interfaceKnot(f, f, "", "", "")
+         # shutil.copy2((NotebookDM.DIR_TEMPLATES + "{}.html").format(f), (caseDir + "html/{}.html").format(f))
    
       # indexTemplate = open("template/casesindex.html", "r", encoding="utf-8")
       # indexResult = open("html/casesindex.html", "w", encoding="utf-8")
