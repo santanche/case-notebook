@@ -1,10 +1,10 @@
 /**
  * 
  */
-// class DCCNotebookServer {
-   const DCCNS_serverAddress = "http://127.0.0.1:8888/";
+const DCCNS_serverAddress = "http://127.0.0.1:8888/";
 
-   const DCCNS_casesList = async (selector) => {
+class DCCNotebookServer {
+   async casesList() {
       const response = await fetch(DCCNS_serverAddress + "cases-list", {
          method: "POST",
          headers:{
@@ -16,11 +16,11 @@
       let finalCasesList = {};
       for (var c in cases)
          finalCasesList[cases[c]] = "icons/mono-slide.svg";
-      selector.addSelectList(finalCasesList);
-      return cases;
+      // selector.addSelectList(finalCasesList);
+      return finalCasesList);
    }
    
-   const DCCNS_loadCase = async (caseName, author) => {
+   async loadCase(caseName) {
       const response = await fetch(DCCNS_serverAddress + "load-case", {
          method: "POST",
          body: JSON.stringify({"caseName": caseName}),
@@ -29,11 +29,12 @@
          }
       });
       const jsonResponse = await response.json();
-      const caseMd = jsonResponse.caseMd;
+      // const caseMd = jsonResponse.caseMd;
 
-      author._caseLoaded(caseMd);
-      return caseMd;
+      // author._caseLoaded(caseMd);
+      return jsonResponse.caseMd;
    }
+}
 
    const DCCNS_saveCase = async (caseName, caseText, author) => {
       const response = await fetch(DCCNS_serverAddress + "save-case", {

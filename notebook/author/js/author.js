@@ -7,6 +7,8 @@ class AuthorManager {
       this._translator = new Translator();
       this._compiledCase = null;
       
+      this._server = new DCCNotebookServer();
+      
       this._currentCaseName = null;
 
       this._knotSelected = null;
@@ -45,31 +47,29 @@ class AuthorManager {
     * ACTION: control-load (1)
     */
    selectCase() {
-      this._selector = new DCCResourceSelector();
+      this._resPicker = new DCCResourcePicker();
       this._resourceSelected = this._resourceSelected.bind(this);
       document.addEventListener("resource-selected", this._resourceSelected);
-      this._selector.addSelectionListener(this);
+      this._resPicker.addSelectionListener(this);
       
-      DCCNS_casesList(this._selector);
+      const cases = this._server.casesList(this._resPicker);
+      this._resPicker.addSelectList(cases);
       let knotPanel = document.querySelector("#knot-panel");
-      knotPanel.appendChild(this._selector);
+      knotPanel.appendChild(this._resPicker);
    }
 
    /*
     * ACTION: control-load (2)
     */
-   _resourceSelected(event) {
+   async _resourceSelected(event) {
       this._currentCaseName = event.detail;
-      DCCNS_loadCase(this._currentCaseName, this);
-   }
-   
-   /*
-    * ACTION: control-load (3)
-    */
-   _caseLoaded(caseMd) {
+      console.log("Case name: " + this._currentCaseName);
+      let caseMd = await this._server.loadCase(this._currentCaseName);
+      console.log("caseMd: " + caseMd);
+
       let navigationPanel  = document.querySelector("#navigation-panel");
       let knotPanel = document.querySelector("#knot-panel");
-      knotPanel.removeChild(this._selector);
+      knotPanel.removeChild(this._resPicker);
       
       this._compiledCase = this._translator.compileMarkdown(caseMd);
       

@@ -1,6 +1,6 @@
 /* Resource Selector DCC
   *******************/
-class DCCResourceSelector extends DCCBase {
+class DCCResourcePicker extends DCCBase {
    constructor() {
       super();
       
@@ -146,6 +146,6 @@ class DCCResourceSelector extends DCCBase {
 }
 
 (function() {
-   DCCResourceSelector.editableCode = false;
-   customElements.define("dcc-resource-selector", DCCResourceSelector);
+   DCCResourcePicker.editableCode = false;
+   customElements.define("dcc-resource-picker", DCCResourcePicker);
 })();
