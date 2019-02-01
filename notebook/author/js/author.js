@@ -14,7 +14,7 @@ class AuthorManager {
       this._htmlKnot = null;
       this._renderSlide = true;
       
-      // <TODO> Fix this problem - allow assynchronous methods inside the class
+      // <TODO> Fix this problem - allow asynchronous methods inside the class
       // this._server = new DCCAuthorServer();
 
       this.actionButton = this.actionButton.bind(this);
