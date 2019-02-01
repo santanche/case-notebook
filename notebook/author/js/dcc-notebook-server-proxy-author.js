@@ -1,5 +1,5 @@
 /**
- * 
+ * Local component that worls as a proxy to the server functionalities
  */
 const DCCNS_serverAddress = "http://127.0.0.1:8888/";
 
@@ -16,8 +16,7 @@ class DCCNotebookServer {
       let finalCasesList = {};
       for (var c in cases)
          finalCasesList[cases[c]] = "icons/mono-slide.svg";
-      // selector.addSelectList(finalCasesList);
-      return finalCasesList);
+      return finalCasesList;
    }
    
    async loadCase(caseName) {
@@ -29,14 +28,10 @@ class DCCNotebookServer {
          }
       });
       const jsonResponse = await response.json();
-      // const caseMd = jsonResponse.caseMd;
-
-      // author._caseLoaded(caseMd);
       return jsonResponse.caseMd;
    }
-}
 
-   const DCCNS_saveCase = async (caseName, caseText, author) => {
+   async saveCase(caseName, caseText) {
       const response = await fetch(DCCNS_serverAddress + "save-case", {
          method: "POST",
          body: JSON.stringify({"caseName": caseName,
@@ -46,13 +41,10 @@ class DCCNotebookServer {
          }
       });
       const jsonResponse = await response.json();
-      const versionFile = jsonResponse.versionFile;
-
-      author._caseSaved(versionFile);
-      return status;
+      return jsonResponse.versionFile;
    }
 
-   const DCCNS_loadTemplate = async (templateName, author, source) => {
+   async loadTemplate(templateName) {
       const response = await fetch(DCCNS_serverAddress + "load-template", {
          method: "POST",
          body: JSON.stringify({"templateName": templateName}),
@@ -61,13 +53,10 @@ class DCCNotebookServer {
          }
       });
       const jsonResponse = await response.json();
-      const templateHTML = jsonResponse.template;
-
-      author._templateLoaded(templateName, templateHTML, source);
-      return templateHTML;
+      return jsonResponse.template;
    }
 
-   const DCCNS_prepareCaseHTML = async (caseName, author) => {
+   async prepareCaseHTML(caseName) {
       const response = await fetch(DCCNS_serverAddress + "prepare-case-html", {
          method: "POST",
          body: JSON.stringify({"caseName": caseName}),
@@ -76,13 +65,10 @@ class DCCNotebookServer {
          }
       });
       const jsonResponse = await response.json();
-      const status = jsonResponse.status;
-
-      author._casePrepared(status);
-      return status;
+      return jsonResponse.status;
    }
 
-   const DCCNS_saveKnotHTML = async (caseName, knotFile, knotHTML, author) => {
+   async saveKnotHTML(caseName, knotFile, knotHTML) {
       const response = await fetch(DCCNS_serverAddress + "save-knot-html", {
          method: "POST",
          body: JSON.stringify({"caseName": caseName,
@@ -93,13 +79,10 @@ class DCCNotebookServer {
          }
       });
       const jsonResponse = await response.json();
-      const status = jsonResponse.status;
-
-      author._knotCheck(knotFile);
-      return status;
+      return jsonResponse.status;
    }
 
-   const DCCNS_saveCaseScript = async (caseName, scriptFile, scriptJS, author) => {
+   async saveCaseScript(caseName, scriptFile, scriptJS) {
       const response = await fetch(DCCNS_serverAddress + "save-case-script", {
          method: "POST",
          body: JSON.stringify({"caseName": caseName,
@@ -110,11 +93,7 @@ class DCCNotebookServer {
          }
       });
       const jsonResponse = await response.json();
-      const status = jsonResponse.status;
-
-      author._scriptSaved(status);
-      return status;
+      return jsonResponse.status;
    }
-   
-// }
+}
 

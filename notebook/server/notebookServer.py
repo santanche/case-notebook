@@ -26,10 +26,12 @@ class NotebookDM(object):
        caseDir = NotebookDM.DIR_CASES + caseName + "/"
        
        # build an author images directory combining cases and shared images
-       shutil.rmtree(NotebookDM.DIR_AUTHOR + "images")
-       shutil.copytree(caseDir + "images", NotebookDM.DIR_AUTHOR + "images")
+       authorImages = NotebookDM.DIR_AUTHOR + "images"
+       if os.path.isdir(authorImages):
+          shutil.rmtree(authorImages)
+       shutil.copytree(caseDir + "images", authorImages)
        for fi in glob.glob(NotebookDM.DIR_SHARED + "images/*"):
-          shutil.copy2(fi, NotebookDM.DIR_AUTHOR + "images")
+          shutil.copy2(fi, authorImages)
        
        # retrieve the case file
        caseMd = open(NotebookDM.DIR_CASES + caseName + "/" + NotebookDM.FILE_CASE, "r", encoding="utf-8")
@@ -68,7 +70,8 @@ class NotebookDM(object):
       caseDir = NotebookDM.DIR_CASES + caseName + "/"
       
       # remake the generated HTML case directory
-      shutil.rmtree(caseDir + "html")
+      if os.path.isdir(caseDir + "html"):
+         shutil.rmtree(caseDir + "html")
       os.mkdir(caseDir + "html")
       
       # copy template styles and scripts to the case

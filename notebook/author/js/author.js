@@ -10,11 +10,11 @@ class AuthorManager {
       this._server = new DCCNotebookServer();
       
       this._currentCaseName = null;
-
       this._knotSelected = null;
       this._htmlTemplate = null;
       this._htmlKnot = null;
       this._renderSlide = true;
+      this._editor = null;
       
       // <TODO> Fix this problem - allow asynchronous methods inside the class
       // this._server = new DCCAuthorServer();
@@ -46,13 +46,13 @@ class AuthorManager {
    /*
     * ACTION: control-load (1)
     */
-   selectCase() {
+   async selectCase() {
       this._resPicker = new DCCResourcePicker();
       this._resourceSelected = this._resourceSelected.bind(this);
       document.addEventListener("resource-selected", this._resourceSelected);
       this._resPicker.addSelectionListener(this);
       
-      const cases = this._server.casesList(this._resPicker);
+      const cases = await this._server.casesList(this._resPicker);
       this._resPicker.addSelectList(cases);
       let knotPanel = document.querySelector("#knot-panel");
       knotPanel.appendChild(this._resPicker);
@@ -63,10 +63,7 @@ class AuthorManager {
     */
    async _resourceSelected(event) {
       this._currentCaseName = event.detail;
-      console.log("Case name: " + this._currentCaseName);
       let caseMd = await this._server.loadCase(this._currentCaseName);
-      console.log("caseMd: " + caseMd);
-
       let navigationPanel  = document.querySelector("#navigation-panel");
       let knotPanel = document.querySelector("#knot-panel");
       knotPanel.removeChild(this._resPicker);
@@ -98,134 +95,81 @@ class AuthorManager {
    }
    
    /*
-    * ACTION: control-save (1)
+    * ACTION: control-save
     */
-   saveCase() {
+   async saveCase() {
       if (this._currentCaseName != null && this._compiledCase != null) {
          let md =this._translator.assembleMarkdown(this._compiledCase);
-         DCCNS_saveCase(this._currentCaseName, md, this);
+         const versionFile = await this._server.saveCase(this._currentCaseName, md);
+         
+         console.log("Case saved! Previous version: " + versionFile);
+         document.querySelector("#message-space").innerHTML = "Saved";
+         setTimeout(this._clearMessage, 2000);
+
+         let promise = new Promise((resolve, reject) => {
+            setTimeout(() => resolve("done!"), 2000);
+         });
+         let result = await promise;
+         document.querySelector("#message-space").innerHTML = "";
       }
    }
-   
-   /*
-    * ACTION: control-save (2)
-    */
-   _caseSaved(versionFile) {
-      console.log("Case saved! Previous version: " + versionFile);
-      document.querySelector("#message-space").innerHTML = "Saved";
-      setTimeout(this._clearMessage, 2000);
-   }
 
    /*
-    * ACTION: control-save (3)
+    * ACTION: control-play
     */
-   _clearMessage() {
-      document.querySelector("#message-space").innerHTML = "";
-   }
-
-   /*
-    * ACTION: control-play (1)
-    */
-   playCase() {
-      this._generateHTML();
-   }
-   
-   /*
-    * ACTION: control-play (2)
-    */
-   _generateHTML() {
-      DCCNS_prepareCaseHTML(this._currentCaseName, this);
-   }
-   
-   /*
-    * ACTION: control-play (3)
-    */
-   _casePrepared() {
-      // this._htmlSet = this._translator.generateCaseHTML(this._compiledCase);
+   async playCase() {
+      await this._server.prepareCaseHTML(this._currentCaseName);
       this._allKnotTitles = Object.keys(this._compiledCase);
       this._knotLoop = -1;
       this._templateSet = {};
-      DCCNS_loadTemplate("player", this, 2);
-   }
-
-   /*
-    * ACTION: control-play (4)
-    */
-   _knotCheck(fileSaved) {
-      if (this._knotLoop >= 0)
-         console.log("Saved: " + fileSaved);
-      this._knotLoop++;
-      if (this._knotLoop < this._allKnotTitles.length) {
-         let knotTitle =  this._allKnotTitles[this._knotLoop];        
-         let template = (this._compiledCase[knotTitle].category) ?
-                        this._compiledCase[knotTitle].category : "knot";
+      this._templateSet.player = await this._server.loadTemplate("player");
+      
+      for (let kn in this._compiledCase) {
+         let template = (this._compiledCase[kn].category) ?
+               this._compiledCase[kn].category : "knot";
          if (!this._templateSet[template])
-            DCCNS_loadTemplate(template, this, 3);
-         else
-            this._knotSave(template);
-      } else
-         this._htmlGenerated();
-   }
-   
-   /*
-    * ACTION: control-play (5)
-    */
-   _knotSave(template) {
-      let knotTitle = this._allKnotTitles[this._knotLoop];
-      let htmlName = knotTitle.replace(/ /igm, "_");
-      let finalHTML =  this._templateSet["player"].replace("{knot}",
-         this._templateSet[template].replace("{knot}",
-            this._translator.generateKnotHTML(this._compiledCase[knotTitle])));      
-      DCCNS_saveKnotHTML(this._currentCaseName,
-                         htmlName + ".html", finalHTML, this);
-   }
-   
-   /*
-    * ACTION: control-play (5)
-    */
-   _htmlGenerated() {
-      this._templateSet = null;
-      this._allKnotTitles = null;
+            this._templateSet[template] = await this._server.loadTemplate(template);
+         let htmlName = kn.replace(/ /igm, "_");
+         let finalHTML =  this._templateSet.player.replace("{knot}",
+            this._templateSet[template].replace("{knot}",
+               this._translator.generateKnotHTML(this._compiledCase[kn])));      
+         await this._server.saveKnotHTML(this._currentCaseName,
+                                         htmlName + ".html", finalHTML);
+      }
+      
       window.open("../cases/" + this._currentCaseName + "/html/index.html", "_blank");
-   }   
-   
+   }
+     
    /*
-    * ACTION: knot-selected (1)
+    * ACTION: knot-selected
     */
-   actionKnotSelected(event) {
+   async actionKnotSelected(event) {
       this._htmlTemplate = null;
       
       if (this._compiledCase[event.detail]) {
+         this._checkKnotModification();
          this._knotSelected = event.detail;
          this._htmlKnot = this._translator.generateKnotHTML(this._compiledCase[this._knotSelected]);
          let template = (this._compiledCase[this._knotSelected].category) ?
                          this._compiledCase[this._knotSelected].category : "knot";
-         DCCNS_loadTemplate(template, this, 1);
+         
+         this._templateHTML = await this._server.loadTemplate(template);
+         this._renderKnot();
+      }
+   }
+
+   _checkKnotModification() {
+      if (!this._renderSlide && this._editor != null) {
+         let editorText = this._editor.getText();
+         editorText = editorText.substring(0, editorText.length - 1);
+         if (this._compiledCase[this._knotSelected]._source != editorText)
+            this._compiledCase[this._knotSelected]._source = editorText;
       }
    }
    
-   /*
-    * ACTION: knot-selected (2) / control-play (4)
-    */
-   _templateLoaded(templateName, templateHTML, source) {
-      switch (source) {
-         case 1: this._templateHTML = templateHTML;
-                 this._renderKnot();
-                 break;
-         case 2: this._templateSet[templateName] = templateHTML;
-                 this._knotCheck();
-                 break;
-         case 3: this._templateSet[templateName] = templateHTML;
-                 this._knotSave(templateName);
-                 break;
-      }
-   }
-   
-   /*
-    * ACTION: knot-selected (3)
-    */
    _renderKnot() {
       let knotPanel = document.querySelector("#knot-panel");
+      
       if (this._renderSlide) {
          document.querySelector("#player-panel").innerHTML = "";
          let htmlFinal = this._templateHTML
@@ -241,10 +185,10 @@ class AuthorManager {
          */
       } else {
          knotPanel.innerHTML = "<div id='editor-space'></div>";
-         let quill = new Quill('#editor-space', {
+         this._editor = new Quill('#editor-space', {
             theme: 'snow'
           });
-         quill.insertText(0, this._compiledCase[this._knotSelected]._source);
+         this._editor.insertText(0, this._compiledCase[this._knotSelected]._source);
       }
    }
    
@@ -253,4 +197,3 @@ class AuthorManager {
       this._resourceSelected(event);
    }
 }
-
