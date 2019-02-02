@@ -6,8 +6,6 @@ import pathlib
 import json
 import sys
 
-dotenv.load_dotenv(dotenv_path=pathlib.Path('.env'))
-
 
 app = Flask(__name__)
 
