@@ -2,7 +2,7 @@
  services:
 
   case-manager-service:
-   image: data4health/case-manager
+   image: datasci4health/case-manager
    container_name: case-manager-service
    restart: always
    environment:
