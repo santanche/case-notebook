@@ -1,0 +1,37 @@
+ version: '3'
+ services:
+
+  case-manager-service:
+   image: data4health/case-manager
+   container_name: case-manager-service
+   restart: always
+   environment:
+     - FLASK_HOST=0.0.0.0
+     - FLASK_PORT=8181
+     - FLASK_DEBUG=True
+   ports:
+     - 8181:8181/tcp
+   networks:
+     casebook:
+
+#   volumes:
+#     - "label:/some/path"
+
+# author-space-service:
+#  image: data4health/author-space
+#  container_name: author-space-service
+#  restart: always
+#  environment:
+#    - FLASK_HOST=0.0.0.0
+#    - FLASK_PORT=9191
+#    - FLASK_DEBUG=True
+#  ports:
+#    - 9191:9191/tcp
+#   volumes:
+#     - "label:/some/path"
+#  networks:
+#   casebook:
+
+
+ networks:
+   casebook:
