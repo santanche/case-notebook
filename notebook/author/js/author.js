@@ -177,12 +177,10 @@ class AuthorManager {
                              .replace("{knot}", this._htmlKnot);
          knotPanel.innerHTML = htmlFinal;
          
-         /*
          let dccs = document.querySelectorAll("*");
          for (let d = 0; d < dccs.length; d++)
             if (dccs[d].tagName.toLowerCase().startsWith("dcc-lively-talk"))
                dccs[d].editDCC();
-         */
       } else {
          knotPanel.innerHTML = "<div id='editor-space'></div>";
          this._editor = new Quill('#editor-space', {

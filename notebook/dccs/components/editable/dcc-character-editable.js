@@ -11,12 +11,13 @@ function editableDCCCharacter() {
       this._recordImages.removeEventListener("click", this._editImage);
       this._recordImages.innerHTML = "";
       this._imageSelected = this._imageSelected.bind(this);
-      let imageSelector = new DCCResourceSelector();
+      let imageSelector = new DCCResourcePicker();
 
       // <TODO> provisory
-      imageSelector.addSelectList([["doctor", "images/doctor.png"],
-         ["nurse", "images/nurse.png"],
-         ["patient", "images/patient.png"]]);
+      imageSelector.addSelectList(
+            {"doctor": "images/doctor.png",
+             "nurse": "images/nurse.png",
+             "patient": "images/patient.png"});
 
       
       this.addEventListener("resource-selected", this._imageSelected);

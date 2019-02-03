@@ -68,7 +68,7 @@
          let html = "";
          for (let knot in compiled)
             html += "<pre>" + 
-                    mkTranslator.generateHTML(compiled[knot]).replace(/>/igm, "&gt;").replace(/</igm, "&lt;") +
+                    mkTranslator.generateKnotHTML(compiled[knot]).replace(/>/igm, "&gt;").replace(/</igm, "&lt;") +
                     "<pre><hr>";
          document.querySelector("#html-results").innerHTML = html;
       }
