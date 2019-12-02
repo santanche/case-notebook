@@ -2,9 +2,9 @@ quilt
 scikit-learn==0.19.1
 scipy
 pandas
-http://download.pytorch.org/whl/cpu/torch-0.4.1-cp36-cp36m-linux_x86_64.whl
-torchvision
-pyro-ppl
+# http://download.pytorch.org/whl/cpu/torch-0.4.1-cp36-cp36m-linux_x86_64.whl
+# torchvision
+# pyro-ppl
 
 
 # extensions for ipywidgets and python-markdown (see https://github.com/binder-examples/jupyter-extension)
