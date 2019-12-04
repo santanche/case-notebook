@@ -1,5 +1,7 @@
-# case-notebook
-A notebook for clinical cases.
+# case-notebook for Zombie Health
 
-Jupyter Classical [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/santanche/case-notebook/master)
-Jupyter Lab [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/santanche/case-notebook/master?urlpath=lab)
+Lastest version of Zombie Health in the notebook for clinical cases:
+
+Jupyter Classical [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/santanche/case-notebook/zombie-latest?filepath=jupyter%2Fcase-notebook%2Fcase-notebook-03-sparql-engine.ipynb)
+
+This project was archived at it evolved to [Harena](https://github.com/datasci4health/harena).
